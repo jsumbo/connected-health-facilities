@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 import Link from "next/link"
 import { ArrowRight, Ban, Gauge, MapPin } from "lucide-react"
-import type { ProgrammeFacility } from "@/lib/types-public"
+import type { DomainScore, ProgrammeFacility } from "@/lib/types-public"
 import { TierBadge } from "@/components/public/tier-badge"
 import { tierStyle } from "@/components/public/readiness-tier-styles"
 import {
@@ -172,7 +172,7 @@ function CompareSection({
 function getDomainEntries(facility: ProgrammeFacility): { label: string; score: number }[] {
   return Object.values(facility.domain_scores)
     .filter(
-      (d): d is { label: string; score: number | null } =>
+      (d): d is DomainScore =>
         Boolean(d && typeof d === "object" && "label" in d && d.label)
     )
     .filter((d) => d.score != null)

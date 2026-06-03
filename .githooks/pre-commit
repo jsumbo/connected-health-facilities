@@ -1,0 +1,9 @@
+#!/bin/sh
+# Block Cursor / AI assistant paths and co-author metadata from being committed.
+blocked=$(git diff --cached --name-only | grep -iE '(^|/)\.cursor(/|$)|\.cursorrules|\.cursorignore|(^|/)\.agents(/|$)|(^|/)\.claude(/|$)|^CLAUDE\.md$|^AGENTS\.md$|^GEMINI\.md$' || true)
+if [ -n "$blocked" ]; then
+  echo "error: refusing commit — Cursor/AI assistant files must not be committed:"
+  echo "$blocked" | sed 's/^/  /'
+  exit 1
+fi
+exit 0

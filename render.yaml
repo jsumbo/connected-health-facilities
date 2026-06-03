@@ -1,0 +1,34 @@
+# Render: API only. Deploy the Next.js app on Vercel (see docs/DEPLOY_RENDER_VERCEL.md).
+services:
+  - type: web
+    name: datflow-api
+    runtime: docker
+    rootDir: backend
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: KOBO_API_TOKEN
+        sync: false
+      - key: KOBO_ASSET_UID
+        sync: false
+      - key: KOBO_SENTIMENT_ASSET_UID
+        sync: false
+      - key: KOBO_BASE_URL
+        value: https://kf.kobotoolbox.org
+      - key: DLA_CSV_PATH
+        value: /app/data/Digital Literacy Assessment - Form Responses.csv
+      - key: DASHBOARD_USERNAME
+        sync: false
+      - key: DASHBOARD_PASSWORD
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_EXPIRE_MINUTES
+        value: "480"
+      - key: ENVIRONMENT
+        value: production
+      # Comma-separated Vercel origins, e.g. https://your-app.vercel.app,https://readiness.example.gov.lr
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false

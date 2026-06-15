@@ -30,10 +30,29 @@ create index idx_facilities_county
 create index idx_facilities_tier
     on facilities ((scored_data->>'tier'));
 
+-- ── TRIBE master readiness (workbook mirror) ─────────────────
+create table if not exists facility_readiness (
+    id              bigserial primary key,
+    facility_slug   text unique not null,
+    facility_name   text,
+    county          text,
+    readiness_data  jsonb not null,
+    source_path     text,
+    synced_at       timestamptz default now()
+);
+
+create index if not exists idx_facility_readiness_county
+    on facility_readiness (county);
+
+create index if not exists idx_facility_readiness_tier
+    on facility_readiness ((readiness_data->>'tier'));
+
 -- ── Row Level Security ───────────────────────────────────────
 -- Service role key (used by the backend) bypasses RLS automatically.
 -- Enable RLS so direct anon/public access is blocked.
 alter table facilities enable row level security;
+
+alter table facility_readiness enable row level security;
 
 -- No public read policy — only the service role can read/write.
 -- Uncomment if you want authenticated Supabase users to read:

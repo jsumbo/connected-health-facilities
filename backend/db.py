@@ -66,14 +66,14 @@ def _sync_load_all() -> List[Dict[str, Any]]:
             .order("id")
             .execute()
         )
-        
+
         logger.info(f"Supabase query returned {len(result.data) if result.data else 0} rows")
-        
+
         # If data exists, return it as-is (whether scored_data or raw)
         if result.data:
             # Try to extract scored_data if it exists, otherwise return the whole row
             facilities = [
-                row.get("scored_data") if "scored_data" in row else row 
+                row.get("scored_data") if "scored_data" in row else row
                 for row in result.data
             ]
             logger.info(f"Returning {len(facilities)} facilities")
@@ -113,3 +113,40 @@ async def upsert_submissions(scored: List[Dict[str, Any]]) -> None:
 async def load_all_scored() -> List[Dict[str, Any]]:
     """Load the full set of scored facilities from Supabase into memory."""
     return await asyncio.to_thread(_sync_load_all)
+
+
+def _sync_upsert_readiness(rows: List[Dict[str, Any]]) -> None:
+    if not rows:
+        return
+    try:
+        (
+            _get_client()
+            .table("facility_readiness")
+            .upsert(rows, on_conflict="facility_slug")
+            .execute()
+        )
+        logger.info("Upserted %s rows into facility_readiness", len(rows))
+    except Exception as e:
+        logger.error("facility_readiness upsert failed: %s", e)
+        raise
+
+
+async def upsert_facility_readiness(bundle: Dict[str, Any]) -> None:
+    """Mirror TRIBE master scorecards into Supabase when configured."""
+    if not settings.supabase_url or not settings.supabase_service_key:
+        return
+
+    now = datetime.now(timezone.utc).isoformat()
+    source_path = bundle.get("source_path")
+    rows = [
+        {
+            "facility_slug": slug,
+            "facility_name": card.get("facility_name"),
+            "county": card.get("county"),
+            "readiness_data": card,
+            "source_path": source_path,
+            "synced_at": now,
+        }
+        for slug, card in (bundle.get("scorecards") or {}).items()
+    ]
+    await asyncio.to_thread(_sync_upsert_readiness, rows)

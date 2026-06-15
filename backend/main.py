@@ -3,6 +3,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import settings
+from master_cache import master_cache
 from routes import auth, dashboard, public
 from cache import cache
 from sentiment_cache import sentiment_cache
@@ -13,6 +14,7 @@ from dla_cache import dla_cache
 async def lifespan(app: FastAPI):
     # Initial populate before first request is served
     await cache.refresh()
+    await master_cache.refresh()
     await sentiment_cache.refresh()
     await dla_cache.refresh()
 
@@ -73,4 +75,10 @@ def health_check():
         "dla_last_refreshed": (
             dla_cache.last_refreshed.isoformat() if dla_cache.last_refreshed else None
         ),
+        "master_cache_populated": master_cache.is_populated,
+        "master_last_refreshed": (
+            master_cache.last_refreshed.isoformat() if master_cache.last_refreshed else None
+        ),
+        "master_source_path": master_cache.source_path(),
+        "master_last_error": master_cache.last_error,
     }

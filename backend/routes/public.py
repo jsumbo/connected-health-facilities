@@ -13,13 +13,19 @@ from config import settings
 from kobo_normalize import attachment_uid_for_basename
 from facility_master import registry_by_slug, county_display
 from programme import (
+    build_blocker_register,
+    build_cluster_overview,
     build_data_quality_report,
     build_dla_overview,
     build_facility_rows,
+    build_gap_matrix,
+    build_ict_gap,
     build_overview,
+    build_roadmap,
     build_sentiment_overview,
     get_facility_by_slug,
 )
+from master_cache import master_cache
 from sentiment_cache import sentiment_cache
 from dla_cache import dla_cache
 
@@ -32,8 +38,9 @@ _NOT_READY = HTTPException(
 
 
 def _require_cache() -> None:
-    if not cache.is_populated:
-        raise _NOT_READY
+    if cache.is_populated or master_cache.is_populated:
+        return
+    raise _NOT_READY
 
 
 @router.get("/overview")
@@ -149,6 +156,44 @@ async def _fetch_attachment_uid(submission_id: int, basename: str) -> str | None
         return None
 
 
+@router.get("/roadmap")
+def public_roadmap():
+    """Deployment waves, county sequencing, and blocker linkage from master scorecards."""
+    _require_cache()
+    return build_roadmap()
+
+
+@router.get("/blockers")
+def public_blocker_register():
+    """TRIBE deployment blocker register from master workbook."""
+    if not master_cache.is_populated:
+        if master_cache.last_error:
+            raise HTTPException(status_code=503, detail=master_cache.last_error)
+        raise _NOT_READY
+    return build_blocker_register()
+
+
+@router.get("/clusters")
+def public_clusters():
+    """Cluster and regional readiness rollups with DRF domain averages."""
+    _require_cache()
+    return build_cluster_overview()
+
+
+@router.get("/infrastructure")
+def public_infrastructure():
+    """ICT infrastructure gap analysis (D-POW, D-CON, D-ICT) from master scores."""
+    _require_cache()
+    return build_ict_gap()
+
+
+@router.get("/gap-matrix")
+def public_gap_matrix():
+    """B6 gap matrix with facility counts per intervention row."""
+    _require_cache()
+    return build_gap_matrix()
+
+
 @router.get("/data-quality")
 def public_data_quality():
     """Facilities missing assessments or critical fields."""
@@ -254,8 +299,13 @@ def public_meta():
             },
             {"id": "dla", "name": "Digital Literacy Assessment", "status": dla_status},
         ],
-        "cache_populated": cache.is_populated,
+        "cache_populated": cache.is_populated or master_cache.is_populated,
         "last_refreshed": cache.last_refreshed.isoformat() if cache.last_refreshed else None,
+        "master_cache_populated": master_cache.is_populated,
+        "master_last_refreshed": (
+            master_cache.last_refreshed.isoformat() if master_cache.last_refreshed else None
+        ),
+        "master_source_path": master_cache.source_path(),
         "sentiment_cache_populated": sentiment_cache.is_populated,
         "sentiment_last_refreshed": (
             sentiment_cache.last_refreshed.isoformat() if sentiment_cache.last_refreshed else None

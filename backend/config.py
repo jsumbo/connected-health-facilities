@@ -21,6 +21,9 @@ class Settings(BaseSettings):
 
     environment: str = "development"
 
+    # TRIBE master workbook (repo default: backend/data/master/...)
+    master_scores_xlsx_path: str = ""
+
     # Comma-separated browser origins (Vercel). Empty = allow all (dev-friendly).
     cors_allowed_origins: str = ""
 

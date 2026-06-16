@@ -276,7 +276,7 @@ def build_overview() -> Dict[str, Any]:
         "by_county": by_county,
         "by_cluster": cluster_summaries,
         "domain_averages": domain_avgs,
-        "domain_scale_max": 3 if master_cache.is_populated else 100,
+        "domain_scale_max": 3,  # Domain scores are on 0–3 scale (per TRIBE DRF rubric)
         "last_refreshed": cache.last_refreshed.isoformat() if cache.last_refreshed else None,
         "cache_populated": cache.is_populated or master_cache.is_populated,
         "master_populated": master_cache.is_populated,

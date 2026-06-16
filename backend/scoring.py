@@ -537,7 +537,9 @@ def _score_domain(submission: Dict[str, Any], fields: List[str]) -> Optional[flo
         max_possible += max_pts * weight
     if max_possible == 0:
         return None
-    return round((earned / max_possible) * 100, 1)
+    # Return domain score on 0–3 scale (per TRIBE DRF rubric)
+    # Composite score will scale this to 0–100: (domain_score × weight) / sum(weights) × 100
+    return round((earned / max_possible) * 3, 2)
 
 
 def _check_blockers(submission: Dict[str, Any]) -> List[str]:
@@ -568,9 +570,9 @@ def _check_blockers(submission: Dict[str, Any]) -> List[str]:
 
 
 def _tier(score: Optional[float], blockers: List[str]) -> str:
-    """TRIBE-aligned readiness tiers (Part B5)."""
+    """TRIBE-aligned readiness tiers (Part B5). Score is on 0–100 scale."""
     if blockers:
-        return "Tier 4 — Not Deployment-Ready"
+        return "Tier 3 — Not Deployment-Ready"
     if score is None:
         return "Incomplete"
     if score >= 75:
@@ -578,7 +580,7 @@ def _tier(score: Optional[float], blockers: List[str]) -> str:
     if score >= 55:
         return "Tier 2 — Deployment-Eligible"
     if score >= 35:
-        return "Tier 3 — Structured Remediation"
+        return "Tier 2 — Structured Remediation"
     return "Critical Gaps"
 
 
@@ -598,7 +600,12 @@ def score_submission(submission: Dict[str, Any]) -> Dict[str, Any]:
         domain_scores[d]["score"] for d in CORE_DOMAINS
         if domain_scores.get(d, {}).get("score") is not None
     ]
-    overall_score = round(sum(core_scores) / len(core_scores), 1) if core_scores else None
+    # Domain scores are on 0–3 scale; convert composite to 0–100 (per TRIBE DRF rubric)
+    if core_scores:
+        domain_avg = sum(core_scores) / len(core_scores)
+        overall_score = round((domain_avg / 3) * 100, 1)
+    else:
+        overall_score = None
     blockers = _check_blockers(submission)
     tier = _tier(overall_score, blockers)
 

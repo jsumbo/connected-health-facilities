@@ -124,16 +124,6 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
               label="With responses"
               value={`${coverage?.facilities_with_responses ?? 0} / ${coverage?.registry_count ?? 37}`}
             />
-            <KpiMetric
-              icon={GraduationCap}
-              label="Full confidence"
-              value={
-                confidence
-                  ? `${confidence.sufficient_count} / ${(confidence.sufficient_count ?? 0) + (confidence.indicative_count ?? 0)}`
-                  : "—"
-              }
-              description={confidence ? `n≥${confidence.min_n} per facility` : undefined}
-            />
           </div>
 
           {coverage && coverage.missing_from_survey.length > 0 && (

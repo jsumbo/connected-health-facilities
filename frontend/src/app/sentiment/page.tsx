@@ -35,7 +35,6 @@ export default async function SentimentPage() {
   }
 
   const coverage = sentiment?.coverage
-  const confidence = sentiment?.confidence_summary
   const rows =
     sentiment?.facilities.map((s) => ({
       ...s,

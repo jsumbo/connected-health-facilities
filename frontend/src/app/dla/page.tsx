@@ -64,7 +64,6 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
   }
 
   const coverage = dla?.coverage
-  const confidence = dla?.confidence_summary
   let rows =
     dla?.facilities.map((s) => {
       const meta = metaBySlug[s.facility_slug]

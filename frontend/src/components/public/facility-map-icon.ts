@@ -5,12 +5,14 @@ const HOSPITAL_PATHS =
   '<path d="M12 7v4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M14 9h-4"/><path d="M18 11h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2"/><path d="M18 21V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16"/>'
 
 export function tierMarkerColor(tier: string): string {
-  if (tier.startsWith("Tier 1")) return "#059669"
-  if (tier.startsWith("Tier 2")) return "#0284c7"
-  if (tier.startsWith("Tier 3")) return "#d97706"
-  if (tier.startsWith("Tier 4")) return "#e11d48"
-  if (tier === "Not Assessed") return "#64748b"
-  return "#475569"
+  // Colors match readiness-tier-styles.ts TIER_CHART_COLORS
+  if (tier.startsWith("Tier 1")) return "#3e8343" /* chart-2: HOS-Ready green */
+  if (tier.startsWith("Tier 2") && tier.includes("Structured Remediation"))
+    return "#b67700" /* chart-3: Structured Remediation amber */
+  if (tier.startsWith("Tier 2")) return "#355781" /* chart-1: Deployment-Eligible blue */
+  if (tier.startsWith("Tier 3") || tier.startsWith("Tier 4")) return "#c64e31" /* chart-4: Not Ready orange-red */
+  if (tier === "Not Assessed") return "#8b8b8b" /* neutral gray */
+  return "#8b8b8b"
 }
 
 function hospitalSvg(stroke: string, sizePx: number): string {

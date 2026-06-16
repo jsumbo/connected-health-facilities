@@ -67,7 +67,7 @@ export default function Sidebar() {
       {/* Footer */}
       <div className="px-4 pb-6 border-t border-white/10 pt-4">
         <p className="text-slate-500 text-xs px-4 mb-3">
-          TRIBE
+          Ministry of Health · Sand Technologies
         </p>
         <button
           onClick={handleLogout}

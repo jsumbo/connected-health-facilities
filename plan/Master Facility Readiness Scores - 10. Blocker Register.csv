@@ -1,0 +1,24 @@
+Facility,County,Composite,Tier,Blocker(s),Remediation pathway
+Pleebo Health Center,Maryland,70,Tier 3,BLK-05,Assign or share IT support across <=5 facilities (in-scope)
+Dolo's Town Health Center,Margibi,66.7,Tier 3,BLK-05,Assign or share IT support across <=5 facilities (in-scope)
+Dr. Agnes Varis Health Center,Montserrado,66.7,Tier 3,BLK-04 BLK-05,Re-establish DHIS2 reporting; data-clerk support (in-scope); Assign or share IT support across <=5 facilities (in-scope)
+Duport Road Health Center,Montserrado,66.7,Tier 3,BLK-04,Re-establish DHIS2 reporting; data-clerk support (in-scope)
+WAHO  Health Center,Grand Cape Mount,60.7,Tier 3,BLK-04,Re-establish DHIS2 reporting; data-clerk support (in-scope)
+Cotton Tree Health Center,Margibi,58,Tier 3,BLK-03 BLK-05,Device procurement per service point; Assign or share IT support across <=5 facilities (in-scope)
+Garzon Health Center,Margibi,58,Tier 3,BLK-03 BLK-05,Device procurement per service point; Assign or share IT support across <=5 facilities (in-scope)
+Gbarzon Health Center,Grand Gedeh,58,Tier 3,BLK-03,Device procurement per service point
+Marshall Health Center,Margibi,58,Tier 3,BLK-03 BLK-05,Device procurement per service point; Assign or share IT support across <=5 facilities (in-scope)
+Damballa Health Center,Grand Cape Mount,57.3,Tier 3,BLK-05,Assign or share IT support across <=5 facilities (in-scope)
+Gbeapo Health Center,River Gee,56,Tier 3,BLK-04 BLK-05,Re-establish DHIS2 reporting; data-clerk support (in-scope); Assign or share IT support across <=5 facilities (in-scope)
+Foya  Health Center,Lofa,54.7,Tier 3,BLK-02,Fixed connectivity / offline-first tooling (procurement)
+GW Harley Hospital,Nimba,54.7,Tier 3,BLK-02,Fixed connectivity / offline-first tooling (procurement)
+JJ Dossen Hospital,Maryland,54.7,Tier 3,BLK-02 BLK-05,Fixed connectivity / offline-first tooling (procurement); Assign or share IT support across <=5 facilities (in-scope)
+Karnplay Health Center,Nimba,54.7,Tier 3,BLK-02,Fixed connectivity / offline-first tooling (procurement)
+Konia Health Center,Lofa,54.7,Tier 3,BLK-02,Fixed connectivity / offline-first tooling (procurement)
+Sacleapea Comprehensive Health Center,Nimba,54.7,Tier 3,BLK-02,Fixed connectivity / offline-first tooling (procurement)
+New Georgia Community Health Center,Montserrado,52,Tier 3,BLK-03,Device procurement per service point
+Lofa Bridge Health Center,Grand Cape Mount,50.7,Tier 3,BLK-03,Device procurement per service point
+Konobo Health Center,Grand Gedeh,48.7,Tier 3,BLK-03 BLK-04 BLK-05,Device procurement per service point; Re-establish DHIS2 reporting; data-clerk support (in-scope); Assign or share IT support across <=5 facilities (in-scope)
+Sarbo Health Center,River Gee,46,Tier 3,BLK-02 BLK-03 BLK-04 BLK-05,Fixed connectivity / offline-first tooling (procurement); Device procurement per service point; Re-establish DHIS2 reporting; data-clerk support (in-scope); Assign or share IT support across <=5 facilities (in-scope)
+Bromely Community Health Center,Montserrado,43.3,Tier 3,BLK-01 BLK-03 BLK-05,Solar/grid + UPS (procurement); Device procurement per service point; Assign or share IT support across <=5 facilities (in-scope)
+Unification Town Health Center,Margibi,43.3,Tier 3,BLK-03 BLK-04 BLK-05,Device procurement per service point; Re-establish DHIS2 reporting; data-clerk support (in-scope); Assign or share IT support across <=5 facilities (in-scope)

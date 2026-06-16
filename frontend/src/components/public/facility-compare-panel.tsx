@@ -4,6 +4,7 @@ import { ArrowRight, Ban, Gauge, MapPin } from "lucide-react"
 import type { DomainScore, ProgrammeFacility } from "@/lib/types-public"
 import { TierBadge } from "@/components/public/tier-badge"
 import { tierStyle } from "@/components/public/readiness-tier-styles"
+import { blockerKey, formatBlocker } from "@/lib/format-blocker"
 import {
   formatFacilityChoice,
   formatMbps,
@@ -12,14 +13,34 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
-function scoreBarColor(score: number): string {
+function scoreBarColor(score: number, maxScore = 100): string {
+  if (maxScore <= 3) {
+    if (score >= 2.5) return "bg-emerald-500"
+    if (score >= 1.5) return "bg-sky-500"
+    if (score >= 0.5) return "bg-amber-500"
+    return "bg-rose-500"
+  }
   if (score >= 75) return "bg-emerald-500"
   if (score >= 55) return "bg-sky-500"
   if (score >= 35) return "bg-amber-500"
   return "bg-rose-500"
 }
 
-function CompareScoreBar({ score, align }: { score: number; align: "left" | "right" }) {
+function domainMaxScore(facility: ProgrammeFacility): number {
+  const first = Object.values(facility.domain_scores)[0]
+  return first?.max_score ?? (facility.scoring_source === "tribe_master_workbook" ? 3 : 100)
+}
+
+function CompareScoreBar({
+  score,
+  align,
+  maxScore = 100,
+}: {
+  score: number
+  align: "left" | "right"
+  maxScore?: number
+}) {
+  const pct = maxScore <= 3 ? (score / maxScore) * 100 : Math.min(100, Math.max(0, score))
   return (
     <div
       className={cn(
@@ -28,8 +49,8 @@ function CompareScoreBar({ score, align }: { score: number; align: "left" | "rig
       )}
     >
       <div
-        className={cn("h-full rounded-full transition-all", scoreBarColor(score))}
-        style={{ width: `${Math.min(100, Math.max(0, score))}%` }}
+        className={cn("h-full rounded-full transition-all", scoreBarColor(score, maxScore))}
+        style={{ width: `${pct}%` }}
       />
     </div>
   )
@@ -197,6 +218,8 @@ export function FacilityComparePanel({ facilityA, facilityB }: FacilityComparePa
   }
   const sortedDomains = [...domainLabels].sort()
 
+  const maxDomainScore = Math.max(domainMaxScore(facilityA), domainMaxScore(facilityB))
+  const domainSuffix = maxDomainScore <= 3 ? "/3" : "%"
   const scoreA = facilityA.overall_score
   const scoreB = facilityB.overall_score
   const scoreLead =
@@ -249,10 +272,10 @@ export function FacilityComparePanel({ facilityA, facilityB }: FacilityComparePa
               <CardContent>
                 {facility.blockers.length > 0 ? (
                   <ul className="space-y-1.5 text-sm text-destructive/90">
-                    {facility.blockers.map((b) => (
-                      <li key={b} className="flex gap-2">
+                    {facility.blockers.map((b, i) => (
+                      <li key={blockerKey(b, i)} className="flex gap-2">
                         <span className="text-destructive/50">•</span>
-                        <span>{b}</span>
+                        <span>{formatBlocker(b)}</span>
                       </li>
                     ))}
                   </ul>
@@ -301,11 +324,11 @@ export function FacilityComparePanel({ facilityA, facilityB }: FacilityComparePa
                     {truncateName(nameA, 28)}
                   </span>
                   <span className="font-semibold">
-                    {scoreAVal != null ? `${scoreAVal}%` : "—"}
+                    {scoreAVal != null ? `${scoreAVal}${domainSuffix}` : "—"}
                   </span>
                 </div>
                 {scoreAVal != null ? (
-                  <CompareScoreBar score={scoreAVal} align="left" />
+                  <CompareScoreBar score={scoreAVal} align="left" maxScore={maxDomainScore} />
                 ) : (
                   <div className="h-2 rounded-full bg-muted" />
                 )}
@@ -316,11 +339,11 @@ export function FacilityComparePanel({ facilityA, facilityB }: FacilityComparePa
                     {truncateName(nameB, 28)}
                   </span>
                   <span className="font-semibold">
-                    {scoreBVal != null ? `${scoreBVal}%` : "—"}
+                    {scoreBVal != null ? `${scoreBVal}${domainSuffix}` : "—"}
                   </span>
                 </div>
                 {scoreBVal != null ? (
-                  <CompareScoreBar score={scoreBVal} align="right" />
+                  <CompareScoreBar score={scoreBVal} align="right" maxScore={maxDomainScore} />
                 ) : (
                   <div className="h-2 rounded-full bg-muted" />
                 )}

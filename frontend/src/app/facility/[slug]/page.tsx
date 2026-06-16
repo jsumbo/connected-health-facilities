@@ -31,7 +31,8 @@ import { PublicShell } from "@/components/public/PublicShell"
 import { TierBadge } from "@/components/public/tier-badge"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { getPublicFacility } from "@/lib/public-api"
+import { getFacilityPhotoUrl, getPublicFacility } from "@/lib/public-api"
+import { blockerKey, formatBlocker } from "@/lib/format-blocker"
 import {
   formatFacilityChoice,
   formatMbps,
@@ -100,10 +101,6 @@ export default async function FacilityPage({ params }: PageProps) {
     }
   }
 
-  const noInternet =
-    facility.internet_type === "none" ||
-    facility.internet_type === "no_internet"
-
   const metrics: { label: string; value: string | number; icon: LucideIcon }[] = [
     { label: "Internet", icon: Globe, value: formatFacilityChoice(facility.internet_type) },
     { label: "Mobile signal", icon: Signal, value: formatFacilityChoice(facility.mobile_signal) },
@@ -128,30 +125,75 @@ export default async function FacilityPage({ params }: PageProps) {
         ← All facilities
       </Link>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <PageIntro
-            title={facility.name}
-            description={[facility.county, facility.district, facility.facility_type]
-              .filter(Boolean)
-              .join(" · ")}
-          />
+      <div className="space-y-3">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          {facility.has_facility_photo ? (
+            <figure className="w-full shrink-0 overflow-hidden rounded-lg border border-border sm:max-w-xs md:max-w-sm">
+              <img
+                src={getFacilityPhotoUrl(slug)}
+                alt={`${facility.name} facility`}
+                className="aspect-[4/3] max-h-48 w-full object-cover sm:max-h-52"
+                loading="eager"
+              />
+            </figure>
+          ) : null}
+          <Card className="w-full shrink-0 self-start shadow-none sm:w-52 sm:max-w-[13rem]">
+            <CardContent className="px-5 py-5 text-center">
+              <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                <Gauge className="size-5" strokeWidth={2} aria-hidden />
+              </div>
+              <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                Readiness
+              </p>
+              <p className="mt-1 text-4xl font-semibold tabular-nums">{facility.overall_score}%</p>
+              <div className="mt-3 flex flex-col items-center gap-1">
+                <TierBadge tier={facility.tier} />
+                {facility.wave ? (
+                  <p className="text-xs text-muted-foreground">{facility.wave}</p>
+                ) : null}
+              </div>
+            </CardContent>
+          </Card>
         </div>
-        <Card className="shadow-none text-center">
-          <CardContent className="pt-6">
-            <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-md bg-primary/10 text-primary">
-              <Gauge className="size-5" strokeWidth={2} aria-hidden />
+        <PageIntro
+          title={facility.name}
+          description={[facility.county, facility.district, facility.facility_type]
+            .filter(Boolean)
+            .join(" · ")}
+        />
+      </div>
+
+      {facility.quality_flags && facility.quality_flags.length > 0 && (
+        <Card className="border-amber-200/80 bg-amber-50/60 shadow-none">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base text-amber-950">Data quality flags</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {facility.quality_flags.map((flag) => (
+                <Badge
+                  key={flag.code}
+                  variant="secondary"
+                  className={
+                    flag.severity === "critical"
+                      ? "border-destructive/40 bg-destructive/10 text-destructive"
+                      : "border-amber-300/80 bg-amber-100/80 text-amber-950"
+                  }
+                  title={flag.detail}
+                >
+                  {flag.label}
+                </Badge>
+              ))}
             </div>
-            <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-              Readiness
-            </p>
-            <p className="mt-1 text-4xl font-semibold tabular-nums">{facility.overall_score}%</p>
-            <div className="mt-3 flex justify-center">
-              <TierBadge tier={facility.tier} />
-            </div>
+            <Link
+              href="/data-quality"
+              className="mt-3 inline-block text-xs text-primary hover:underline underline-offset-2"
+            >
+              Data quality report →
+            </Link>
           </CardContent>
         </Card>
-      </div>
+      )}
 
       {facility.deployment_blocked && facility.blockers.length > 0 && (
         <Card className="border-destructive/30 bg-destructive/5 shadow-none">
@@ -162,17 +204,22 @@ export default async function FacilityPage({ params }: PageProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="list-inside list-disc space-y-1 text-sm text-destructive/90">
-              {facility.blockers.map((b) => (
-                <li key={b}>{b}</li>
+            <ul className="list-inside list-disc space-y-2 text-sm text-destructive/90">
+              {facility.blockers.map((b, i) => (
+                <li key={blockerKey(b, i)}>{formatBlocker(b)}</li>
               ))}
             </ul>
+            {facility.blocker_codes && facility.blocker_codes.length > 0 ? (
+              <div className="mt-3 flex flex-wrap gap-1">
+                {facility.blocker_codes.map((code) => (
+                  <Badge key={code} variant="outline" className="text-[10px]">
+                    {code}
+                  </Badge>
+                ))}
+              </div>
+            ) : null}
           </CardContent>
         </Card>
-      )}
-
-      {noInternet && (
-        <p className="text-xs text-muted-foreground">No internet reported — speed tests not run.</p>
       )}
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -273,7 +320,12 @@ export default async function FacilityPage({ params }: PageProps) {
         </CardContent>
       </Card>
 
-      <DomainBarCard domainAverages={domainChart} title="Domains" />
+      <DomainBarCard
+        domainAverages={domainChart}
+        title="DRF domains"
+        description="0–3 scale"
+        maxScore={3}
+      />
 
       {facility.missing_fields.length > 0 && (
         <Card className="border-amber-200/80 bg-amber-50/60 shadow-none">

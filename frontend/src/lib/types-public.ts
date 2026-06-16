@@ -1,15 +1,31 @@
 export type ReadinessTier =
   | "Tier 1 — HOS-Ready"
   | "Tier 2 — Deployment-Eligible"
-  | "Tier 3 — Structured Remediation"
+  | "Tier 2 — Structured Remediation"
+  | "Tier 3 — Not Deployment-Ready"
   | "Tier 4 — Not Deployment-Ready"
   | "Critical Gaps"
   | "Incomplete"
   | "Not Assessed"
 
+export interface BlockerItem {
+  code: string
+  remediation: string
+}
+
+export interface QualityFlag {
+  code: string
+  label: string
+  detail: string
+  severity: "warning" | "critical"
+}
+
 export interface DomainScore {
+  code?: string
   label: string
   score: number | null
+  max_score?: number
+  weight_pct?: number
   tier: string
 }
 
@@ -27,9 +43,14 @@ export interface ProgrammeFacility {
   submitted_at: string | null
   overall_score: number | null
   tier: string
+  tier_raw?: string | null
+  wave?: string | null
   deployment_blocked: boolean
-  blockers: string[]
+  blocker_codes?: string[]
+  blockers: Array<BlockerItem | string>
+  blocker_remediation?: string | null
   domain_scores: Record<string, DomainScore>
+  scoring_source?: string | null
   completeness_pct: number
   data_confidence: string
   missing_fields: string[]
@@ -58,6 +79,9 @@ export interface ProgrammeFacility {
   dla_response_count?: number
   dla_avg_score?: number | null
   dla_confidence?: string | null
+  master_sentiment_n?: number | null
+  master_dla_n?: number | null
+  quality_flags?: QualityFlag[]
 }
 
 export interface FacilitySentimentSummary {
@@ -91,6 +115,19 @@ export interface SentimentCoverage {
   total_responses: number
 }
 
+export interface InstrumentConfidenceSummary {
+  min_n: number
+  sufficient_count: number
+  indicative_count: number
+  master_live_mismatch_count: number
+  master_live_mismatches: Array<{
+    slug: string
+    name: string
+    master_n: number
+    live_n: number
+  }>
+}
+
 export interface SentimentOverview {
   form_name: string | null
   configured: boolean
@@ -99,6 +136,7 @@ export interface SentimentOverview {
   raw_submission_count: number
   coverage: SentimentCoverage
   facilities: FacilitySentimentSummary[]
+  confidence_summary?: InstrumentConfidenceSummary
   last_refreshed: string | null
 }
 
@@ -137,6 +175,7 @@ export interface DlaOverview {
   raw_submission_count: number
   coverage: DlaCoverage
   facilities: FacilityDlaSummary[]
+  confidence_summary?: InstrumentConfidenceSummary
   last_refreshed: string | null
 }
 
@@ -154,6 +193,24 @@ export interface ClusterRollup {
   avg_score: number | null
 }
 
+export interface BlockerRegisterEntry {
+  facility_name: string
+  facility_slug: string | null
+  county: string | null
+  composite: number | null
+  tier: string | null
+  blocker_codes: string[]
+  remediation_pathway: string | null
+}
+
+export interface BlockerRegister {
+  total: number
+  items: BlockerRegisterEntry[]
+  master_populated: boolean
+  last_refreshed: string | null
+  source_path: string | null
+}
+
 export interface PublicOverview {
   programme_target: number
   total_in_registry: number
@@ -167,8 +224,14 @@ export interface PublicOverview {
   by_county: CountyRollup[]
   by_cluster: ClusterRollup[]
   domain_averages: Record<string, number | null>
+  domain_scale_max?: number
   last_refreshed: string | null
   cache_populated: boolean
+  master_populated?: boolean
+  master_last_refreshed?: string | null
+  master_source_path?: string | null
+  master_facility_count?: number
+  blocker_register_count?: number
   sentiment_facilities_count?: number
   sentiment_completion_pct?: number
   sentiment_avg_enthusiasm_national?: number | null
@@ -186,5 +249,137 @@ export interface DataQualityReport {
   not_assessed: ProgrammeFacility[]
   low_completeness: ProgrammeFacility[]
   missing_gps: ProgrammeFacility[]
+  sentiment_insufficient: ProgrammeFacility[]
+  dla_insufficient: ProgrammeFacility[]
+  adoption_risk: ProgrammeFacility[]
+  instrument_confidence?: {
+    min_n: number
+    sentiment_sufficient_count: number
+    sentiment_indicative_count: number
+    dla_sufficient_count: number
+    dla_indicative_count: number
+    sentiment_master_live_mismatch_count: number
+    dla_master_live_mismatch_count: number
+  }
   facilities: ProgrammeFacility[]
+}
+
+export interface RoadmapFacility {
+  slug: string
+  name: string
+  county: string
+  composite: number | null
+  tier: string | null
+  blocker_codes: string[]
+  blocker_remediation: string | null
+}
+
+export interface RoadmapWaves {
+  "Wave 1": RoadmapFacility[]
+  "Wave 2": RoadmapFacility[]
+  "Wave 3": RoadmapFacility[]
+  blocked: RoadmapFacility[]
+}
+
+export interface RoadmapCountyRollup {
+  county: string
+  tier_1_count: number
+  wave_2_count: number
+  wave_3_count: number
+  blocked_count: number
+  facility_count: number
+  avg_composite: number | null
+}
+
+export interface RoadmapSummary {
+  wave_1_count: number
+  wave_2_count: number
+  wave_3_count: number
+  blocked_count: number
+  total_assessed: number
+}
+
+export interface PublicRoadmap {
+  waves: RoadmapWaves
+  by_county: RoadmapCountyRollup[]
+  summary: RoadmapSummary
+  master_populated: boolean
+  last_refreshed: string | null
+}
+
+export interface ClusterSummary {
+  cluster: string
+  region: string | null
+  facility_count: number
+  avg_composite: number | null
+  tier_counts: Record<string, number>
+  domain_averages: Record<string, number | null>
+  avg_dla_score: number | null
+  avg_sentiment_enthusiasm: number | null
+}
+
+export interface ClusterOverview {
+  clusters: ClusterSummary[]
+  total_clusters: number
+  national_domain_averages: Record<string, number | null>
+  last_refreshed: string | null
+  master_populated: boolean
+}
+
+export interface IctScoreLevel {
+  level: number
+  count: number
+  pct: number
+}
+
+export interface IctDomainDistribution {
+  key: string
+  code: string
+  label: string
+  levels: IctScoreLevel[]
+}
+
+export interface IctGapFacility {
+  facility_name: string
+  facility_slug: string | null
+  county: string | null
+  cluster: string | null
+  blocker_codes: string[]
+  d_pow: number | null
+  d_con: number | null
+  d_ict: number | null
+}
+
+export interface IctZeroFacility {
+  facility_name: string
+  facility_slug: string | null
+  county: string | null
+  cluster: string | null
+  domain_key: string
+  domain_code: string
+  score: number
+}
+
+export interface IctGapReport {
+  assessed_count: number
+  distributions: IctDomainDistribution[]
+  zero_score_facilities: IctZeroFacility[]
+  ict_blocker_facilities: IctGapFacility[]
+  last_refreshed: string | null
+  master_populated: boolean
+}
+
+export interface GapMatrixRow {
+  gap: string
+  significance: string
+  intervention: string
+  provision: string
+  facility_count: number
+}
+
+export interface GapMatrix {
+  items: GapMatrixRow[]
+  total_facilities: number
+  last_refreshed: string | null
+  master_populated: boolean
 }

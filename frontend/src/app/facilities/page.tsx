@@ -5,8 +5,9 @@ import { ErrorBanner } from "@/components/public/error-banner"
 import { FacilityDataTable } from "@/components/public/facility-data-table"
 import { FacilityFilters } from "@/components/public/facility-filters"
 import { PublicShell } from "@/components/public/PublicShell"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getPublicFacilities, getPublicOverview } from "@/lib/public-api"
+import { CheckCircle2, AlertCircle, Zap } from "lucide-react"
 
 export const metadata: Metadata = pageMetadata({
   title: "Facilities",
@@ -58,6 +59,52 @@ export default async function FacilitiesPage({ searchParams }: FacilitiesPagePro
     >
 
       {error && <ErrorBanner message={error} />}
+
+      {overview && (
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <Card className="shadow-none">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-sm text-emerald-700">
+                <CheckCircle2 className="size-4" aria-hidden />
+                HOS-Ready
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold text-emerald-600">
+                {overview.tier_counts["Tier 1 — HOS-Ready"] ?? 0}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-none">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-sm text-sky-700">
+                <Zap className="size-4" aria-hidden />
+                Deployment-Eligible
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold text-sky-600">
+                {overview.tier_counts["Tier 2 — Deployment-Eligible"] ?? 0}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-none">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-sm text-amber-700">
+                <AlertCircle className="size-4" aria-hidden />
+                Structured Remediation
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold text-amber-600">
+                {overview.tier_counts["Tier 2 — Structured Remediation"] ?? 0}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       <Suspense fallback={null}>
         <FacilityFilters

@@ -1,4 +1,5 @@
 import type {
+  ClusterOverview,
   DataQualityReport,
   DlaOverview,
   FacilityDlaDetail,
@@ -67,4 +68,8 @@ export function getPublicDla(): Promise<DlaOverview> {
 
 export function getPublicDlaFacility(slug: string): Promise<FacilityDlaDetail> {
   return publicFetch<FacilityDlaDetail>(`/public/dla/${slug}`)
+}
+
+export function getPublicClusters(): Promise<ClusterOverview> {
+  return publicFetch<ClusterOverview>("/public/clusters")
 }

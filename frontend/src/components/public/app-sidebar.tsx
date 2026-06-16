@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Map,
   MessageSquareHeart,
+  Network,
 } from "lucide-react"
 import {
   Sidebar,
@@ -30,6 +31,7 @@ const NAV = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
   { href: "/map", label: "Map", icon: Map },
   { href: "/facilities", label: "Facilities", icon: Building2 },
+  { href: "/clusters", label: "Clusters", icon: Network },
   { href: "/compare", label: "Compare", icon: GitCompare },
   { href: "/sentiment", label: "Staff sentiment", icon: MessageSquareHeart },
   { href: "/dla", label: "Digital literacy", icon: GraduationCap },
@@ -93,7 +95,7 @@ export function AppSidebar() {
         <p className="text-[10px] leading-relaxed text-sidebar-foreground/50 group-data-[collapsible=icon]:hidden">
           Ministry of Health · NHIC
           <br />
-          Sand Technologies · TRIBE
+          Sand Technologies
         </p>
       </SidebarFooter>
       <SidebarRail />

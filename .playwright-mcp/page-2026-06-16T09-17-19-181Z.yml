@@ -1,0 +1,480 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - link "Readiness dashboard" [ref=e7] [cursor=pointer]:
+        - /url: /
+      - list [ref=e11]:
+        - listitem [ref=e12]:
+          - link "Overview" [ref=e13] [cursor=pointer]:
+            - /url: /
+            - img [ref=e14]
+            - generic [ref=e19]: Overview
+        - listitem [ref=e20]:
+          - link "Map" [ref=e21] [cursor=pointer]:
+            - /url: /map
+            - img [ref=e22]
+            - generic [ref=e24]: Map
+        - listitem [ref=e25]:
+          - link "Facilities" [ref=e26] [cursor=pointer]:
+            - /url: /facilities
+            - img [ref=e27]
+            - generic [ref=e31]: Facilities
+        - listitem [ref=e32]:
+          - link "Clusters" [ref=e33] [cursor=pointer]:
+            - /url: /clusters
+            - img [ref=e34]
+            - generic [ref=e39]: Clusters
+        - listitem [ref=e40]:
+          - link "Compare" [ref=e41] [cursor=pointer]:
+            - /url: /compare
+            - img [ref=e42]
+            - generic [ref=e47]: Compare
+        - listitem [ref=e48]:
+          - link "Staff sentiment" [ref=e49] [cursor=pointer]:
+            - /url: /sentiment
+            - img [ref=e50]
+            - generic [ref=e53]: Staff sentiment
+        - listitem [ref=e54]:
+          - link "Digital literacy" [ref=e55] [cursor=pointer]:
+            - /url: /dla
+            - img [ref=e56]
+            - generic [ref=e59]: Digital literacy
+        - listitem [ref=e60]:
+          - link "Data quality" [ref=e61] [cursor=pointer]:
+            - /url: /data-quality
+            - img [ref=e62]
+            - generic [ref=e66]: Data quality
+      - paragraph [ref=e68]:
+        - text: Ministry of Health · NHIC
+        - text: Sand Technologies
+      - button "Toggle Sidebar" [ref=e69] [cursor=pointer]
+    - main [ref=e70]:
+      - generic [ref=e71]:
+        - button "Toggle Sidebar" [ref=e72] [cursor=pointer]:
+          - img
+          - generic [ref=e73]: Toggle Sidebar
+        - separator
+        - generic [ref=e74]:
+          - paragraph [ref=e75]: Facilities
+          - paragraph [ref=e76]: 37 of 37 assessed
+        - paragraph [ref=e77]: Synced Jun 16, 2026, 9:15 AM
+      - generic [ref=e78]:
+        - generic [ref=e79]:
+          - generic [ref=e80]:
+            - generic [ref=e82]:
+              - img [ref=e83]
+              - text: HOS-Ready
+            - paragraph [ref=e87]: "1"
+          - generic [ref=e88]:
+            - generic [ref=e90]:
+              - img [ref=e91]
+              - text: Deployment-Eligible
+            - paragraph [ref=e94]: "12"
+          - generic [ref=e95]:
+            - generic [ref=e97]:
+              - img [ref=e98]
+              - text: Structured Remediation
+            - paragraph [ref=e101]: "1"
+        - generic [ref=e102]:
+          - generic [ref=e103]:
+            - generic [ref=e104]: County
+            - combobox "County" [ref=e105]:
+              - option "All counties" [selected]
+              - option "Grand Cape Mount"
+              - option "Grand Gedeh"
+              - option "Lofa"
+              - option "Margibi"
+              - option "Maryland"
+              - option "Montserrado"
+              - option "Nimba"
+              - option "River Cess"
+              - option "River Gee"
+          - generic [ref=e106]:
+            - generic [ref=e107]: Tier
+            - combobox "Tier" [ref=e108]:
+              - option "All tiers" [selected]
+              - option "Tier 1 · HOS-Ready"
+              - option "Tier 2 · Deployment-Eligible"
+              - option "Tier 4 · Not Deployment-Ready"
+        - table [ref=e113]:
+          - rowgroup [ref=e114]:
+            - row "Facility County Cluster Score Tier Data" [ref=e115]:
+              - columnheader "Facility" [ref=e116]
+              - columnheader "County" [ref=e117]
+              - columnheader "Cluster" [ref=e118]
+              - columnheader "Score" [ref=e119]
+              - columnheader "Tier" [ref=e120]
+              - columnheader "Data" [ref=e121]
+          - rowgroup [ref=e122]:
+            - row "Bahn Health Center Nimba Nimba + Bong 77% Tier 1 · HOS-Ready 100%" [ref=e123]:
+              - cell "Bahn Health Center" [ref=e124]:
+                - link "Bahn Health Center" [ref=e125] [cursor=pointer]:
+                  - /url: /facility/bahn_health_center
+              - cell "Nimba" [ref=e126]
+              - cell "Nimba + Bong" [ref=e127]
+              - cell "77%" [ref=e128]
+              - cell "Tier 1 · HOS-Ready" [ref=e129]:
+                - generic [ref=e130]: Tier 1 · HOS-Ready
+              - cell "100%" [ref=e131]
+            - row "Barnersville HC Montserrado Montserrado 60.7% Tier 2 · Deployment-Eligible 70%" [ref=e132]:
+              - cell "Barnersville HC" [ref=e133]:
+                - link "Barnersville HC" [ref=e134] [cursor=pointer]:
+                  - /url: /facility/barnersville_hc
+              - cell "Montserrado" [ref=e135]
+              - cell "Montserrado" [ref=e136]
+              - cell "60.7%" [ref=e137]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e138]:
+                - generic [ref=e139]: Tier 2 · Deployment-Eligible
+              - cell "70%" [ref=e140]
+            - row "Boegeezay Health Center River Cess Southeast 53.3% Tier 2 · Structured Remediation 70%" [ref=e141]:
+              - cell "Boegeezay Health Center" [ref=e142]:
+                - link "Boegeezay Health Center" [ref=e143] [cursor=pointer]:
+                  - /url: /facility/boegeezay_health_center
+              - cell "River Cess" [ref=e144]
+              - cell "Southeast" [ref=e145]
+              - cell "53.3%" [ref=e146]
+              - cell "Tier 2 · Structured Remediation" [ref=e147]:
+                - generic [ref=e148]: Tier 2 · Structured Remediation
+              - cell "70%" [ref=e149]
+            - row "Bromely Community Health Center Montserrado Montserrado 43.3% Tier 3 · Not Deployment-Ready 60%" [ref=e150]:
+              - cell "Bromely Community Health Center" [ref=e151]:
+                - link "Bromely Community Health Center" [ref=e152] [cursor=pointer]:
+                  - /url: /facility/bromely_community_health_center
+              - cell "Montserrado" [ref=e153]
+              - cell "Montserrado" [ref=e154]
+              - cell "43.3%" [ref=e155]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e156]:
+                - generic [ref=e157]: Tier 3 · Not Deployment-Ready
+              - cell "60%" [ref=e158]
+            - row "Chocolate City HC Montserrado Montserrado 60.7% Tier 2 · Deployment-Eligible 70%" [ref=e159]:
+              - cell "Chocolate City HC" [ref=e160]:
+                - link "Chocolate City HC" [ref=e161] [cursor=pointer]:
+                  - /url: /facility/chocolate_city_hc
+              - cell "Montserrado" [ref=e162]
+              - cell "Montserrado" [ref=e163]
+              - cell "60.7%" [ref=e164]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e165]:
+                - generic [ref=e166]: Tier 2 · Deployment-Eligible
+              - cell "70%" [ref=e167]
+            - row "Clara Town Health Center Montserrado Montserrado 60.7% Tier 2 · Deployment-Eligible 70%" [ref=e168]:
+              - cell "Clara Town Health Center" [ref=e169]:
+                - link "Clara Town Health Center" [ref=e170] [cursor=pointer]:
+                  - /url: /facility/clara_town_health_center
+              - cell "Montserrado" [ref=e171]
+              - cell "Montserrado" [ref=e172]
+              - cell "60.7%" [ref=e173]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e174]:
+                - generic [ref=e175]: Tier 2 · Deployment-Eligible
+              - cell "70%" [ref=e176]
+            - row "Cotton Tree Health Center Margibi Margibi 58% Tier 3 · Not Deployment-Ready 60%" [ref=e177]:
+              - cell "Cotton Tree Health Center" [ref=e178]:
+                - link "Cotton Tree Health Center" [ref=e179] [cursor=pointer]:
+                  - /url: /facility/cotton_tree_health_center
+              - cell "Margibi" [ref=e180]
+              - cell "Margibi" [ref=e181]
+              - cell "58%" [ref=e182]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e183]:
+                - generic [ref=e184]: Tier 3 · Not Deployment-Ready
+              - cell "60%" [ref=e185]
+            - row "Damballa Health Center Grand Cape Mount Bomi + Cape Mount 57.3% Tier 3 · Not Deployment-Ready 70%" [ref=e186]:
+              - cell "Damballa Health Center" [ref=e187]:
+                - link "Damballa Health Center" [ref=e188] [cursor=pointer]:
+                  - /url: /facility/damballa_health_center
+              - cell "Grand Cape Mount" [ref=e189]
+              - cell "Bomi + Cape Mount" [ref=e190]
+              - cell "57.3%" [ref=e191]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e192]:
+                - generic [ref=e193]: Tier 3 · Not Deployment-Ready
+              - cell "70%" [ref=e194]
+            - row "Dolo's Town Health Center Margibi Margibi 66.7% Tier 3 · Not Deployment-Ready 70%" [ref=e195]:
+              - cell "Dolo's Town Health Center" [ref=e196]:
+                - link "Dolo's Town Health Center" [ref=e197] [cursor=pointer]:
+                  - /url: /facility/dolo_s_town_health_center
+              - cell "Margibi" [ref=e198]
+              - cell "Margibi" [ref=e199]
+              - cell "66.7%" [ref=e200]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e201]:
+                - generic [ref=e202]: Tier 3 · Not Deployment-Ready
+              - cell "70%" [ref=e203]
+            - row "Dr. Agnes Varis Health Center Montserrado Montserrado 66.7% Tier 3 · Not Deployment-Ready 70%" [ref=e204]:
+              - cell "Dr. Agnes Varis Health Center" [ref=e205]:
+                - link "Dr. Agnes Varis Health Center" [ref=e206] [cursor=pointer]:
+                  - /url: /facility/dr__agnes_varis_health_center
+              - cell "Montserrado" [ref=e207]
+              - cell "Montserrado" [ref=e208]
+              - cell "66.7%" [ref=e209]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e210]:
+                - generic [ref=e211]: Tier 3 · Not Deployment-Ready
+              - cell "70%" [ref=e212]
+            - row "Duport Road Health Center Montserrado Montserrado 66.7% Tier 3 · Not Deployment-Ready 70%" [ref=e213]:
+              - cell "Duport Road Health Center" [ref=e214]:
+                - link "Duport Road Health Center" [ref=e215] [cursor=pointer]:
+                  - /url: /facility/duport_road_health_center
+              - cell "Montserrado" [ref=e216]
+              - cell "Montserrado" [ref=e217]
+              - cell "66.7%" [ref=e218]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e219]:
+                - generic [ref=e220]: Tier 3 · Not Deployment-Ready
+              - cell "70%" [ref=e221]
+            - row "Foya Health Center Lofa Lofa 54.7% Tier 3 · Not Deployment-Ready 70%" [ref=e222]:
+              - cell "Foya Health Center" [ref=e223]:
+                - link "Foya Health Center" [ref=e224] [cursor=pointer]:
+                  - /url: /facility/foya_health_center
+              - cell "Lofa" [ref=e225]
+              - cell "Lofa" [ref=e226]
+              - cell "54.7%" [ref=e227]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e228]:
+                - generic [ref=e229]: Tier 3 · Not Deployment-Ready
+              - cell "70%" [ref=e230]
+            - row "Garzon Health Center Margibi Margibi 58% Tier 3 · Not Deployment-Ready 60%" [ref=e231]:
+              - cell "Garzon Health Center" [ref=e232]:
+                - link "Garzon Health Center" [ref=e233] [cursor=pointer]:
+                  - /url: /facility/garzon_health_center
+              - cell "Margibi" [ref=e234]
+              - cell "Margibi" [ref=e235]
+              - cell "58%" [ref=e236]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e237]:
+                - generic [ref=e238]: Tier 3 · Not Deployment-Ready
+              - cell "60%" [ref=e239]
+            - row "Gbarzon Health Center Grand Gedeh Southeast 58% Tier 3 · Not Deployment-Ready 60%" [ref=e240]:
+              - cell "Gbarzon Health Center" [ref=e241]:
+                - link "Gbarzon Health Center" [ref=e242] [cursor=pointer]:
+                  - /url: /facility/gbarzon_health_center
+              - cell "Grand Gedeh" [ref=e243]
+              - cell "Southeast" [ref=e244]
+              - cell "58%" [ref=e245]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e246]:
+                - generic [ref=e247]: Tier 3 · Not Deployment-Ready
+              - cell "60%" [ref=e248]
+            - row "Gbeapo Health Center River Gee Southeast 56% Tier 3 · Not Deployment-Ready 100%" [ref=e249]:
+              - cell "Gbeapo Health Center" [ref=e250]:
+                - link "Gbeapo Health Center" [ref=e251] [cursor=pointer]:
+                  - /url: /facility/gbeapo_health_center
+              - cell "River Gee" [ref=e252]
+              - cell "Southeast" [ref=e253]
+              - cell "56%" [ref=e254]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e255]:
+                - generic [ref=e256]: Tier 3 · Not Deployment-Ready
+              - cell "100%" [ref=e257]
+            - row "GW Harley Hospital Nimba Nimba + Bong 54.7% Tier 3 · Not Deployment-Ready 70%" [ref=e258]:
+              - cell "GW Harley Hospital" [ref=e259]:
+                - link "GW Harley Hospital" [ref=e260] [cursor=pointer]:
+                  - /url: /facility/gw_harley_hospital
+              - cell "Nimba" [ref=e261]
+              - cell "Nimba + Bong" [ref=e262]
+              - cell "54.7%" [ref=e263]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e264]:
+                - generic [ref=e265]: Tier 3 · Not Deployment-Ready
+              - cell "70%" [ref=e266]
+            - row "J N Davies Hospital Montserrado Montserrado 71% Tier 2 · Deployment-Eligible 100%" [ref=e267]:
+              - cell "J N Davies Hospital" [ref=e268]:
+                - link "J N Davies Hospital" [ref=e269] [cursor=pointer]:
+                  - /url: /facility/j_n_davies_hospital
+              - cell "Montserrado" [ref=e270]
+              - cell "Montserrado" [ref=e271]
+              - cell "71%" [ref=e272]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e273]:
+                - generic [ref=e274]: Tier 2 · Deployment-Eligible
+              - cell "100%" [ref=e275]
+            - row "JJ Dossen Hospital Maryland Southeast 54.7% Tier 3 · Not Deployment-Ready 100%" [ref=e276]:
+              - cell "JJ Dossen Hospital" [ref=e277]:
+                - link "JJ Dossen Hospital" [ref=e278] [cursor=pointer]:
+                  - /url: /facility/jj_dossen_hospital
+              - cell "Maryland" [ref=e279]
+              - cell "Southeast" [ref=e280]
+              - cell "54.7%" [ref=e281]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e282]:
+                - generic [ref=e283]: Tier 3 · Not Deployment-Ready
+              - cell "100%" [ref=e284]
+            - row "Kakata Health Center Margibi Margibi 71% Tier 2 · Deployment-Eligible 100%" [ref=e285]:
+              - cell "Kakata Health Center" [ref=e286]:
+                - link "Kakata Health Center" [ref=e287] [cursor=pointer]:
+                  - /url: /facility/kakata_health_center
+              - cell "Margibi" [ref=e288]
+              - cell "Margibi" [ref=e289]
+              - cell "71%" [ref=e290]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e291]:
+                - generic [ref=e292]: Tier 2 · Deployment-Eligible
+              - cell "100%" [ref=e293]
+            - row "Karnplay Health Center Nimba Nimba + Bong 54.7% Tier 3 · Not Deployment-Ready 70%" [ref=e294]:
+              - cell "Karnplay Health Center" [ref=e295]:
+                - link "Karnplay Health Center" [ref=e296] [cursor=pointer]:
+                  - /url: /facility/karnplay_health_center
+              - cell "Nimba" [ref=e297]
+              - cell "Nimba + Bong" [ref=e298]
+              - cell "54.7%" [ref=e299]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e300]:
+                - generic [ref=e301]: Tier 3 · Not Deployment-Ready
+              - cell "70%" [ref=e302]
+            - row "Konia Health Center Lofa Lofa 54.7% Tier 3 · Not Deployment-Ready 70%" [ref=e303]:
+              - cell "Konia Health Center" [ref=e304]:
+                - link "Konia Health Center" [ref=e305] [cursor=pointer]:
+                  - /url: /facility/konia_health_center
+              - cell "Lofa" [ref=e306]
+              - cell "Lofa" [ref=e307]
+              - cell "54.7%" [ref=e308]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e309]:
+                - generic [ref=e310]: Tier 3 · Not Deployment-Ready
+              - cell "70%" [ref=e311]
+            - row "Konobo Health Center Grand Gedeh Southeast 48.7% Tier 3 · Not Deployment-Ready 60%" [ref=e312]:
+              - cell "Konobo Health Center" [ref=e313]:
+                - link "Konobo Health Center" [ref=e314] [cursor=pointer]:
+                  - /url: /facility/konobo_health_center
+              - cell "Grand Gedeh" [ref=e315]
+              - cell "Southeast" [ref=e316]
+              - cell "48.7%" [ref=e317]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e318]:
+                - generic [ref=e319]: Tier 3 · Not Deployment-Ready
+              - cell "60%" [ref=e320]
+            - row "Lofa Bridge Health Center Grand Cape Mount Bomi + Cape Mount 50.7% Tier 3 · Not Deployment-Ready 60%" [ref=e321]:
+              - cell "Lofa Bridge Health Center" [ref=e322]:
+                - link "Lofa Bridge Health Center" [ref=e323] [cursor=pointer]:
+                  - /url: /facility/lofa_bridge_health_center
+              - cell "Grand Cape Mount" [ref=e324]
+              - cell "Bomi + Cape Mount" [ref=e325]
+              - cell "50.7%" [ref=e326]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e327]:
+                - generic [ref=e328]: Tier 3 · Not Deployment-Ready
+              - cell "60%" [ref=e329]
+            - row "Marshall Health Center Margibi Margibi 58% Tier 3 · Not Deployment-Ready 60%" [ref=e330]:
+              - cell "Marshall Health Center" [ref=e331]:
+                - link "Marshall Health Center" [ref=e332] [cursor=pointer]:
+                  - /url: /facility/marshall_health_center
+              - cell "Margibi" [ref=e333]
+              - cell "Margibi" [ref=e334]
+              - cell "58%" [ref=e335]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e336]:
+                - generic [ref=e337]: Tier 3 · Not Deployment-Ready
+              - cell "60%" [ref=e338]
+            - row "Massaquoi Town Health Center Margibi Margibi 62.3% Tier 2 · Deployment-Eligible 70%" [ref=e339]:
+              - cell "Massaquoi Town Health Center" [ref=e340]:
+                - link "Massaquoi Town Health Center" [ref=e341] [cursor=pointer]:
+                  - /url: /facility/massaquoi_town_health_center
+              - cell "Margibi" [ref=e342]
+              - cell "Margibi" [ref=e343]
+              - cell "62.3%" [ref=e344]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e345]:
+                - generic [ref=e346]: Tier 2 · Deployment-Eligible
+              - cell "70%" [ref=e347]
+            - row "New Georgia Community Health Center Montserrado Montserrado 52% Tier 3 · Not Deployment-Ready 60%" [ref=e348]:
+              - cell "New Georgia Community Health Center" [ref=e349]:
+                - link "New Georgia Community Health Center" [ref=e350] [cursor=pointer]:
+                  - /url: /facility/new_georgia_community_health_center
+              - cell "Montserrado" [ref=e351]
+              - cell "Montserrado" [ref=e352]
+              - cell "52%" [ref=e353]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e354]:
+                - generic [ref=e355]: Tier 3 · Not Deployment-Ready
+              - cell "60%" [ref=e356]
+            - row "Nyehn Health Center Montserrado Montserrado 59.3% Tier 2 · Deployment-Eligible 100%" [ref=e357]:
+              - cell "Nyehn Health Center" [ref=e358]:
+                - link "Nyehn Health Center" [ref=e359] [cursor=pointer]:
+                  - /url: /facility/nyehn_health_center
+              - cell "Montserrado" [ref=e360]
+              - cell "Montserrado" [ref=e361]
+              - cell "59.3%" [ref=e362]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e363]:
+                - generic [ref=e364]: Tier 2 · Deployment-Eligible
+              - cell "100%" [ref=e365]
+            - row "Pipeline Health Center Montserrado Montserrado 74% Tier 2 · Deployment-Eligible 70%" [ref=e366]:
+              - cell "Pipeline Health Center" [ref=e367]:
+                - link "Pipeline Health Center" [ref=e368] [cursor=pointer]:
+                  - /url: /facility/pipeline_health_center
+              - cell "Montserrado" [ref=e369]
+              - cell "Montserrado" [ref=e370]
+              - cell "74%" [ref=e371]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e372]:
+                - generic [ref=e373]: Tier 2 · Deployment-Eligible
+              - cell "70%" [ref=e374]
+            - row "Pleebo Health Center Maryland Southeast 70% Tier 3 · Not Deployment-Ready 100%" [ref=e375]:
+              - cell "Pleebo Health Center" [ref=e376]:
+                - link "Pleebo Health Center" [ref=e377] [cursor=pointer]:
+                  - /url: /facility/pleebo_health_center
+              - cell "Maryland" [ref=e378]
+              - cell "Southeast" [ref=e379]
+              - cell "70%" [ref=e380]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e381]:
+                - generic [ref=e382]: Tier 3 · Not Deployment-Ready
+              - cell "100%" [ref=e383]
+            - row "RH Ferguson Health Center Montserrado Montserrado 60.7% Tier 2 · Deployment-Eligible 70%" [ref=e384]:
+              - cell "RH Ferguson Health Center" [ref=e385]:
+                - link "RH Ferguson Health Center" [ref=e386] [cursor=pointer]:
+                  - /url: /facility/rh_ferguson_health_center
+              - cell "Montserrado" [ref=e387]
+              - cell "Montserrado" [ref=e388]
+              - cell "60.7%" [ref=e389]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e390]:
+                - generic [ref=e391]: Tier 2 · Deployment-Eligible
+              - cell "70%" [ref=e392]
+            - row "Sacleapea Comprehensive Health Center Nimba Nimba + Bong 54.7% Tier 3 · Not Deployment-Ready 70%" [ref=e393]:
+              - cell "Sacleapea Comprehensive Health Center" [ref=e394]:
+                - link "Sacleapea Comprehensive Health Center" [ref=e395] [cursor=pointer]:
+                  - /url: /facility/sacleapea_comprehensive_health_center
+              - cell "Nimba" [ref=e396]
+              - cell "Nimba + Bong" [ref=e397]
+              - cell "54.7%" [ref=e398]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e399]:
+                - generic [ref=e400]: Tier 3 · Not Deployment-Ready
+              - cell "70%" [ref=e401]
+            - row "Sarbo Health Center River Gee Southeast 46% Tier 3 · Not Deployment-Ready 60%" [ref=e402]:
+              - cell "Sarbo Health Center" [ref=e403]:
+                - link "Sarbo Health Center" [ref=e404] [cursor=pointer]:
+                  - /url: /facility/sarbo_health_center
+              - cell "River Gee" [ref=e405]
+              - cell "Southeast" [ref=e406]
+              - cell "46%" [ref=e407]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e408]:
+                - generic [ref=e409]: Tier 3 · Not Deployment-Ready
+              - cell "60%" [ref=e410]
+            - row "Sinje Health Center Grand Cape Mount Bomi + Cape Mount 60.7% Tier 2 · Deployment-Eligible 70%" [ref=e411]:
+              - cell "Sinje Health Center" [ref=e412]:
+                - link "Sinje Health Center" [ref=e413] [cursor=pointer]:
+                  - /url: /facility/sinje_health_center
+              - cell "Grand Cape Mount" [ref=e414]
+              - cell "Bomi + Cape Mount" [ref=e415]
+              - cell "60.7%" [ref=e416]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e417]:
+                - generic [ref=e418]: Tier 2 · Deployment-Eligible
+              - cell "70%" [ref=e419]
+            - row "Soniwen Health Center Montserrado Montserrado 60.7% Tier 2 · Deployment-Eligible 70%" [ref=e420]:
+              - cell "Soniwen Health Center" [ref=e421]:
+                - link "Soniwen Health Center" [ref=e422] [cursor=pointer]:
+                  - /url: /facility/soniwen_health_center
+              - cell "Montserrado" [ref=e423]
+              - cell "Montserrado" [ref=e424]
+              - cell "60.7%" [ref=e425]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e426]:
+                - generic [ref=e427]: Tier 2 · Deployment-Eligible
+              - cell "70%" [ref=e428]
+            - row "Unification Town Health Center Margibi Margibi 43.3% Tier 3 · Not Deployment-Ready 60%" [ref=e429]:
+              - cell "Unification Town Health Center" [ref=e430]:
+                - link "Unification Town Health Center" [ref=e431] [cursor=pointer]:
+                  - /url: /facility/unification_town_health_center
+              - cell "Margibi" [ref=e432]
+              - cell "Margibi" [ref=e433]
+              - cell "43.3%" [ref=e434]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e435]:
+                - generic [ref=e436]: Tier 3 · Not Deployment-Ready
+              - cell "60%" [ref=e437]
+            - row "Vahun Health Center Nimba Nimba + Bong 66.7% Tier 2 · Deployment-Eligible 100%" [ref=e438]:
+              - cell "Vahun Health Center" [ref=e439]:
+                - link "Vahun Health Center" [ref=e440] [cursor=pointer]:
+                  - /url: /facility/vahun_health_center
+              - cell "Nimba" [ref=e441]
+              - cell "Nimba + Bong" [ref=e442]
+              - cell "66.7%" [ref=e443]
+              - cell "Tier 2 · Deployment-Eligible" [ref=e444]:
+                - generic [ref=e445]: Tier 2 · Deployment-Eligible
+              - cell "100%" [ref=e446]
+            - row "Waho Health Center Grand Cape Mount Bomi + Cape Mount 60.7% Tier 3 · Not Deployment-Ready 70%" [ref=e447]:
+              - cell "Waho Health Center" [ref=e448]:
+                - link "Waho Health Center" [ref=e449] [cursor=pointer]:
+                  - /url: /facility/waho_health_center
+              - cell "Grand Cape Mount" [ref=e450]
+              - cell "Bomi + Cape Mount" [ref=e451]
+              - cell "60.7%" [ref=e452]
+              - cell "Tier 3 · Not Deployment-Ready" [ref=e453]:
+                - generic [ref=e454]: Tier 3 · Not Deployment-Ready
+              - cell "70%" [ref=e455]
+  - button "Open Next.js Dev Tools" [ref=e461] [cursor=pointer]:
+    - img [ref=e462]

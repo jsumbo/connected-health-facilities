@@ -2,13 +2,13 @@ export function tierStyle(tier: string): { bg: string; text: string; border: str
   if (tier.startsWith("Tier 1")) {
     return { bg: "bg-emerald-50", text: "text-emerald-800", border: "border-emerald-200" }
   }
+  if (tier.startsWith("Tier 2") && tier.includes("Structured Remediation")) {
+    return { bg: "bg-amber-50", text: "text-amber-900", border: "border-amber-200" }
+  }
   if (tier.startsWith("Tier 2")) {
     return { bg: "bg-sky-50", text: "text-sky-800", border: "border-sky-200" }
   }
-  if (tier.startsWith("Tier 3")) {
-    return { bg: "bg-amber-50", text: "text-amber-900", border: "border-amber-200" }
-  }
-  if (tier.startsWith("Tier 4")) {
+  if (tier.startsWith("Tier 3") || tier.startsWith("Tier 4")) {
     return { bg: "bg-rose-50", text: "text-rose-900", border: "border-rose-200" }
   }
   if (tier === "Critical Gaps") {
@@ -23,9 +23,23 @@ export function tierStyle(tier: string): { bg: string; text: string; border: str
 export const TIER_CHART_COLORS: Record<string, string> = {
   "Tier 1 — HOS-Ready": "var(--chart-2)",
   "Tier 2 — Deployment-Eligible": "var(--chart-1)",
-  "Tier 3 — Structured Remediation": "var(--chart-3)",
+  "Tier 2 — Structured Remediation": "var(--chart-3)",
+  "Tier 3 — Not Deployment-Ready": "var(--chart-4)",
   "Tier 4 — Not Deployment-Ready": "var(--chart-4)",
   "Critical Gaps": "var(--chart-5)",
-  "Not Assessed": "oklch(0.65 0.02 255)",
-  Incomplete: "oklch(0.75 0.01 85)",
+  "Not Assessed": "#8b8b8b", /* neutral gray */
+  Incomplete: "#c0c0c0", /* light gray */
 }
+
+/**
+ * Color palette mapping:
+ * --chart-1: #355781 (Deployment-Eligible - blue)
+ * --chart-2: #3e8343 (HOS-Ready - green)
+ * --chart-3: #b67700 (Structured Remediation - amber)
+ * --chart-4: #c64e31 (Not Deployment-Ready - orange-red)
+ * --chart-5: #b32228 (Critical Gaps - red)
+ *
+ * These are sRGB hex values converted from OKLCH for cross-platform consistency.
+ * OKLCH provides perceptually uniform colors but renders differently across browsers/displays.
+ * sRGB hex ensures consistent color rendering on all devices.
+ */

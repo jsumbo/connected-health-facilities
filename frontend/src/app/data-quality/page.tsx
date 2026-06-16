@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { AlertTriangle, CircleDashed, MapPinOff } from "lucide-react"
+import { AlertTriangle, CircleDashed, MapPinOff, MessageSquare, Sparkles, Users } from "lucide-react"
 import { pageMetadata } from "@/lib/site-metadata"
 import { ErrorBanner } from "@/components/public/error-banner"
 import { FacilityDataTable } from "@/components/public/facility-data-table"
@@ -59,6 +59,35 @@ export default async function DataQualityPage() {
             />
           </div>
 
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <KpiMetric
+              icon={MessageSquare}
+              label="Sentiment n<3"
+              value={report.sentiment_insufficient.length}
+              description={
+                report.instrument_confidence
+                  ? `${report.instrument_confidence.sentiment_sufficient_count} at full confidence`
+                  : "Indicative only"
+              }
+            />
+            <KpiMetric
+              icon={Users}
+              label="DLA n<3"
+              value={report.dla_insufficient.length}
+              description={
+                report.instrument_confidence
+                  ? `${report.instrument_confidence.dla_sufficient_count} at full confidence`
+                  : "Reduced D-DIG weight"
+              }
+            />
+            <KpiMetric
+              icon={Sparkles}
+              label="Adoption risk"
+              value={report.adoption_risk.length}
+              description="Low enthusiasm + burdensome"
+            />
+          </div>
+
           {report.not_assessed.length > 0 && (
             <Card className="border-amber-200/80 bg-amber-50/60 shadow-none">
               <CardHeader className="pb-2">
@@ -77,13 +106,39 @@ export default async function DataQualityPage() {
             </Card>
           )}
 
-          {report.low_completeness.length > 0 && (
+          {report.adoption_risk.length > 0 && (
             <Card className="shadow-none">
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Low completeness</CardTitle>
+                <CardTitle className="text-base">Adoption risk</CardTitle>
               </CardHeader>
               <CardContent>
-                <FacilityDataTable facilities={report.low_completeness} />
+                <FacilityDataTable facilities={report.adoption_risk} />
+              </CardContent>
+            </Card>
+          )}
+
+          {report.sentiment_insufficient.length > 0 && (
+            <Card className="border-amber-200/80 bg-amber-50/60 shadow-none">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base text-amber-950">
+                  Sentiment indicative only (n{"<"}3)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <FacilityDataTable facilities={report.sentiment_insufficient} />
+              </CardContent>
+            </Card>
+          )}
+
+          {report.dla_insufficient.length > 0 && (
+            <Card className="border-amber-200/80 bg-amber-50/60 shadow-none">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base text-amber-950">
+                  DLA indicative only (n{"<"}3)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <FacilityDataTable facilities={report.dla_insufficient} />
               </CardContent>
             </Card>
           )}

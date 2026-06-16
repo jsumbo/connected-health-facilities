@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Suspense } from "react"
 import { pageMetadata } from "@/lib/site-metadata"
 import { Building2, GraduationCap, Users } from "lucide-react"
@@ -63,6 +64,7 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
   }
 
   const coverage = dla?.coverage
+  const confidence = dla?.confidence_summary
   let rows =
     dla?.facilities.map((s) => {
       const meta = metaBySlug[s.facility_slug]
@@ -99,7 +101,7 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
 
       {dla && (
         <>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <KpiMetric
               icon={GraduationCap}
               label="Avg score"
@@ -122,6 +124,16 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
               icon={Building2}
               label="With responses"
               value={`${coverage?.facilities_with_responses ?? 0} / ${coverage?.registry_count ?? 37}`}
+            />
+            <KpiMetric
+              icon={GraduationCap}
+              label="Full confidence"
+              value={
+                confidence
+                  ? `${confidence.sufficient_count} / ${(confidence.sufficient_count ?? 0) + (confidence.indicative_count ?? 0)}`
+                  : "—"
+              }
+              description={confidence ? `n≥${confidence.min_n} per facility` : undefined}
             />
           </div>
 

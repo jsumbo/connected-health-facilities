@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Building2, MessageSquare, Sparkles } from "lucide-react"
 import { pageMetadata } from "@/lib/site-metadata"
 import { ErrorBanner } from "@/components/public/error-banner"
@@ -34,6 +35,7 @@ export default async function SentimentPage() {
   }
 
   const coverage = sentiment?.coverage
+  const confidence = sentiment?.confidence_summary
   const rows =
     sentiment?.facilities.map((s) => ({
       ...s,
@@ -50,7 +52,7 @@ export default async function SentimentPage() {
 
       {sentiment && (
         <>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <KpiMetric
               icon={Building2}
               label="With responses"
@@ -76,7 +78,16 @@ export default async function SentimentPage() {
                     })()
                   : "—"
               }
-
+            />
+            <KpiMetric
+              icon={Sparkles}
+              label="Full confidence"
+              value={
+                confidence
+                  ? `${confidence.sufficient_count} / ${(confidence.sufficient_count ?? 0) + (confidence.indicative_count ?? 0)}`
+                  : "—"
+              }
+              description={confidence ? `n≥${confidence.min_n} per facility` : undefined}
             />
           </div>
 

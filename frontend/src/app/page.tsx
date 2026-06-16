@@ -101,32 +101,6 @@ export default async function HomePage() {
             />
           </div>
 
-          {(overview.sentiment_facilities_count != null || overview.dla_facilities_count != null) && (
-            <p className="text-xs text-muted-foreground">
-              {overview.sentiment_facilities_count != null && (
-                <>
-                  <Link href="/sentiment" className="text-primary hover:underline underline-offset-2">
-                    Sentiment
-                  </Link>
-                  {overview.sentiment_avg_enthusiasm_national != null &&
-                    ` · avg ${overview.sentiment_avg_enthusiasm_national}/10`}
-                </>
-              )}
-              {overview.sentiment_facilities_count != null &&
-                overview.dla_facilities_count != null &&
-                " · "}
-              {overview.dla_facilities_count != null && (
-                <>
-                  <Link href="/dla" className="text-primary hover:underline underline-offset-2">
-                    Digital literacy
-                  </Link>
-                  {overview.dla_avg_score_national != null &&
-                    ` · avg ${overview.dla_avg_score_national}/100`}
-                </>
-              )}
-            </p>
-          )}
-
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div className="lg:col-span-1">
               <TierDonutCard tierCounts={overview.tier_counts} />
@@ -139,7 +113,9 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <DomainBarCard
               domainAverages={overview.domain_averages}
-              title="Domains (national avg)"
+              title="DRF domains (national avg)"
+              description="0–3 readiness domain scale"
+              maxScore={overview.domain_scale_max ?? 3}
             />
             <Card className="shadow-none">
               <CardHeader className="pb-2">

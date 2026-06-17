@@ -3,7 +3,6 @@ export type ReadinessTier =
   | "Tier 2 — Deployment-Eligible"
   | "Tier 2 — Structured Remediation"
   | "Tier 3 — Not Deployment-Ready"
-  | "Tier 4 — Not Deployment-Ready"
   | "Critical Gaps"
   | "Incomplete"
   | "Not Assessed"

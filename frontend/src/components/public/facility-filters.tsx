@@ -18,7 +18,8 @@ export const FACILITY_TIER_FILTER_OPTIONS: ReadonlyArray<{
   { value: "", label: "All tiers" },
   { value: "Tier 1 — HOS-Ready", label: "Tier 1 · HOS-Ready" },
   { value: "Tier 2 — Deployment-Eligible", label: "Tier 2 · Deployment-Eligible" },
-  { value: "Tier 4 — Not Deployment-Ready", label: "Tier 4 · Not Deployment-Ready" },
+  { value: "Tier 2 — Structured Remediation", label: "Tier 2 · Structured Remediation" },
+  { value: "Tier 3 — Not Deployment-Ready", label: "Tier 3 · Not Deployment-Ready" },
 ]
 
 interface FacilityFiltersProps {

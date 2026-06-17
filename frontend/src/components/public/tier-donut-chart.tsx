@@ -17,19 +17,22 @@ import { TIER_CHART_COLORS } from "./readiness-tier-styles"
 
 interface TierDonutChartProps {
   tierCounts: Record<string, number>
+  onTierClick?: (tier: string) => void
+  selectedTier?: string
 }
 
-export function TierDonutChart({ tierCounts }: TierDonutChartProps) {
+export function TierDonutChart({ tierCounts, onTierClick, selectedTier }: TierDonutChartProps) {
   const data = Object.entries(tierCounts)
     .filter(([, count]) => count > 0)
     .map(([tier, count]) => ({
-      tier: tier.replace(" — ", " · "),
+      tier,
+      tierDisplay: tier.replace(" — ", " · "),
       count,
       fill: TIER_CHART_COLORS[tier] ?? "var(--chart-5)",
     }))
 
   const chartConfig = data.reduce<ChartConfig>((acc, row, i) => {
-    acc[`tier${i}`] = { label: row.tier, color: row.fill }
+    acc[`tier${i}`] = { label: row.tierDisplay, color: row.fill }
     return acc
   }, { count: { label: "Facilities" } })
 
@@ -43,16 +46,24 @@ export function TierDonutChart({ tierCounts }: TierDonutChartProps) {
 
   return (
     <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[280px]">
-      <PieChart>
+      <PieChart
+        onClick={(state) => {
+          if (typeof state.activeTooltipIndex === "number" && onTierClick) {
+            const tier = data[state.activeTooltipIndex]?.tier
+            if (tier) onTierClick(tier)
+          }
+        }}
+      >
         <ChartTooltip content={<ChartTooltipContent hideLabel />} />
         <Pie
           data={data}
           dataKey="count"
-          nameKey="tier"
+          nameKey="tierDisplay"
           innerRadius={58}
           outerRadius={88}
           strokeWidth={2}
           stroke="var(--card)"
+          style={{ cursor: onTierClick ? "pointer" : "default" }}
         >
           {data.map((entry) => (
             <Cell key={entry.tier} fill={entry.fill} />
@@ -92,14 +103,38 @@ export function TierDonutChart({ tierCounts }: TierDonutChartProps) {
   )
 }
 
-export function TierDonutCard({ tierCounts }: TierDonutChartProps) {
+export function TierDonutCard({
+  tierCounts,
+  onTierClick,
+  selectedTier,
+}: TierDonutChartProps) {
   return (
     <Card className="shadow-none">
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-base">Tiers</CardTitle>
+        {selectedTier && onTierClick && (
+          <button
+            onClick={() => onTierClick("")}
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            Clear
+          </button>
+        )}
       </CardHeader>
       <CardContent>
-        <TierDonutChart tierCounts={tierCounts} />
+        {selectedTier && (
+          <p className="text-xs text-muted-foreground mb-2">
+            Filtered by: <span className="font-semibold text-foreground">{selectedTier.replace(" — ", " · ")}</span>
+          </p>
+        )}
+        <TierDonutChart
+          tierCounts={tierCounts}
+          onTierClick={onTierClick}
+          selectedTier={selectedTier}
+        />
+        {onTierClick && (
+          <p className="text-xs text-muted-foreground mt-2">💡 Click a tier to filter</p>
+        )}
       </CardContent>
     </Card>
   )

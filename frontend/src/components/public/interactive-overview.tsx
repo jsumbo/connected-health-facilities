@@ -173,7 +173,14 @@ export function InteractiveOverview({ overview, counties }: InteractiveOverviewP
       {/* Charts */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 mb-8">
         <div className="lg:col-span-1">
-          <TierDonutCard tierCounts={filtered.tier_counts} />
+          <TierDonutCard
+            tierCounts={filtered.tier_counts}
+            onTierClick={(tier) => {
+              setSelectedTier(tier === selectedTier ? "" : tier)
+              setSelectedCounty("")
+            }}
+            selectedTier={selectedTier}
+          />
         </div>
         <div className="lg:col-span-2">
           <CountyBarCard

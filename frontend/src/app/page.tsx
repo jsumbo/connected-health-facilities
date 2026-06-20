@@ -18,12 +18,14 @@ import { getPublicFacilities, getPublicOverview } from "@/lib/public-api"
 export default async function HomePage() {
   let overview = null
   let topFacilities: Awaited<ReturnType<typeof getPublicFacilities>>["items"] = []
+  let allFacilities: Awaited<ReturnType<typeof getPublicFacilities>>["items"] = []
   let counties: string[] = []
   let error: string | null = null
 
   try {
     overview = await getPublicOverview()
     const page = await getPublicFacilities()
+    allFacilities = page.items
     topFacilities = [...page.items]
       .filter((f) => f.overall_score != null)
       .sort((a, b) => (b.overall_score ?? 0) - (a.overall_score ?? 0))
@@ -41,7 +43,7 @@ export default async function HomePage() {
 
       {overview && (
         <>
-          <InteractiveOverview overview={overview} counties={counties} />
+          <InteractiveOverview overview={overview} counties={counties} facilities={allFacilities} />
 
           <Card className="shadow-none">
             <CardHeader className="flex flex-row items-center justify-between pb-2">

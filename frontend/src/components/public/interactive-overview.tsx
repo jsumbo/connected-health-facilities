@@ -1,23 +1,35 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import type { PublicOverview } from "@/lib/types-public"
+import type { PublicOverview, ProgrammeFacility } from "@/lib/types-public"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TierDonutCard } from "./tier-donut-chart"
 import { CountyBarCard } from "./county-bar-chart"
 import { DomainBarCard } from "./domain-bar-chart"
 import { BlockerBarCard } from "./blocker-bar-chart"
 import { KpiMetric } from "./kpi-metric"
+import { QuickWinsCard } from "./quick-wins-card"
 import { Ban, ClipboardCheck, Gauge, GraduationCap, MessageSquareHeart, ShieldCheck } from "lucide-react"
 
 interface InteractiveOverviewProps {
   overview: PublicOverview
   counties: string[]
+  facilities?: ProgrammeFacility[]
 }
 
-export function InteractiveOverview({ overview, counties }: InteractiveOverviewProps) {
+export function InteractiveOverview({ overview, counties, facilities = [] }: InteractiveOverviewProps) {
   const [selectedCounty, setSelectedCounty] = useState<string>("")
   const [selectedTier, setSelectedTier] = useState<string>("")
+
+  // Calculate quick wins count: Tier 3 with exactly 1 blocker
+  const quickWinsCount = useMemo(() => {
+    return facilities.filter(
+      (f) =>
+        f.tier === "Tier 3 — Not Deployment-Ready" &&
+        f.blockers &&
+        f.blockers.length === 1
+    ).length
+  }, [facilities])
 
   // Filter data based on selected county and tier
   const filtered = useMemo(() => {
@@ -170,6 +182,13 @@ export function InteractiveOverview({ overview, counties }: InteractiveOverviewP
           }
         />
       </div>
+
+      {/* Quick Wins Card */}
+      {quickWinsCount > 0 && (
+        <div className="mb-8">
+          <QuickWinsCard count={quickWinsCount} />
+        </div>
+      )}
 
       {/* Charts */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 mb-8">

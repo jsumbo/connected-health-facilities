@@ -263,6 +263,21 @@ def build_overview() -> Dict[str, Any]:
         if r.get("dla_avg_score") is not None
     ]
 
+    # Aggregate blockers by code
+    blocker_counts: Dict[str, int] = defaultdict(int)
+    for item in master_cache.blocker_register():
+        for code in item.get("blocker_codes", []):
+            blocker_counts[code] += 1
+
+    blocker_register = [
+        {
+            "code": code,
+            "description": BLOCKER_REMEDIATION.get(code, "Unknown blocker"),
+            "count": count,
+        }
+        for code, count in sorted(blocker_counts.items())
+    ]
+
     return {
         "programme_target": PROGRAMME_FACILITY_TARGET,
         "total_in_registry": len(rows),
@@ -286,6 +301,7 @@ def build_overview() -> Dict[str, Any]:
         "master_source_path": master_cache.source_path(),
         "master_facility_count": len(master_cache.get_by_slug()),
         "blocker_register_count": len(master_cache.blocker_register()),
+        "blocker_register": blocker_register,
         "sentiment_facilities_count": sentiment_facilities,
         "sentiment_completion_pct": round(
             100 * sentiment_facilities / PROGRAMME_FACILITY_TARGET, 1

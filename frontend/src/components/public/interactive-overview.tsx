@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TierDonutCard } from "./tier-donut-chart"
 import { CountyBarCard } from "./county-bar-chart"
 import { DomainBarCard } from "./domain-bar-chart"
+import { BlockerBarCard } from "./blocker-bar-chart"
 import { KpiMetric } from "./kpi-metric"
 import { Ban, ClipboardCheck, Gauge, GraduationCap, MessageSquareHeart, ShieldCheck } from "lucide-react"
 
@@ -201,6 +202,10 @@ export function InteractiveOverview({ overview, counties }: InteractiveOverviewP
           description="0–3 readiness domain scale"
           maxScore={overview.domain_scale_max ?? 3}
         />
+        <BlockerBarCard data={overview.blocker_register ?? []} />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-1 mb-8">
         <Card className="shadow-none">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">By cluster</CardTitle>

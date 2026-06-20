@@ -210,6 +210,12 @@ export interface BlockerRegister {
   source_path: string | null
 }
 
+export interface BlockerSummary {
+  code: string
+  description: string
+  count: number
+}
+
 export interface PublicOverview {
   programme_target: number
   total_in_registry: number
@@ -231,6 +237,7 @@ export interface PublicOverview {
   master_source_path?: string | null
   master_facility_count?: number
   blocker_register_count?: number
+  blocker_register?: BlockerSummary[]
   sentiment_facilities_count?: number
   sentiment_completion_pct?: number
   sentiment_avg_enthusiasm_national?: number | null

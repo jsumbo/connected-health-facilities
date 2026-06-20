@@ -12,10 +12,20 @@ import type {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
-async function publicFetch<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, {
-    next: { revalidate: 120 },
-  })
+async function publicFetch<T>(
+  path: string,
+  options?: { cache?: RequestCache; revalidate?: number }
+): Promise<T> {
+  const fetchOptions: any = {}
+  if (options?.cache) {
+    fetchOptions.cache = options.cache
+  } else if (options?.revalidate !== undefined) {
+    fetchOptions.next = { revalidate: options.revalidate }
+  } else {
+    fetchOptions.next = { revalidate: 120 }
+  }
+
+  const res = await fetch(`${API_URL}${path}`, fetchOptions)
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: res.statusText }))
     throw new Error(body.detail || "Failed to load dashboard data")
@@ -77,15 +87,11 @@ export function getPublicClusters(): Promise<ClusterOverview> {
 
 export async function getPublicDlaQuestionStats(): Promise<QuestionStat[]> {
   try {
-    const url = `${API_URL}/public/dla/questions`
-    const response = await fetch(url, { cache: "no-store" })
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch DLA question stats: ${response.statusText}`)
-    }
-
-    const data = await response.json()
-    return data.questions || []
+    const response = await publicFetch<{ questions: QuestionStat[] }>(
+      "/public/dla/questions",
+      { cache: "no-store" }
+    )
+    return response.questions || []
   } catch (error) {
     console.error("Error fetching DLA question stats:", error)
     return []

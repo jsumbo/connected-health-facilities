@@ -37,13 +37,28 @@ export function FacilityFilters({
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const handleFilterChange = (key: "county" | "tier", value: string) => {
+  const handleCountyChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString())
     if (value) {
-      params.set(key, value)
+      params.set("county", value)
     } else {
-      params.delete(key)
+      params.delete("county")
     }
+    // Clear tier when county changes for mutual exclusivity
+    params.delete("tier")
+    const query = params.toString()
+    router.push(query ? `${pathname}?${query}` : pathname)
+  }
+
+  const handleTierChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value) {
+      params.set("tier", value)
+    } else {
+      params.delete("tier")
+    }
+    // Clear county when tier changes for mutual exclusivity
+    params.delete("county")
     const query = params.toString()
     router.push(query ? `${pathname}?${query}` : pathname)
   }
@@ -59,7 +74,7 @@ export function FacilityFilters({
         <select
           id="facility-filter-county"
           value={currentCounty}
-          onChange={(e) => handleFilterChange("county", e.target.value)}
+          onChange={(e) => handleCountyChange(e.target.value)}
           className={selectClassName}
         >
           <option value="">All counties</option>
@@ -78,7 +93,7 @@ export function FacilityFilters({
         <select
           id="facility-filter-tier"
           value={currentTier}
-          onChange={(e) => handleFilterChange("tier", e.target.value)}
+          onChange={(e) => handleTierChange(e.target.value)}
           className={selectClassName}
         >
           {FACILITY_TIER_FILTER_OPTIONS.map((opt) => (

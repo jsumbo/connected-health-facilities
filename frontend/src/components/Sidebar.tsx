@@ -3,15 +3,40 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Building2, LogOut, Activity, Wifi, TrendingUp, Zap } from "lucide-react";
+import {
+  Building2,
+  LogOut,
+  Activity,
+  Zap,
+  AlertTriangle,
+  Grid3x3,
+  BarChart3,
+  MapPin,
+  CheckCircle,
+  GraduationCap,
+  MessageSquareHeart,
+} from "lucide-react";
 import clsx from "clsx";
 
 const NAV = [
-  { href: "/dashboard", label: "Overview", icon: Activity, exact: true },
-  { href: "/dashboard/quick-wins", label: "Quick Wins", icon: Zap },
-  { href: "/dashboard/facilities", label: "Facilities", icon: Building2 },
-  { href: "/dashboard/infrastructure", label: "Infrastructure", icon: Wifi },
-  { href: "/dashboard/progress", label: "Progress", icon: TrendingUp },
+  // MAIN
+  { href: "/dashboard", label: "Overview", icon: Activity, exact: true, section: "MAIN" },
+  { href: "/dashboard/quick-wins", label: "Quick Wins", icon: Zap, section: "MAIN" },
+  { href: "/dashboard/blockers", label: "Blockers", icon: AlertTriangle, section: "MAIN" },
+
+  // EXPLORE
+  { href: "/dashboard/readiness-heatmap", label: "Readiness Heatmap", icon: Grid3x3, section: "EXPLORE" },
+  { href: "/dashboard/facilities", label: "Facilities", icon: Building2, section: "EXPLORE" },
+  { href: "/dashboard/clusters", label: "Clusters", icon: Zap, section: "EXPLORE" },
+  { href: "/dashboard/map", label: "Map", icon: MapPin, section: "EXPLORE" },
+
+  // SURVEYS
+  { href: "/dashboard/digital-literacy", label: "Digital Literacy", icon: GraduationCap, section: "SURVEYS" },
+  { href: "/dashboard/staff-sentiment", label: "Staff Sentiment", icon: MessageSquareHeart, section: "SURVEYS" },
+
+  // ANALYSIS
+  { href: "/dashboard/what-drives-readiness", label: "What Drives Readiness", icon: BarChart3, section: "ANALYSIS" },
+  { href: "/dashboard/data-quality", label: "Data Quality", icon: CheckCircle, section: "ANALYSIS" },
 ];
 
 export default function Sidebar() {
@@ -44,23 +69,35 @@ export default function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-4 py-6 space-y-1">
-        {NAV.map(({ href, label, icon: Icon, exact }) => {
-          const active = exact ? pathname === href : pathname.startsWith(href);
+      <nav className="flex-1 px-4 py-6 space-y-6">
+        {["MAIN", "EXPLORE", "SURVEYS", "ANALYSIS"].map((section) => {
+          const sectionItems = NAV.filter((item) => item.section === section);
+          if (sectionItems.length === 0) return null;
+
           return (
-            <Link
-              key={href}
-              href={href}
-              className={clsx(
-                "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                active
-                  ? "bg-teal text-white"
-                  : "text-slate-400 hover:text-white hover:bg-white/10"
-              )}
-            >
-              <Icon className="w-4 h-4" />
-              {label}
-            </Link>
+            <div key={section}>
+              <p className="px-4 mb-2 text-xs font-semibold uppercase text-slate-500">{section}</p>
+              <div className="space-y-1">
+                {sectionItems.map(({ href, label, icon: Icon, exact }) => {
+                  const active = exact ? pathname === href : pathname.startsWith(href);
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={clsx(
+                        "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                        active
+                          ? "bg-teal text-white"
+                          : "text-slate-400 hover:text-white hover:bg-white/10"
+                      )}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           );
         })}
       </nav>

@@ -389,3 +389,11 @@ export interface GapMatrix {
   last_refreshed: string | null
   master_populated: boolean
 }
+
+export interface QuestionStat {
+  questionNumber: number
+  questionText: string
+  correctCount: number
+  totalResponses: number
+  correctRate: number
+}

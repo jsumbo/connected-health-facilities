@@ -7,6 +7,7 @@ import type {
   PublicOverview,
   FacilitySentimentDetail,
   SentimentOverview,
+  QuestionStat,
 } from "./types-public"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
@@ -72,4 +73,21 @@ export function getPublicDlaFacility(slug: string): Promise<FacilityDlaDetail> {
 
 export function getPublicClusters(): Promise<ClusterOverview> {
   return publicFetch<ClusterOverview>("/public/clusters")
+}
+
+export async function getPublicDlaQuestionStats(): Promise<QuestionStat[]> {
+  try {
+    const url = `${API_URL}/public/dla/questions`
+    const response = await fetch(url, { cache: "no-store" })
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch DLA question stats: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data.questions || []
+  } catch (error) {
+    console.error("Error fetching DLA question stats:", error)
+    return []
+  }
 }

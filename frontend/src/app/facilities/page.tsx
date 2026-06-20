@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 import { pageMetadata } from "@/lib/site-metadata"
 import { ErrorBanner } from "@/components/public/error-banner"
-import { FacilityDataTable } from "@/components/public/facility-data-table"
 import { FacilityFilters } from "@/components/public/facility-filters"
+import { FacilitiesWrapper } from "@/components/public/facilities-wrapper"
 import { PublicShell } from "@/components/public/PublicShell"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getPublicFacilities, getPublicOverview } from "@/lib/public-api"
@@ -22,21 +22,17 @@ interface FacilitiesPageProps {
 
 export default async function FacilitiesPage({ searchParams }: FacilitiesPageProps) {
   const sp = await searchParams
-  const county = sp.county?.trim() || undefined
-  const tier = sp.tier?.trim() || undefined
 
-  let facilities: Awaited<ReturnType<typeof getPublicFacilities>>["items"] = []
-  let total = 0
+  let allFacilities: Awaited<ReturnType<typeof getPublicFacilities>>["items"] = []
   let overview = null
   let error: string | null = null
 
   try {
     const [page, ov] = await Promise.all([
-      getPublicFacilities({ county, tier }),
+      getPublicFacilities(),
       getPublicOverview(),
     ])
-    facilities = page.items.sort((a, b) => a.name.localeCompare(b.name))
-    total = page.total
+    allFacilities = page.items.sort((a, b) => a.name.localeCompare(b.name))
     overview = ov
   } catch (e) {
     error = e instanceof Error ? e.message : "Failed to load facilities"
@@ -44,18 +40,13 @@ export default async function FacilitiesPage({ searchParams }: FacilitiesPagePro
 
   const counties = overview
     ? [...new Set(overview.by_county.map((c) => c.county))].sort((a, b) => a.localeCompare(b))
-    : [...new Set(facilities.map((f) => f.county))].sort((a, b) => a.localeCompare(b))
-
-  const filterSummary =
-    county || tier
-      ? `${total} shown`
-      : `${overview?.assessed_count ?? "—"} of ${overview?.programme_target ?? "—"} assessed`
+    : [...new Set(allFacilities.map((f) => f.county))].sort((a, b) => a.localeCompare(b))
 
   return (
     <PublicShell
       lastRefreshed={overview?.last_refreshed}
       title="Facilities"
-      description={filterSummary}
+      description={overview?.assessed_count ? `${overview.assessed_count} of ${overview.programme_target} assessed` : ""}
     >
 
       {error && <ErrorBanner message={error} />}
@@ -109,16 +100,12 @@ export default async function FacilitiesPage({ searchParams }: FacilitiesPagePro
       <Suspense fallback={null}>
         <FacilityFilters
           counties={counties}
-          currentCounty={county ?? ""}
-          currentTier={tier ?? ""}
+          currentCounty={sp.county?.trim() ?? ""}
+          currentTier={sp.tier?.trim() ?? ""}
         />
       </Suspense>
 
-      <Card className="shadow-none">
-        <CardContent className="pt-6">
-          <FacilityDataTable facilities={facilities} />
-        </CardContent>
-      </Card>
+      <FacilitiesWrapper facilities={allFacilities} />
     </PublicShell>
   )
 }

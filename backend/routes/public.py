@@ -7,6 +7,7 @@ from typing import List, Optional
 import httpx
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import Response
+from pydantic import BaseModel
 
 from cache import cache
 from config import settings
@@ -28,6 +29,7 @@ from programme import (
 from master_cache import master_cache
 from sentiment_cache import sentiment_cache
 from dla_cache import dla_cache
+from dla import load_csv_rows
 
 router = APIRouter()
 
@@ -250,6 +252,103 @@ def public_dla_overview():
     if dla_cache.last_error and not dla_cache.is_populated:
         raise HTTPException(status_code=503, detail=dla_cache.last_error)
     return build_dla_overview()
+
+
+# ---------------------------------------------------------------------------
+# DLA question-level statistics
+# Must be defined BEFORE /dla/{slug} so FastAPI matches the static path first.
+# ---------------------------------------------------------------------------
+
+# Ordered list of (column_header, correct_answer) pairs for all 10 DLA questions.
+# Correct answers were derived from respondents who achieved a perfect score (100/100).
+_DLA_QUESTION_ANSWERS: List[tuple[str, str]] = [
+    ("1. Which of the following devices is a tablet?", "A"),
+    ("2. Which of the following is an example of an email address? ", "healthworker@moh.gov.lr"),
+    ("3. Which of the following devices is a computer?", "B"),
+    ("4. Which of the following shows the button used to turn on the computer?", "C"),
+    ("5. You can send a file or photo as an attachment in an email.", "TRUE"),
+    (
+        "6. Which of the following is the BEST practice when entering data into a health form?",
+        "Enter data as soon as possible after the patient visit, while information is fresh",
+    ),
+    (
+        "7. Why is it important to enter patient data accurately into a digital health system?",
+        "To ensure correct treatment decisions and reliable health reports",
+    ),
+    (
+        "8. You receive an email asking you to click a link and enter your password urgently. What should you do?",
+        "Ignore it and delete it - it is likely a phishing attempt",
+    ),
+    ("9. Turning a device off and on again (restarting) can fix many common software problems.", "TRUE"),
+    ("10. What is a web browser?", "A tool used to access and view websites on the internet"),
+]
+
+# Pre-compute (raw_col, stripped_col, correct_answer) triples used at request time.
+_DLA_QUESTION_ANSWERS_NORMALIZED: List[tuple[str, str, str]] = [
+    (col, col.strip(), correct)
+    for col, correct in _DLA_QUESTION_ANSWERS
+]
+
+
+class DlaQuestionStat(BaseModel):
+    questionNumber: int
+    questionText: str
+    correctCount: int
+    totalResponses: int
+    correctRate: float
+
+
+class DlaQuestionsResponse(BaseModel):
+    questions: List[DlaQuestionStat]
+
+
+@router.get("/dla/questions", response_model=DlaQuestionsResponse)
+def public_dla_questions():
+    """Per-question correct-answer rates across all DLA respondents."""
+    if not dla_cache.is_configured:
+        raise HTTPException(
+            status_code=503,
+            detail="Digital Literacy Assessment CSV not found (DLA_CSV_PATH).",
+        )
+
+    rows = load_csv_rows(dla_cache.csv_path)
+    if not rows:
+        return DlaQuestionsResponse(questions=[])
+
+    # Build a normalised header → original-header lookup from the actual CSV so
+    # trailing-whitespace variants in the file are handled transparently.
+    sample_headers = list(rows[0].keys())
+    stripped_to_actual: dict[str, str] = {h.strip(): h for h in sample_headers}
+
+    stats: List[DlaQuestionStat] = []
+    for idx, (col_raw, col_stripped, correct_answer) in enumerate(
+        _DLA_QUESTION_ANSWERS_NORMALIZED, start=1
+    ):
+        # Resolve the actual CSV column name (handles trailing-space variants).
+        actual_col = stripped_to_actual.get(col_stripped, col_raw)
+
+        correct_count = 0
+        total = 0
+        for row in rows:
+            answer = row.get(actual_col)
+            if answer is None or answer == "":
+                continue
+            total += 1
+            if answer.strip() == correct_answer.strip():
+                correct_count += 1
+
+        correct_rate = round(correct_count / total * 100, 1) if total > 0 else 0.0
+        stats.append(
+            DlaQuestionStat(
+                questionNumber=idx,
+                questionText=col_stripped,
+                correctCount=correct_count,
+                totalResponses=total,
+                correctRate=correct_rate,
+            )
+        )
+
+    return DlaQuestionsResponse(questions=stats)
 
 
 @router.get("/dla/{slug}")

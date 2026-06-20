@@ -89,7 +89,7 @@ export async function getPublicDlaQuestionStats(): Promise<QuestionStat[]> {
   try {
     const response = await publicFetch<{ questions: QuestionStat[] }>(
       "/public/dla/questions",
-      { cache: "no-store" }
+      { revalidate: 300 }
     )
     return response.questions || []
   } catch (error) {

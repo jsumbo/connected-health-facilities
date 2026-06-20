@@ -303,7 +303,7 @@ class DlaQuestionsResponse(BaseModel):
 
 
 @router.get("/dla/questions", response_model=DlaQuestionsResponse)
-def public_dla_questions():
+def public_dla_questions() -> DlaQuestionsResponse:
     """Per-question correct-answer rates across all DLA respondents."""
     if not dla_cache.is_configured:
         raise HTTPException(

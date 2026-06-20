@@ -24,17 +24,17 @@ interface BlockerBarChartProps {
   data: BlockerData[]
 }
 
-const BLOCKER_COLORS = {
-  "BLK-01": "var(--chart-1)",
-  "BLK-02": "var(--chart-2)",
-  "BLK-03": "var(--chart-3)",
-  "BLK-04": "var(--chart-4)",
-  "BLK-05": "var(--chart-1)",
-  "BLK-06": "var(--chart-4)",
-} as const
+// Color cycle for blockers using chart color variables
+const COLOR_CYCLE = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+] as const
 
-function getBlockerColor(code: string): string {
-  return (BLOCKER_COLORS as Record<string, string>)[code] || "var(--chart-2)"
+function getBlockerColor(index: number): string {
+  return COLOR_CYCLE[index % COLOR_CYCLE.length]
 }
 
 export function BlockerBarChart({ data }: BlockerBarChartProps) {
@@ -45,11 +45,11 @@ export function BlockerBarChart({ data }: BlockerBarChartProps) {
   // Sort by count descending
   const sortedData = [...data].sort((a, b) => b.count - a.count)
 
-  const chartData = sortedData.map((item) => ({
+  const chartData = sortedData.map((item, index) => ({
     label: item.code,
     count: item.count,
     description: item.description,
-    fill: getBlockerColor(item.code),
+    fill: getBlockerColor(index),
   }))
 
   const chartConfig = {

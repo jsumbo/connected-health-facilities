@@ -3,11 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Building2, LogOut, Activity, Wifi, TrendingUp } from "lucide-react";
+import { Building2, LogOut, Activity, Wifi, TrendingUp, Zap } from "lucide-react";
 import clsx from "clsx";
 
 const NAV = [
   { href: "/dashboard", label: "Overview", icon: Activity, exact: true },
+  { href: "/dashboard/quick-wins", label: "Quick Wins", icon: Zap },
   { href: "/dashboard/facilities", label: "Facilities", icon: Building2 },
   { href: "/dashboard/infrastructure", label: "Infrastructure", icon: Wifi },
   { href: "/dashboard/progress", label: "Progress", icon: TrendingUp },

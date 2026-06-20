@@ -1,6 +1,7 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
 import type { PublicOverview, ProgrammeFacility } from "@/lib/types-public"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TierDonutCard } from "./tier-donut-chart"
@@ -18,8 +19,48 @@ interface InteractiveOverviewProps {
 }
 
 export function InteractiveOverview({ overview, counties, facilities = [] }: InteractiveOverviewProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [selectedCounty, setSelectedCounty] = useState<string>("")
   const [selectedTier, setSelectedTier] = useState<string>("")
+  const [isInitialized, setIsInitialized] = useState(false)
+
+  // Initialize filter state from URL on mount
+  useEffect(() => {
+    const county = searchParams.get("county") || ""
+    const tier = searchParams.get("tier") || ""
+    setSelectedCounty(county)
+    setSelectedTier(tier)
+    setIsInitialized(true)
+  }, [])
+
+  // Handle county filter change and update URL
+  const handleCountyChange = (county: string) => {
+    setSelectedCounty(county)
+    const params = new URLSearchParams()
+    if (county) {
+      params.set("county", county)
+    }
+    router.push(`?${params.toString()}`)
+  }
+
+  // Handle tier filter change and update URL
+  const handleTierChange = (tier: string) => {
+    setSelectedTier(tier)
+    const params = new URLSearchParams()
+    if (tier) {
+      params.set("tier", tier)
+    }
+    router.push(`?${params.toString()}`)
+  }
+
+  // Clear all filters
+  const handleClearFilters = () => {
+    setSelectedCounty("")
+    setSelectedTier("")
+    router.push("")
+  }
 
   // Calculate quick wins count: Tier 3 with exactly 1 blocker
   const quickWinsCount = useMemo(() => {
@@ -86,7 +127,7 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
           <select
             id="county-filter"
             value={selectedCounty}
-            onChange={(e) => setSelectedCounty(e.target.value)}
+            onChange={(e) => handleCountyChange(e.target.value)}
             className={selectClassName}
           >
             <option value="">All counties</option>
@@ -105,7 +146,7 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
           <select
             id="tier-filter"
             value={selectedTier}
-            onChange={(e) => setSelectedTier(e.target.value)}
+            onChange={(e) => handleTierChange(e.target.value)}
             className={selectClassName}
           >
             {tiers.map((tier) => (
@@ -118,10 +159,7 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
 
         {(selectedCounty || selectedTier) && (
           <button
-            onClick={() => {
-              setSelectedCounty("")
-              setSelectedTier("")
-            }}
+            onClick={handleClearFilters}
             className="px-4 py-2 text-sm bg-muted hover:bg-muted/80 rounded-lg transition-colors"
           >
             Clear filters
@@ -196,8 +234,8 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
           <TierDonutCard
             tierCounts={filtered.tier_counts}
             onTierClick={(tier) => {
-              setSelectedTier(tier === selectedTier ? "" : tier)
-              setSelectedCounty("")
+              const newTier = tier === selectedTier ? "" : tier
+              handleTierChange(newTier)
             }}
             selectedTier={selectedTier}
           />
@@ -206,8 +244,8 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
           <CountyBarCard
             counties={filtered.by_county}
             onCountyClick={(county) => {
-              setSelectedCounty(county === selectedCounty ? "" : county)
-              setSelectedTier("")
+              const newCounty = county === selectedCounty ? "" : county
+              handleCountyChange(newCounty)
             }}
             selectedCounty={selectedCounty}
           />

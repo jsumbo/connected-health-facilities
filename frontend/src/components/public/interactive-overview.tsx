@@ -24,20 +24,19 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
 
   const [selectedCounty, setSelectedCounty] = useState<string>("")
   const [selectedTier, setSelectedTier] = useState<string>("")
-  const [isInitialized, setIsInitialized] = useState(false)
 
-  // Initialize filter state from URL on mount
+  // Initialize filter state from URL on mount and when params change
   useEffect(() => {
     const county = searchParams.get("county") || ""
     const tier = searchParams.get("tier") || ""
     setSelectedCounty(county)
     setSelectedTier(tier)
-    setIsInitialized(true)
-  }, [])
+  }, [searchParams])
 
-  // Handle county filter change and update URL
+  // Handle county filter change and update URL (clears tier)
   const handleCountyChange = (county: string) => {
     setSelectedCounty(county)
+    setSelectedTier("")
     const params = new URLSearchParams()
     if (county) {
       params.set("county", county)
@@ -45,9 +44,10 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
     router.push(`?${params.toString()}`)
   }
 
-  // Handle tier filter change and update URL
+  // Handle tier filter change and update URL (clears county)
   const handleTierChange = (tier: string) => {
     setSelectedTier(tier)
+    setSelectedCounty("")
     const params = new URLSearchParams()
     if (tier) {
       params.set("tier", tier)

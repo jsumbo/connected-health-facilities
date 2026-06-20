@@ -3,13 +3,16 @@ import Link from "next/link"
 import { Suspense } from "react"
 import { pageMetadata } from "@/lib/site-metadata"
 import { Building2, GraduationCap, Users } from "lucide-react"
+import type { QuestionStat } from "@/lib/types-public"
 import { CountyFilter } from "@/components/public/county-filter"
 import { ErrorBanner } from "@/components/public/error-banner"
 import { DlaTable } from "@/components/public/dla-table"
+import { DlaQuestionsCard } from "@/components/public/dla-questions-chart"
 import { KpiMetric } from "@/components/public/kpi-metric"
 import { PublicShell } from "@/components/public/PublicShell"
 import { Card, CardContent } from "@/components/ui/card"
-import { getPublicDla, getPublicFacilities, getPublicOverview } from "@/lib/public-api"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { getPublicDla, getPublicFacilities, getPublicOverview, getPublicDlaQuestionStats } from "@/lib/public-api"
 
 export const metadata: Metadata = pageMetadata({
   title: "Digital literacy",
@@ -28,9 +31,15 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
 
   let dla = null
   let error: string | null = null
+  let questionStats: QuestionStat[] = []
 
   try {
-    dla = await getPublicDla()
+    const [dlaData, questions] = await Promise.all([
+      getPublicDla(),
+      getPublicDlaQuestionStats(),
+    ])
+    dla = dlaData
+    questionStats = questions
   } catch (e) {
     error = e instanceof Error ? e.message : "Failed to load digital literacy assessment"
   }
@@ -134,18 +143,39 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
             </Card>
           )}
 
-          <Suspense fallback={null}>
-            <CountyFilter
-              counties={counties}
-              currentCounty={countyFilter ?? ""}
-            />
-          </Suspense>
+          <Tabs defaultValue="by-facility" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="by-facility">By Facility</TabsTrigger>
+              <TabsTrigger value="by-question">By Question</TabsTrigger>
+            </TabsList>
 
-          <Card className="shadow-none">
-            <CardContent className="pt-6">
-              <DlaTable rows={rows} />
-            </CardContent>
-          </Card>
+            <TabsContent value="by-facility" className="space-y-4">
+              <Suspense fallback={null}>
+                <CountyFilter
+                  counties={counties}
+                  currentCounty={countyFilter ?? ""}
+                />
+              </Suspense>
+
+              <Card className="shadow-none">
+                <CardContent className="pt-6">
+                  <DlaTable rows={rows} />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="by-question">
+              {questionStats && questionStats.length > 0 ? (
+                <DlaQuestionsCard questions={questionStats} />
+              ) : (
+                <Card className="shadow-none">
+                  <CardContent className="py-12 text-center text-muted-foreground">
+                    Question data not available yet
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+          </Tabs>
         </>
       )}
     </PublicShell>

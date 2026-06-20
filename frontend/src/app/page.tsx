@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import Link from "next/link"
 import { pageMetadata } from "@/lib/site-metadata"
 
@@ -43,7 +44,9 @@ export default async function HomePage() {
 
       {overview && (
         <>
-          <InteractiveOverview overview={overview} counties={counties} facilities={allFacilities} />
+          <Suspense fallback={null}>
+            <InteractiveOverview overview={overview} counties={counties} facilities={allFacilities} />
+          </Suspense>
 
           <Card className="shadow-none">
             <CardHeader className="flex flex-row items-center justify-between pb-2">

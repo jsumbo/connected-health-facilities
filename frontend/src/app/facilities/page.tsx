@@ -105,7 +105,9 @@ export default async function FacilitiesPage({ searchParams }: FacilitiesPagePro
         />
       </Suspense>
 
-      <FacilitiesWrapper facilities={allFacilities} />
+      <Suspense fallback={null}>
+        <FacilitiesWrapper facilities={allFacilities} />
+      </Suspense>
     </PublicShell>
   )
 }

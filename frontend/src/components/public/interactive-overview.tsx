@@ -59,7 +59,7 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
   const handleClearFilters = () => {
     setSelectedCounty("")
     setSelectedTier("")
-    router.push("")
+    router.push("?")
   }
 
   // Calculate quick wins count: Tier 3 with exactly 1 blocker

@@ -23,8 +23,8 @@ import {
   Wrench,
   Zap,
 } from "lucide-react"
-import { countQuickWins } from "@/lib/quick-wins"
-import { buildDlaInsight, getWeakestDomain } from "@/lib/overview-insights"
+import { buildDlaInsight } from "@/lib/overview-insights"
+import { computeScopedOverviewMetrics } from "@/lib/overview-stats"
 import { formatAxisTick, formatPercentLabel } from "@/lib/format-number"
 
 interface InteractiveOverviewProps {
@@ -75,17 +75,17 @@ export function InteractiveOverview({
     router.push("?")
   }
 
-  const quickWinsClassic = useMemo(
-    () => countQuickWins(facilities, "classic"),
-    [facilities]
-  )
-  const quickWinsExpanded = useMemo(
-    () => countQuickWins(facilities, "expanded"),
-    [facilities]
+  const metrics = useMemo(
+    () =>
+      computeScopedOverviewMetrics(facilities, overview, {
+        county: selectedCounty || undefined,
+        tier: selectedTier || undefined,
+      }),
+    [facilities, overview, selectedCounty, selectedTier]
   )
 
   const filtered = useMemo(() => {
-    let result = { ...overview }
+    let result = { ...overview, tier_counts: metrics.tier_counts }
 
     if (selectedCounty) {
       result = {
@@ -98,27 +98,13 @@ export function InteractiveOverview({
       result = {
         ...result,
         tier_counts: Object.fromEntries(
-          Object.entries(overview.tier_counts).filter(([tier]) => tier === selectedTier)
+          Object.entries(metrics.tier_counts).filter(([tier]) => tier === selectedTier)
         ),
       }
     }
 
-    if (selectedCounty) {
-      const countyData = overview.by_county.find((c) => c.county === selectedCounty)
-      if (countyData) {
-        result.tier_counts = countyData.tiers || result.tier_counts
-      }
-    }
-
     return result
-  }, [overview, selectedCounty, selectedTier])
-
-  const weakestDomain = getWeakestDomain(overview.domain_averages)
-  const structuredRemediation =
-    overview.tier_counts["Tier 2 — Structured Remediation"] ?? 0
-  const deploymentEligible =
-    overview.tier_counts["Tier 2 — Deployment-Eligible"] ?? 0
-  const tier1Count = overview.tier_counts["Tier 1 — HOS-Ready"] ?? 0
+  }, [overview, selectedCounty, selectedTier, metrics.tier_counts])
 
   const dlaInsight = buildDlaInsight(dlaQuestions)
   const weakestDla = [...dlaQuestions].sort((a, b) => a.correctRate - b.correctRate)[0]
@@ -199,39 +185,41 @@ export function InteractiveOverview({
         <KpiMetric
           icon={ShieldCheck}
           label="HOS-ready now"
-          value={tier1Count}
+          value={metrics.tier1Count}
           description="Tier 1"
         />
         <KpiMetric
           icon={Zap}
           label="Quick wins"
-          value={quickWinsExpanded}
-          description={`1 blocker · ≥65%${quickWinsClassic !== quickWinsExpanded ? ` (${quickWinsClassic} total)` : ""}`}
+          value={metrics.quickWinsExpanded}
+          description={`1 blocker · ≥65%${metrics.quickWinsClassic !== metrics.quickWinsExpanded ? ` (${metrics.quickWinsClassic} total)` : ""}`}
         />
         <KpiMetric
           icon={Target}
           label="Deploy-eligible"
-          value={deploymentEligible}
+          value={metrics.deploymentEligible}
           description="Tier 2"
         />
         <KpiMetric
           icon={Wrench}
           label="Structured remediation"
-          value={structuredRemediation}
+          value={metrics.structuredRemediation}
           description="Tier 2"
         />
         <KpiMetric
           icon={Ban}
           label="Tier 3 blocked"
-          value={overview.blocked_count}
+          value={metrics.blocked_count}
           description="Any BLK"
         />
         <KpiMetric
           icon={Gauge}
           label="Weakest domain"
-          value={weakestDomain ? weakestDomain.label.split(" ")[0] : "—"}
+          value={metrics.weakestDomain ? metrics.weakestDomain.label.split(" ")[0] : "—"}
           description={
-            weakestDomain ? `${formatAxisTick(weakestDomain.value, 2)}/3 avg` : undefined
+            metrics.weakestDomain
+              ? `${formatAxisTick(metrics.weakestDomain.value, 2)}/3 avg`
+              : undefined
           }
         />
       </div>
@@ -241,25 +229,25 @@ export function InteractiveOverview({
         <KpiMetric
           icon={ClipboardCheck}
           label="Assessed"
-          value={`${overview.assessed_count} / ${overview.programme_target}`}
-          description={formatPercentLabel(overview.completion_pct, 0)}
+          value={metrics.assessedDisplay}
+          description={metrics.assessedDescription}
         />
         <KpiMetric
           icon={Gauge}
           label="Avg readiness"
-          value={overview.avg_score != null ? formatPercentLabel(overview.avg_score, 0) : "—"}
+          value={metrics.avg_score != null ? formatPercentLabel(metrics.avg_score, 0) : "—"}
         />
         <KpiMetric
           icon={MessageSquareHeart}
           label="Staff sentiment"
           value={
-            overview.sentiment_avg_enthusiasm_national != null
-              ? `${overview.sentiment_avg_enthusiasm_national}/10`
+            metrics.sentiment_avg != null
+              ? `${formatAxisTick(metrics.sentiment_avg, 2)}/10`
               : "—"
           }
           description={
-            overview.sentiment_total_responses != null
-              ? `${overview.sentiment_total_responses} responses`
+            metrics.sentiment_responses != null
+              ? `${metrics.sentiment_responses} responses`
               : undefined
           }
         />
@@ -267,15 +255,13 @@ export function InteractiveOverview({
           icon={GraduationCap}
           label="Digital literacy"
           value={
-            overview.dla_avg_score_national != null
-              ? `${overview.dla_avg_score_national}/100`
-              : "—"
+            metrics.dla_avg != null ? `${formatAxisTick(metrics.dla_avg, 1)}/100` : "—"
           }
           description={[
-            overview.dla_total_responses != null
-              ? `${overview.dla_total_responses} responses`
+            metrics.dla_responses != null ? `${metrics.dla_responses} responses` : null,
+            !metrics.isScoped && weakestDla
+              ? `Weakest: Q${weakestDla.questionNumber} ${Math.round(weakestDla.correctRate)}%`
               : null,
-            weakestDla ? `Weakest: Q${weakestDla.questionNumber} ${Math.round(weakestDla.correctRate)}%` : null,
           ]
             .filter((line): line is string => line != null)
             .join(" · ")}
@@ -291,13 +277,13 @@ export function InteractiveOverview({
       ) : null}
 
       <BlockerUnlockSummary
-        blockers={overview.blocker_register ?? []}
-        facilities={facilities}
+        blockers={metrics.blocker_register}
+        facilities={metrics.scopedFacilities}
       />
 
-      {quickWinsClassic > 0 && (
+      {metrics.quickWinsClassic > 0 && (
         <div className="mb-8">
-          <QuickWinsCard count={quickWinsClassic} />
+          <QuickWinsCard count={metrics.quickWinsClassic} />
         </div>
       )}
 
@@ -327,12 +313,19 @@ export function InteractiveOverview({
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 mb-8">
         <DomainBarCard
-          domainAverages={overview.domain_averages}
-          title="DRF domains (national avg)"
+          domainAverages={metrics.domain_averages}
+          title={
+            metrics.isScoped
+              ? `DRF domains (${selectedCounty || selectedTier || "filtered"})`
+              : "DRF domains (national avg)"
+          }
           description="0–3 scale · % of max shown in tooltip"
           maxScore={overview.domain_scale_max ?? 3}
         />
-        <BlockerBarCard data={overview.blocker_register ?? []} facilities={facilities} />
+        <BlockerBarCard
+          data={metrics.blocker_register}
+          facilities={metrics.scopedFacilities}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-1 mb-8">

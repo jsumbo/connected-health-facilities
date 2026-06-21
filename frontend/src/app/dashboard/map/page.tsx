@@ -1,17 +1,43 @@
-import { Suspense } from "react"
-import { getPublicFacilities } from "@/lib/public-api"
-import { GeoMap } from "@/components/public/geo-map"
+import type { Metadata } from "next"
+import { ErrorBanner } from "@/components/public/error-banner"
+import type { MapFacility } from "@/components/public/facility-map"
+import { FacilityMapView } from "@/components/public/facility-map-view"
+import { getPublicFacilities, getPublicOverview, getFacilityPhotoUrl } from "@/lib/public-api"
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Map | Dashboard",
 }
 
-async function MapContent() {
-  const facilities = await getPublicFacilities()
-  return <GeoMap facilities={facilities.items || []} />
-}
+export const dynamic = "force-dynamic"
 
-export default function MapPage() {
+export default async function MapPage() {
+  let mapFacilities: MapFacility[] = []
+  let overview = null
+  let error: string | null = null
+
+  try {
+    const [page, ov] = await Promise.all([getPublicFacilities(), getPublicOverview()])
+    overview = ov
+    mapFacilities = page.items
+      .filter((f) => f.latitude != null && f.longitude != null)
+      .map((f) => ({
+        slug: f.slug,
+        name: f.name,
+        county: f.county,
+        tier: f.tier,
+        overall_score: f.overall_score,
+        latitude: f.latitude as number,
+        longitude: f.longitude as number,
+        assessment_status: f.assessment_status,
+        has_facility_photo: f.has_facility_photo,
+        photo_url: f.has_facility_photo ? getFacilityPhotoUrl(f.slug) : null,
+      }))
+  } catch (e) {
+    error = e instanceof Error ? e.message : "Failed to load map data"
+  }
+
+  const total = overview?.programme_target ?? mapFacilities.length
+
   return (
     <div className="space-y-8">
       <div>
@@ -19,9 +45,9 @@ export default function MapPage() {
         <p className="text-muted-foreground">Geographic distribution of facilities by readiness tier</p>
       </div>
 
-      <Suspense fallback={<div className="h-96 bg-muted rounded-lg animate-pulse" />}>
-        <MapContent />
-      </Suspense>
+      {error && <ErrorBanner message={error} />}
+
+      {!error && <FacilityMapView facilities={mapFacilities} totalCount={total} />}
     </div>
   )
 }

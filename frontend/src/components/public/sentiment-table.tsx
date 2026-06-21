@@ -1,6 +1,6 @@
 import Link from "next/link"
 import type { FacilitySentimentSummary } from "@/lib/types-public"
-import { formatFacilityChoice } from "@/lib/format-facility-value"
+import { formatBurdenLabel, formatManagementLabel } from "@/lib/sentiment-labels"
 import {
   Table,
   TableBody,
@@ -48,11 +48,11 @@ export function SentimentTable({ rows }: SentimentTableProps) {
               <TableCell className="text-right tabular-nums">
                 {row.avg_enthusiasm != null ? `${row.avg_enthusiasm}/10` : "—"}
               </TableCell>
-              <TableCell className="text-sm capitalize text-muted-foreground">
-                {formatFacilityChoice(row.management_engagement_mode)}
+              <TableCell className="text-sm text-muted-foreground">
+                {formatManagementLabel(row.management_engagement_mode)}
               </TableCell>
-              <TableCell className="text-sm capitalize text-muted-foreground">
-                {formatFacilityChoice(row.burden_perception_mode)}
+              <TableCell className="text-sm text-muted-foreground">
+                {formatBurdenLabel(row.burden_perception_mode)}
               </TableCell>
             </TableRow>
           ))}

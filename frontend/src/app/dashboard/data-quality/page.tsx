@@ -81,7 +81,7 @@ export default async function DataQualityPage() {
         })}
       </div>
 
-      <Card className="shadow-none border-l-4 border-l-blue-500 bg-blue-50/30">
+      <Card className="shadow-none border border-border bg-muted/20">
         <CardHeader>
           <CardTitle className="text-base">Assessment Notes</CardTitle>
         </CardHeader>

@@ -1,45 +1,43 @@
 "use client"
 
 import { useMemo } from "react"
+import Link from "next/link"
 import type { ProgrammeFacility } from "@/lib/types-public"
+import {
+  DRF_DOMAIN_HEADERS,
+  DRF_DOMAIN_KEYS,
+  getDrfDomainScore,
+} from "@/lib/drf-domains"
 
 interface HeatmapGridProps {
   facilities: ProgrammeFacility[]
 }
-
-const DOMAIN_LABELS = {
-  B: "GOV",
-  C: "WF",
-  D: "INF",
-  E: "HI",
-  F: "ICT",
-  G: "SD",
-  H: "SC",
-  I: "FIN",
-  J: "OPS",
-}
-
-const DOMAIN_LONG_LABELS = {
-  B: "Governance",
-  C: "Workforce",
-  D: "Infrastructure",
-  E: "Health Info",
-  F: "Digital Tech",
-  G: "Service Delivery",
-  H: "Supply Chain",
-  I: "Financing",
-  J: "Operations",
-}
-
-const DOMAIN_KEYS = ["B", "C", "D", "E", "F", "G", "H", "I", "J"] as const
 
 function getColorClass(score: number | null | undefined): string {
   if (score === null || score === undefined) return "bg-slate-100"
   if (score === 0) return "bg-red-100"
   if (score === 1) return "bg-orange-200"
   if (score === 2) return "bg-yellow-100"
-  if (score === 3) return "bg-emerald-100"
+  if (score >= 3) return "bg-emerald-100"
   return "bg-slate-100"
+}
+
+function tierBadgeClass(tier: string | null | undefined): string {
+  if (tier === "Tier 1 — HOS-Ready") return "bg-emerald-600"
+  if (tier?.includes("Deployment-Eligible") || tier?.includes("Structured Remediation")) {
+    return "bg-blue-600"
+  }
+  if (tier?.includes("Not Deployment-Ready")) return "bg-red-600"
+  return "bg-slate-600"
+}
+
+function tierShort(tier: string | null | undefined): string {
+  if (!tier) return "—"
+  if (tier.includes("HOS-Ready")) return "T1"
+  if (tier.includes("Deployment-Eligible")) return "T2"
+  if (tier.includes("Structured Remediation")) return "T2R"
+  if (tier.includes("Not Deployment-Ready")) return "T3"
+  return tier.replace("Tier ", "T").slice(0, 3)
 }
 
 export function HeatmapGrid({ facilities }: HeatmapGridProps) {
@@ -53,19 +51,22 @@ export function HeatmapGrid({ facilities }: HeatmapGridProps) {
       <table className="w-full border-collapse text-sm">
         <thead>
           <tr>
-            <th className="border border-border bg-slate-100 p-3 text-left text-xs font-semibold sticky left-0 z-10 min-w-48">
-              Facility × domain readiness
+            <th className="sticky left-0 z-10 min-w-48 border border-border bg-slate-100 p-3 text-left text-xs font-semibold">
+              Facility
             </th>
-            {DOMAIN_KEYS.map((domain) => (
+            {DRF_DOMAIN_KEYS.map((key) => (
               <th
-                key={domain}
-                className="border border-border bg-slate-100 p-2 text-center text-xs font-semibold w-10"
-                title={DOMAIN_LONG_LABELS[domain]}
+                key={key}
+                className="w-10 border border-border bg-slate-100 p-2 text-center text-xs font-semibold"
+                title={key}
               >
-                {domain}
+                {DRF_DOMAIN_HEADERS[key]}
               </th>
             ))}
-            <th className="border border-border bg-slate-100 p-2 text-center text-xs font-semibold w-14">
+            <th className="w-14 border border-border bg-slate-100 p-2 text-center text-xs font-semibold">
+              Comp
+            </th>
+            <th className="w-12 border border-border bg-slate-100 p-2 text-center text-xs font-semibold">
               Tier
             </th>
           </tr>
@@ -73,34 +74,33 @@ export function HeatmapGrid({ facilities }: HeatmapGridProps) {
         <tbody>
           {sorted.map((facility) => (
             <tr key={facility.slug} className="hover:bg-slate-50">
-              <td className="border border-border p-3 font-medium text-sm sticky left-0 z-10 bg-white">
-                {facility.name}
+              <td className="sticky left-0 z-10 border border-border bg-white p-3 text-sm font-medium">
+                <Link
+                  href={`/facility/${facility.slug}`}
+                  className="hover:text-primary hover:underline underline-offset-2"
+                >
+                  {facility.name}
+                </Link>
               </td>
-              {DOMAIN_KEYS.map((domain) => {
-                const domainScore =
-                  (facility.domain_scores as Record<string, any> | undefined)?.[domain]?.score ?? null;
+              {DRF_DOMAIN_KEYS.map((key) => {
+                const domainScore = getDrfDomainScore(facility.domain_scores, key)
                 return (
                   <td
-                    key={domain}
-                    className={`border border-border p-2 text-center text-xs font-semibold h-10 ${getColorClass(
-                      domainScore
-                    )}`}
+                    key={key}
+                    className={`h-10 border border-border p-2 text-center text-xs font-semibold ${getColorClass(domainScore)}`}
                   >
                     {domainScore !== null ? domainScore : "—"}
                   </td>
-                );
+                )
               })}
+              <td className="border border-border p-2 text-center text-xs font-semibold tabular-nums">
+                {facility.overall_score != null ? `${facility.overall_score}%` : "—"}
+              </td>
               <td className="border border-border p-2 text-center text-xs font-medium">
-                <span className={`inline-block px-2 py-1 rounded text-white ${
-                  facility.tier === "Tier 1 — HOS-Ready"
-                    ? "bg-emerald-600"
-                    : facility.tier?.includes("Deployment-Eligible") || facility.tier?.includes("Structured Remediation")
-                    ? "bg-blue-600"
-                    : facility.tier?.includes("Not Deployment-Ready")
-                    ? "bg-red-600"
-                    : "bg-slate-600"
-                }`}>
-                  {facility.tier?.replace("Tier ", "T")?.replace(" — ", " ") || "—"}
+                <span
+                  className={`inline-block rounded px-2 py-1 text-white ${tierBadgeClass(facility.tier)}`}
+                >
+                  {tierShort(facility.tier)}
                 </span>
               </td>
             </tr>
@@ -108,28 +108,24 @@ export function HeatmapGrid({ facilities }: HeatmapGridProps) {
         </tbody>
       </table>
 
-      {/* Legend */}
-      <div className="mt-6 flex gap-6 text-xs text-muted-foreground">
+      <div className="mt-6 flex flex-wrap gap-6 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-red-100 border border-border" />
-          <span>0 blocker/none</span>
+          <div className="h-4 w-4 border border-border bg-red-100" />
+          <span>0 — blocker/none</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-orange-200 border border-border" />
-          <span>1 weak</span>
+          <div className="h-4 w-4 border border-border bg-orange-200" />
+          <span>1 — weak</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-yellow-100 border border-border" />
-          <span>2 adequate</span>
+          <div className="h-4 w-4 border border-border bg-yellow-100" />
+          <span>2 — adequate</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-emerald-100 border border-border" />
-          <span>3 strong</span>
+          <div className="h-4 w-4 border border-border bg-emerald-100" />
+          <span>3 — strong</span>
         </div>
       </div>
-      <p className="text-xs text-muted-foreground mt-3">
-        Every facility, every domain (0–3) in one view · sorted by composite · number shown for non-colour reading
-      </p>
     </div>
-  );
+  )
 }

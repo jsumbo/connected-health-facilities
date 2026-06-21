@@ -6,6 +6,7 @@ import { FacilityComparePanel } from "@/components/public/facility-compare-panel
 import { FacilityComparePicker } from "@/components/public/facility-compare-picker"
 import { PublicShell } from "@/components/public/PublicShell"
 import { getPublicFacilities, getPublicFacility } from "@/lib/public-api"
+import { computeCompareBenchmarks } from "@/lib/compare-benchmarks"
 
 export const metadata: Metadata = pageMetadata({
   title: "Compare facilities",
@@ -60,7 +61,7 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
     facilityB?.name ?? facilities.find((f) => f.slug === slugB)?.name
 
   return (
-    <PublicShell title="Compare facilities" description="Side-by-side readiness">
+    <PublicShell title="Compare">
       <div className="space-y-6">
         {error && <ErrorBanner message={error} />}
 
@@ -91,7 +92,12 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
         ) : null}
 
         {canCompare && facilityA && facilityB && (
-          <FacilityComparePanel facilityA={facilityA} facilityB={facilityB} />
+          <FacilityComparePanel
+            facilityA={facilityA}
+            facilityB={facilityB}
+            benchmarksA={computeCompareBenchmarks(facilityA, facilities)}
+            benchmarksB={computeCompareBenchmarks(facilityB, facilities)}
+          />
         )}
       </div>
     </PublicShell>

@@ -17,7 +17,7 @@ export const metadata: Metadata = pageMetadata({
 })
 
 interface FacilitiesPageProps {
-  searchParams: Promise<{ county?: string; tier?: string }>
+  searchParams: Promise<{ county?: string; tier?: string; cluster?: string }>
 }
 
 export default async function FacilitiesPage({ searchParams }: FacilitiesPageProps) {
@@ -46,7 +46,8 @@ export default async function FacilitiesPage({ searchParams }: FacilitiesPagePro
     <PublicShell
       lastRefreshed={overview?.last_refreshed}
       title="Facilities"
-      description={overview?.assessed_count ? `${overview.assessed_count} of ${overview.programme_target} assessed` : ""}
+      assessed={overview?.assessed_count}
+      target={overview?.programme_target}
     >
 
       {error && <ErrorBanner message={error} />}

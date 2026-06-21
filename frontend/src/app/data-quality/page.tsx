@@ -3,6 +3,7 @@ import { AlertTriangle, CircleDashed, MapPinOff, MessageSquare, Sparkles, Users 
 import { pageMetadata } from "@/lib/site-metadata"
 import { ErrorBanner } from "@/components/public/error-banner"
 import { FacilityDataTable } from "@/components/public/facility-data-table"
+import { DataQualityCharts } from "@/components/public/data-quality-charts"
 import { KpiMetric } from "@/components/public/kpi-metric"
 import { PublicShell } from "@/components/public/PublicShell"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -34,13 +35,16 @@ export default async function DataQualityPage() {
     <PublicShell
       lastRefreshed={overview?.last_refreshed}
       title="Data quality"
-      description="Coverage and gaps"
+      assessed={overview?.assessed_count}
+      target={overview?.programme_target}
     >
 
       {error && <ErrorBanner message={error} />}
 
       {report && (
         <>
+          <DataQualityCharts facilities={report.facilities} />
+
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <KpiMetric
               icon={CircleDashed}

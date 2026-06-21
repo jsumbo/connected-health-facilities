@@ -25,15 +25,8 @@ export function HeatmapGridClient({ initialFacilities, counties }: HeatmapGridCl
   }, [initialFacilities, selectedCounty, selectedTier])
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Readiness Heatmap</h1>
-        <p className="text-muted-foreground">
-          Every facility × every domain (0–3 in one view) · sorted by composite
-        </p>
-      </div>
-
-      <div className="flex gap-4">
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-end gap-4">
         <div>
           <label className="text-xs font-medium text-muted-foreground block mb-1">County</label>
           <select

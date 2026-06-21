@@ -29,6 +29,7 @@ import { FacilityMetricCard } from "@/components/public/facility-metric-card"
 import { PageIntro } from "@/components/public/page-intro"
 import { PublicShell } from "@/components/public/PublicShell"
 import { TierBadge } from "@/components/public/tier-badge"
+import { ReadinessGaugeRing } from "@/components/public/readiness-gauge-ring"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getFacilityPhotoUrl, getPublicFacility } from "@/lib/public-api"
@@ -137,15 +138,18 @@ export default async function FacilityPage({ params }: PageProps) {
               />
             </figure>
           ) : null}
-          <Card className="w-full shrink-0 self-start shadow-none sm:w-52 sm:max-w-[13rem]">
+          <Card className="w-full shrink-0 self-start shadow-none sm:w-auto">
             <CardContent className="px-5 py-5 text-center">
-              <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-md bg-primary/10 text-primary">
-                <Gauge className="size-5" strokeWidth={2} aria-hidden />
-              </div>
-              <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                Readiness
-              </p>
-              <p className="mt-1 text-4xl font-semibold tabular-nums">{facility.overall_score}%</p>
+              {facility.overall_score != null ? (
+                <ReadinessGaugeRing score={facility.overall_score} />
+              ) : (
+                <>
+                  <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                    <Gauge className="size-5" strokeWidth={2} aria-hidden />
+                  </div>
+                  <p className="text-4xl font-semibold tabular-nums">—</p>
+                </>
+              )}
               <div className="mt-3 flex flex-col items-center gap-1">
                 <TierBadge tier={facility.tier} />
                 {facility.wave ? (

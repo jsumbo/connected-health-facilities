@@ -1,9 +1,10 @@
 "use client"
 
 import { useMemo } from "react"
-import { useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { ProgrammeFacility } from "@/lib/types-public"
-import { FacilityDataTable } from "./facility-data-table"
+import { FacilitiesTableClient } from "@/components/public/facilities-table-client"
+import { ActiveFilterChips } from "@/components/public/active-filter-chips"
 import { Card, CardContent } from "@/components/ui/card"
 
 interface FacilitiesWrapperProps {
@@ -11,9 +12,12 @@ interface FacilitiesWrapperProps {
 }
 
 export function FacilitiesWrapper({ facilities }: FacilitiesWrapperProps) {
+  const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
   const county = searchParams.get("county") || ""
   const tier = searchParams.get("tier") || ""
+  const cluster = searchParams.get("cluster") || ""
 
   const filteredFacilities = useMemo(() => {
     let filtered = facilities
@@ -26,13 +30,43 @@ export function FacilitiesWrapper({ facilities }: FacilitiesWrapperProps) {
       filtered = filtered.filter((f) => f.tier === tier)
     }
 
+    if (cluster) {
+      filtered = filtered.filter((f) => f.cluster === cluster)
+    }
+
     return filtered
-  }, [facilities, county, tier])
+  }, [facilities, county, tier, cluster])
+
+  const handleClearAll = () => router.push(pathname)
 
   return (
     <Card className="shadow-none">
       <CardContent className="pt-6">
-        <FacilityDataTable facilities={filteredFacilities} />
+        <ActiveFilterChips
+          county={county || undefined}
+          tier={tier || undefined}
+          cluster={cluster || undefined}
+          onClearCounty={() => {
+            const params = new URLSearchParams(searchParams.toString())
+            params.delete("county")
+            const q = params.toString()
+            router.push(q ? `${pathname}?${q}` : pathname)
+          }}
+          onClearTier={() => {
+            const params = new URLSearchParams(searchParams.toString())
+            params.delete("tier")
+            const q = params.toString()
+            router.push(q ? `${pathname}?${q}` : pathname)
+          }}
+          onClearCluster={() => {
+            const params = new URLSearchParams(searchParams.toString())
+            params.delete("cluster")
+            const q = params.toString()
+            router.push(q ? `${pathname}?${q}` : pathname)
+          }}
+          onClearAll={handleClearAll}
+        />
+        <FacilitiesTableClient facilities={filteredFacilities} />
       </CardContent>
     </Card>
   )

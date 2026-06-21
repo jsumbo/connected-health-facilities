@@ -6,12 +6,10 @@ import { Building2, GraduationCap, Users } from "lucide-react"
 import type { QuestionStat } from "@/lib/types-public"
 import { CountyFilter } from "@/components/public/county-filter"
 import { ErrorBanner } from "@/components/public/error-banner"
-import { DlaTable } from "@/components/public/dla-table"
-import { DlaQuestionsCard } from "@/components/public/dla-questions-chart"
+import { DlaResults } from "@/components/public/dla-results"
 import { KpiMetric } from "@/components/public/kpi-metric"
 import { PublicShell } from "@/components/public/PublicShell"
 import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getPublicDla, getPublicFacilities, getPublicOverview, getPublicDlaQuestionStats } from "@/lib/public-api"
 
 export const metadata: Metadata = pageMetadata({
@@ -49,6 +47,8 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
     { name: string; county: string; district: string | null }
   > = {}
   let counties: string[] = []
+  let assessedCount = 0
+  let targetCount = 37
 
   try {
     const [facilitiesPage, overview] = await Promise.all([
@@ -68,6 +68,8 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
       : [...new Set(facilitiesPage.items.map((f) => f.county))].sort((a, b) =>
           a.localeCompare(b)
         )
+    assessedCount = overview?.assessed_count ?? facilitiesPage.items.length
+    targetCount = overview?.programme_target ?? facilitiesPage.total
   } catch {
     // table falls back to slug only
   }
@@ -95,15 +97,15 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
       ? `${(scoreVals.reduce((a, b) => a + b, 0) / scoreVals.length).toFixed(1)}/100`
       : "—"
 
-  const description = countyFilter
-    ? `${rows.length} facilit${rows.length === 1 ? "y" : "ies"} in ${countyFilter}`
-    : "By facility"
+  const description = countyFilter ? countyFilter : undefined
 
   return (
     <PublicShell
       lastRefreshed={dla?.last_refreshed}
-      title="Digital literacy"
+      title="Digital Literacy"
       description={description}
+      assessed={assessedCount}
+      target={targetCount}
     >
       {error && <ErrorBanner message={error} />}
 
@@ -150,32 +152,7 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
             />
           </Suspense>
 
-          <Tabs defaultValue="by-facility" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="by-facility">By Facility</TabsTrigger>
-              <TabsTrigger value="by-question">By Question</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="by-facility" className="space-y-4">
-              <Card className="shadow-none">
-                <CardContent className="pt-6">
-                  <DlaTable rows={rows} />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="by-question">
-              {questionStats && questionStats.length > 0 ? (
-                <DlaQuestionsCard questions={questionStats} />
-              ) : (
-                <Card className="shadow-none">
-                  <CardContent className="py-12 text-center text-muted-foreground">
-                    Question data not available yet
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-          </Tabs>
+          <DlaResults rows={rows} questionStats={questionStats} />
         </>
       )}
     </PublicShell>

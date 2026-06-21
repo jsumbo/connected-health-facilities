@@ -1,18 +1,16 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { Building2, MessageSquare, Sparkles } from "lucide-react"
 import { pageMetadata } from "@/lib/site-metadata"
 import { ErrorBanner } from "@/components/public/error-banner"
 import { KpiMetric } from "@/components/public/kpi-metric"
 import { PublicShell } from "@/components/public/PublicShell"
-import { SentimentTable } from "@/components/public/sentiment-table"
+import { SentimentExplorer } from "@/components/public/sentiment-explorer"
 import { Card, CardContent } from "@/components/ui/card"
-import { getPublicFacilities, getPublicSentiment } from "@/lib/public-api"
+import { getPublicFacilities, getPublicOverview, getPublicSentiment } from "@/lib/public-api"
 
 export const metadata: Metadata = pageMetadata({
   title: "Staff sentiment",
-  description:
-    "Staff sentiment survey results: enthusiasm, perceived burden, and facility-level response summaries.",
+  description: "Staff sentiment survey results by facility.",
   path: "/sentiment",
 })
 
@@ -26,10 +24,20 @@ export default async function SentimentPage() {
     error = e instanceof Error ? e.message : "Failed to load sentiment survey"
   }
 
+  let facilities: Awaited<ReturnType<typeof getPublicFacilities>>["items"] = []
+  let assessedCount = 0
+  let targetCount = 37
   let nameBySlug: Record<string, string> = {}
+
   try {
-    const { items } = await getPublicFacilities()
-    nameBySlug = Object.fromEntries(items.map((f) => [f.slug, f.name]))
+    const [facilitiesData, overview] = await Promise.all([
+      getPublicFacilities(),
+      getPublicOverview().catch(() => null),
+    ])
+    facilities = facilitiesData.items
+    nameBySlug = Object.fromEntries(facilities.map((f) => [f.slug, f.name]))
+    assessedCount = overview?.assessed_count ?? facilities.length
+    targetCount = overview?.programme_target ?? facilitiesData.total
   } catch {
     // table falls back to slug
   }
@@ -44,8 +52,9 @@ export default async function SentimentPage() {
   return (
     <PublicShell
       lastRefreshed={sentiment?.last_refreshed}
-      title="Staff sentiment"
-      description="By facility"
+      title="Staff Sentiment"
+      assessed={assessedCount}
+      target={targetCount}
     >
       {error && <ErrorBanner message={error} />}
 
@@ -88,11 +97,7 @@ export default async function SentimentPage() {
             </Card>
           )}
 
-          <Card className="shadow-none">
-            <CardContent className="pt-6">
-              <SentimentTable rows={rows} />
-            </CardContent>
-          </Card>
+          <SentimentExplorer rows={rows} facilities={facilities} />
         </>
       )}
     </PublicShell>

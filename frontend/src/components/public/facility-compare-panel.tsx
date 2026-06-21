@@ -10,6 +10,7 @@ import {
   formatMbps,
   formatPercent,
 } from "@/lib/format-facility-value"
+import type { CompareBenchmarks } from "@/lib/compare-benchmarks"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
@@ -204,9 +205,16 @@ function getDomainEntries(facility: ProgrammeFacility): { label: string; score: 
 interface FacilityComparePanelProps {
   facilityA: ProgrammeFacility
   facilityB: ProgrammeFacility
+  benchmarksA?: CompareBenchmarks
+  benchmarksB?: CompareBenchmarks
 }
 
-export function FacilityComparePanel({ facilityA, facilityB }: FacilityComparePanelProps) {
+export function FacilityComparePanel({
+  facilityA,
+  facilityB,
+  benchmarksA,
+  benchmarksB,
+}: FacilityComparePanelProps) {
   const nameA = facilityA.name
   const nameB = facilityB.name
 
@@ -244,6 +252,51 @@ export function FacilityComparePanel({ facilityA, facilityB }: FacilityComparePa
           </span>
         </p>
       ) : null}
+
+      {(benchmarksA || benchmarksB) && (
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          {[facilityA, facilityB].map((facility, idx) => {
+            const bm = idx === 0 ? benchmarksA : benchmarksB
+            if (!bm) return null
+            return (
+              <Card key={facility.slug} className="shadow-none border-dashed">
+                <CardContent className="py-4">
+                  <p className="text-xs font-medium text-muted-foreground mb-2">
+                    Benchmarks for {facility.name}
+                  </p>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <p className="text-[10px] uppercase text-muted-foreground">National avg</p>
+                      <p className="font-semibold tabular-nums">
+                        {bm.nationalAvgScore != null ? `${bm.nationalAvgScore.toFixed(1)}%` : "—"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase text-muted-foreground">
+                        {bm.clusterName ?? "Cluster"} avg
+                      </p>
+                      <p className="font-semibold tabular-nums">
+                        {bm.clusterAvgScore != null ? `${bm.clusterAvgScore.toFixed(1)}%` : "—"}
+                      </p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="text-[10px] uppercase text-muted-foreground">Facility score</p>
+                      <p className="font-semibold tabular-nums">
+                        {facility.overall_score != null ? `${facility.overall_score}%` : "—"}
+                        {bm.nationalAvgScore != null && facility.overall_score != null ? (
+                          <span className="ml-2 text-xs font-normal text-muted-foreground">
+                            ({facility.overall_score >= bm.nationalAvgScore ? "above" : "below"} national)
+                          </span>
+                        ) : null}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+      )}
 
       {(facilityA.blockers.length > 0 || facilityB.blockers.length > 0) && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

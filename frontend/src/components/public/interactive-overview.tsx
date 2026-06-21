@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import type { PublicOverview, ProgrammeFacility } from "@/lib/types-public"
+import type { PublicOverview, ProgrammeFacility, QuestionStat } from "@/lib/types-public"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TierDonutCard } from "./tier-donut-chart"
 import { CountyBarCard } from "./county-bar-chart"
@@ -10,22 +10,41 @@ import { DomainBarCard } from "./domain-bar-chart"
 import { BlockerBarCard } from "./blocker-bar-chart"
 import { KpiMetric } from "./kpi-metric"
 import { QuickWinsCard } from "./quick-wins-card"
-import { Ban, ClipboardCheck, Gauge, GraduationCap, MessageSquareHeart, ShieldCheck } from "lucide-react"
+import { ActiveFilterChips } from "./active-filter-chips"
+import { BlockerUnlockSummary } from "./blocker-unlock-summary"
+import {
+  Ban,
+  ClipboardCheck,
+  Gauge,
+  GraduationCap,
+  MessageSquareHeart,
+  ShieldCheck,
+  Target,
+  Wrench,
+  Zap,
+} from "lucide-react"
+import { countQuickWins } from "@/lib/quick-wins"
+import { buildDlaInsight, getWeakestDomain } from "@/lib/overview-insights"
 
 interface InteractiveOverviewProps {
   overview: PublicOverview
   counties: string[]
   facilities?: ProgrammeFacility[]
+  dlaQuestions?: QuestionStat[]
 }
 
-export function InteractiveOverview({ overview, counties, facilities = [] }: InteractiveOverviewProps) {
+export function InteractiveOverview({
+  overview,
+  counties,
+  facilities = [],
+  dlaQuestions = [],
+}: InteractiveOverviewProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
   const [selectedCounty, setSelectedCounty] = useState<string>("")
   const [selectedTier, setSelectedTier] = useState<string>("")
 
-  // Initialize filter state from URL on mount and when params change
   useEffect(() => {
     const county = searchParams.get("county") || ""
     const tier = searchParams.get("tier") || ""
@@ -33,50 +52,40 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
     setSelectedTier(tier)
   }, [searchParams])
 
-  // Handle county filter change and update URL (clears tier)
   const handleCountyChange = (county: string) => {
     setSelectedCounty(county)
     setSelectedTier("")
     const params = new URLSearchParams()
-    if (county) {
-      params.set("county", county)
-    }
+    if (county) params.set("county", county)
     router.push(`?${params.toString()}`)
   }
 
-  // Handle tier filter change and update URL (clears county)
   const handleTierChange = (tier: string) => {
     setSelectedTier(tier)
     setSelectedCounty("")
     const params = new URLSearchParams()
-    if (tier) {
-      params.set("tier", tier)
-    }
+    if (tier) params.set("tier", tier)
     router.push(`?${params.toString()}`)
   }
 
-  // Clear all filters
   const handleClearFilters = () => {
     setSelectedCounty("")
     setSelectedTier("")
     router.push("?")
   }
 
-  // Calculate quick wins count: Tier 3 with exactly 1 blocker
-  const quickWinsCount = useMemo(() => {
-    return facilities.filter(
-      (f) =>
-        f.tier === "Tier 3 — Not Deployment-Ready" &&
-        f.blockers &&
-        f.blockers.length === 1
-    ).length
-  }, [facilities])
+  const quickWinsClassic = useMemo(
+    () => countQuickWins(facilities, "classic"),
+    [facilities]
+  )
+  const quickWinsExpanded = useMemo(
+    () => countQuickWins(facilities, "expanded"),
+    [facilities]
+  )
 
-  // Filter data based on selected county and tier
   const filtered = useMemo(() => {
     let result = { ...overview }
 
-    // Filter by county
     if (selectedCounty) {
       result = {
         ...result,
@@ -84,7 +93,6 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
       }
     }
 
-    // Filter by tier
     if (selectedTier) {
       result = {
         ...result,
@@ -94,7 +102,6 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
       }
     }
 
-    // Recalculate aggregates for selected county
     if (selectedCounty) {
       const countyData = overview.by_county.find((c) => c.county === selectedCounty)
       if (countyData) {
@@ -104,6 +111,16 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
 
     return result
   }, [overview, selectedCounty, selectedTier])
+
+  const weakestDomain = getWeakestDomain(overview.domain_averages)
+  const structuredRemediation =
+    overview.tier_counts["Tier 2 — Structured Remediation"] ?? 0
+  const deploymentEligible =
+    overview.tier_counts["Tier 2 — Deployment-Eligible"] ?? 0
+  const tier1Count = overview.tier_counts["Tier 1 — HOS-Ready"] ?? 0
+
+  const dlaInsight = buildDlaInsight(dlaQuestions)
+  const weakestDla = [...dlaQuestions].sort((a, b) => a.correctRate - b.correctRate)[0]
 
   const tiers = [
     { value: "", label: "All tiers" },
@@ -118,8 +135,16 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
 
   return (
     <>
+      <ActiveFilterChips
+        county={selectedCounty || undefined}
+        tier={selectedTier || undefined}
+        onClearCounty={() => handleCountyChange("")}
+        onClearTier={() => handleTierChange("")}
+        onClearAll={handleClearFilters}
+      />
+
       {/* Filters */}
-      <div className="mb-8 flex flex-wrap gap-4 items-end">
+      <div className="mb-6 flex flex-wrap gap-4 items-end">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="county-filter" className="text-xs font-medium text-muted-foreground">
             County
@@ -159,6 +184,7 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
 
         {(selectedCounty || selectedTier) && (
           <button
+            type="button"
             onClick={handleClearFilters}
             className="px-4 py-2 text-sm bg-muted hover:bg-muted/80 rounded-lg transition-colors"
           >
@@ -167,7 +193,49 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
         )}
       </div>
 
-      {/* KPIs */}
+      {/* Decision-first KPIs (existing metrics retained below) */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6 mb-4">
+        <KpiMetric
+          icon={ShieldCheck}
+          label="HOS-ready now"
+          value={tier1Count}
+          description="Tier 1"
+        />
+        <KpiMetric
+          icon={Zap}
+          label="Quick wins"
+          value={quickWinsExpanded}
+          description={`1 blocker · ≥65%${quickWinsClassic !== quickWinsExpanded ? ` (${quickWinsClassic} total)` : ""}`}
+        />
+        <KpiMetric
+          icon={Target}
+          label="Deploy-eligible"
+          value={deploymentEligible}
+          description="Tier 2"
+        />
+        <KpiMetric
+          icon={Wrench}
+          label="Structured remediation"
+          value={structuredRemediation}
+          description="Tier 2"
+        />
+        <KpiMetric
+          icon={Ban}
+          label="Tier 3 blocked"
+          value={overview.blocked_count}
+          description="Any BLK"
+        />
+        <KpiMetric
+          icon={Gauge}
+          label="Weakest domain"
+          value={weakestDomain ? weakestDomain.label.split(" ")[0] : "—"}
+          description={
+            weakestDomain ? `${weakestDomain.value.toFixed(2)}/3 avg` : undefined
+          }
+        />
+      </div>
+
+      {/* Secondary KPIs — preserved from original overview */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6 mb-8">
         <KpiMetric
           icon={ClipboardCheck}
@@ -179,17 +247,6 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
           icon={Gauge}
           label="Avg readiness"
           value={overview.avg_score != null ? `${overview.avg_score}%` : "—"}
-        />
-        <KpiMetric
-          icon={ShieldCheck}
-          label="Tier 1"
-          value={overview.tier_counts["Tier 1 — HOS-Ready"] ?? 0}
-          description="HOS-ready"
-        />
-        <KpiMetric
-          icon={Ban}
-          label="Blocked"
-          value={overview.blocked_count}
         />
         <KpiMetric
           icon={MessageSquareHeart}
@@ -213,22 +270,37 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
               ? `${overview.dla_avg_score_national}/100`
               : "—"
           }
-          description={
+          description={[
             overview.dla_total_responses != null
               ? `${overview.dla_total_responses} responses`
-              : undefined
-          }
+              : null,
+            weakestDla ? `Weakest: Q${weakestDla.questionNumber} ${Math.round(weakestDla.correctRate)}%` : null,
+          ]
+            .filter((line): line is string => line != null)
+            .join(" · ")}
         />
       </div>
 
-      {/* Quick Wins Card */}
-      {quickWinsCount > 0 && (
+      {dlaInsight ? (
+        <Card className="mb-8 border-amber-200/60 bg-amber-50/40 shadow-none">
+          <CardContent className="py-3 text-sm text-amber-950">
+            <strong>Training priority:</strong> {dlaInsight}
+          </CardContent>
+        </Card>
+      ) : null}
+
+      <BlockerUnlockSummary
+        blockers={overview.blocker_register ?? []}
+        facilities={facilities}
+      />
+
+      {quickWinsClassic > 0 && (
         <div className="mb-8">
-          <QuickWinsCard count={quickWinsCount} />
+          <QuickWinsCard count={quickWinsClassic} />
         </div>
       )}
 
-      {/* Charts */}
+      {/* Charts — unchanged */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 mb-8">
         <div className="lg:col-span-1">
           <TierDonutCard
@@ -256,10 +328,10 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
         <DomainBarCard
           domainAverages={overview.domain_averages}
           title="DRF domains (national avg)"
-          description="0–3 readiness domain scale"
+          description="0–3 scale · % of max shown in tooltip"
           maxScore={overview.domain_scale_max ?? 3}
         />
-        <BlockerBarCard data={overview.blocker_register ?? []} />
+        <BlockerBarCard data={overview.blocker_register ?? []} facilities={facilities} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-1 mb-8">
@@ -269,9 +341,10 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
           </CardHeader>
           <CardContent className="space-y-2">
             {overview.by_cluster.map((c) => (
-              <div
+              <a
                 key={c.cluster}
-                className="flex items-center justify-between rounded-md border border-border bg-muted/30 px-3 py-2"
+                href={`/facilities?cluster=${encodeURIComponent(c.cluster)}`}
+                className="flex items-center justify-between rounded-md border border-border bg-muted/30 px-3 py-2 transition-colors hover:bg-muted/50"
               >
                 <div>
                   <p className="text-sm font-medium">{c.cluster}</p>
@@ -282,7 +355,7 @@ export function InteractiveOverview({ overview, counties, facilities = [] }: Int
                 <p className="text-lg font-semibold tabular-nums">
                   {c.avg_score != null ? `${c.avg_score}%` : "—"}
                 </p>
-              </div>
+              </a>
             ))}
           </CardContent>
         </Card>

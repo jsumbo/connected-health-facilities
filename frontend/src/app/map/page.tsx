@@ -47,7 +47,6 @@ export default async function MapPage() {
     <PublicShell
       lastRefreshed={overview?.last_refreshed}
       title="Map"
-      description="Marker colour = tier"
     >
       {error && <ErrorBanner message={error} />}
 

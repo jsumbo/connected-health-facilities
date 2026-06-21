@@ -1,94 +1,112 @@
 "use client"
 
+import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
-import type { ClusterData } from "@/app/dashboard/clusters/page"
+import type { ClusterSummary } from "@/lib/types-public"
+import {
+  DRF_DOMAIN_KEYS,
+  DRF_DOMAIN_LABELS,
+  getClusterDomainAverage,
+} from "@/lib/drf-domains"
 
 interface ClustersClientProps {
-  clusters: ClusterData[]
-  total: number
+  clusters: ClusterSummary[]
 }
 
-export function ClustersClient({ clusters, total }: ClustersClientProps) {
-  const domainLabels: Record<string, string> = {
-    B: "Governance",
-    C: "Workforce",
-    D: "Infrastructure",
-    E: "Health Info",
-    F: "Digital Tech",
-    G: "Service",
-    H: "Supply",
-    I: "Finance",
-    J: "Ops",
-  }
+const WEAK_THRESHOLD = 1.5
+
+export function ClustersClient({ clusters }: ClustersClientProps) {
+  const sorted = [...clusters].sort(
+    (a, b) => (b.avg_composite ?? 0) - (a.avg_composite ?? 0)
+  )
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Clusters</h1>
-        <p className="text-muted-foreground">Regional readiness and domain profile</p>
-        <p className="text-sm text-slate-500 mt-3">
-          ● {total} / {total} assessed
-        </p>
-      </div>
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {sorted.map((cluster) => {
+          const tier1 = cluster.tier_counts["Tier 1 — HOS-Ready"] ?? 0
+          const tier2 =
+            (cluster.tier_counts["Tier 2 — Deployment-Eligible"] ?? 0) +
+            (cluster.tier_counts["Tier 2 — Structured Remediation"] ?? 0)
+          const tier3 = cluster.tier_counts["Tier 3 — Not Deployment-Ready"] ?? 0
+          const composite = cluster.avg_composite ?? 0
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {clusters.map((cluster) => (
-          <Card key={cluster.name} className="shadow-none border border-slate-200">
-            <CardContent className="p-6">
-              {/* Header */}
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-900">{cluster.name}</h3>
-                  <div className="flex gap-3 mt-2 text-xs">
-                    <span className="text-slate-600">{cluster.facilities} facilities</span>
-                    <div className="flex gap-2">
-                      <span className="text-teal-600 font-medium">T1 {cluster.tier1}</span>
-                      <span className="text-blue-600 font-medium">T2 {cluster.tier2}</span>
-                      <span className="text-red-600 font-medium">T3 {cluster.tier3}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-3xl font-bold text-slate-900">{cluster.compositeScore}%</p>
-                </div>
-              </div>
-
-              {/* Domain bars */}
-              <div className="space-y-2 mb-6">
-                {Object.entries(cluster.domains)
-                  .slice(0, 6)
-                  .map(([key, value]) => (
-                    <div key={key} className="flex items-center gap-3">
-                      <span className="text-xs font-medium text-slate-600 w-20">{domainLabels[key]}</span>
-                      <div className="flex-1 h-5 bg-slate-100 rounded">
-                        <div
-                          className="h-full bg-teal-600 rounded transition-all"
-                          style={{ width: `${(value / 3) * 100}%` }}
-                        />
+          return (
+            <Link
+              key={cluster.cluster}
+              href={`/facilities?cluster=${encodeURIComponent(cluster.cluster)}`}
+              className="block"
+            >
+              <Card className="h-full border border-slate-200 shadow-none transition-colors hover:border-primary/30 hover:shadow-sm">
+                <CardContent className="p-6">
+                  <div className="mb-4 flex items-start justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold text-slate-900">{cluster.cluster}</h3>
+                      {cluster.region ? (
+                        <p className="text-xs text-muted-foreground">{cluster.region}</p>
+                      ) : null}
+                      <div className="mt-2 flex gap-3 text-xs">
+                        <span className="text-slate-600">{cluster.facility_count} facilities</span>
+                        <span className="font-medium text-emerald-600">T1 {tier1}</span>
+                        <span className="font-medium text-blue-600">T2 {tier2}</span>
+                        <span className="font-medium text-red-600">T3 {tier3}</span>
                       </div>
-                      <span className="text-xs font-medium text-slate-700 w-8 text-right">{value.toFixed(2)}</span>
                     </div>
-                  ))}
-              </div>
+                    <p className="text-3xl font-bold tabular-nums text-slate-900">
+                      {composite > 0 ? `${composite.toFixed(1)}%` : "—"}
+                    </p>
+                  </div>
 
-              {/* Footer metrics */}
-              <div className="flex justify-between items-center pt-4 border-t border-slate-100">
-                <div>
-                  <p className="text-sm text-slate-600">
-                    DLA <span className="font-semibold text-slate-900">{cluster.dla.toFixed(1)}%</span>
-                  </p>
-                  <p className="text-sm text-slate-600">
-                    Enthusiasm <span className="font-semibold text-slate-900">{cluster.enthusiasm.toFixed(1)}/10</span>
-                  </p>
-                </div>
-                <a href="#" className="text-teal-600 text-sm font-medium hover:underline">
-                  View facilities →
-                </a>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                  <div className="mb-6 space-y-2">
+                    {DRF_DOMAIN_KEYS.map((key) => {
+                      const value = getClusterDomainAverage(cluster.domain_averages, key)
+                      const numeric = value ?? 0
+                      const isWeak = numeric > 0 && numeric < WEAK_THRESHOLD
+                      const pct = (numeric / 3) * 100
+                      return (
+                        <div key={key} className="flex items-center gap-3">
+                          <span className="w-24 text-xs font-medium text-slate-600">
+                            {DRF_DOMAIN_LABELS[key]}
+                          </span>
+                          <div className="h-5 flex-1 rounded bg-slate-100">
+                            <div
+                              className={`h-full rounded transition-all ${isWeak ? "bg-red-500" : "bg-teal-600"}`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <span className="w-8 text-right text-xs font-medium tabular-nums text-slate-700">
+                            {value != null ? value.toFixed(1) : "—"}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+                    <div className="space-y-1 text-sm text-slate-600">
+                      <p>
+                        DLA{" "}
+                        <span className="font-semibold text-slate-900">
+                          {cluster.avg_dla_score != null
+                            ? `${cluster.avg_dla_score.toFixed(1)}%`
+                            : "—"}
+                        </span>
+                      </p>
+                      <p>
+                        Enthusiasm{" "}
+                        <span className="font-semibold text-slate-900">
+                          {cluster.avg_sentiment_enthusiasm != null
+                            ? `${cluster.avg_sentiment_enthusiasm.toFixed(1)}/10`
+                            : "—"}
+                        </span>
+                      </p>
+                    </div>
+                    <span className="text-sm font-medium text-teal-600">View facilities →</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          )
+        })}
     </div>
   )
 }

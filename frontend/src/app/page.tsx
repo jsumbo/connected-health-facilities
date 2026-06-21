@@ -14,7 +14,7 @@ import { FacilityDataTable } from "@/components/public/facility-data-table"
 import { PublicShell } from "@/components/public/PublicShell"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { InteractiveOverview } from "@/components/public/interactive-overview"
-import { getPublicFacilities, getPublicOverview } from "@/lib/public-api"
+import { getPublicDlaQuestionStats, getPublicFacilities, getPublicOverview } from "@/lib/public-api"
 
 export default async function HomePage() {
   let overview = null
@@ -23,9 +23,16 @@ export default async function HomePage() {
   let counties: string[] = []
   let error: string | null = null
 
+  let dlaQuestions: Awaited<ReturnType<typeof getPublicDlaQuestionStats>> = []
+
   try {
-    overview = await getPublicOverview()
-    const page = await getPublicFacilities()
+    const [ov, page, questions] = await Promise.all([
+      getPublicOverview(),
+      getPublicFacilities(),
+      getPublicDlaQuestionStats().catch(() => []),
+    ])
+    overview = ov
+    dlaQuestions = questions
     allFacilities = page.items
     topFacilities = [...page.items]
       .filter((f) => f.overall_score != null)
@@ -39,13 +46,22 @@ export default async function HomePage() {
   }
 
   return (
-    <PublicShell lastRefreshed={overview?.last_refreshed} title="Overview">
+    <PublicShell
+      lastRefreshed={overview?.last_refreshed}
+      facilities={allFacilities}
+      title="Overview"
+    >
       {error && <ErrorBanner message={error} />}
 
       {overview && (
         <>
           <Suspense fallback={null}>
-            <InteractiveOverview overview={overview} counties={counties} facilities={allFacilities} />
+            <InteractiveOverview
+              overview={overview}
+              counties={counties}
+              facilities={allFacilities}
+              dlaQuestions={dlaQuestions}
+            />
           </Suspense>
 
           <Card className="shadow-none">

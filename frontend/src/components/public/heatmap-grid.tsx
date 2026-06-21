@@ -8,6 +8,18 @@ interface HeatmapGridProps {
 }
 
 const DOMAIN_LABELS = {
+  B: "GOV",
+  C: "WF",
+  D: "INF",
+  E: "HI",
+  F: "ICT",
+  G: "SD",
+  H: "SC",
+  I: "FIN",
+  J: "OPS",
+}
+
+const DOMAIN_LONG_LABELS = {
   B: "Governance",
   C: "Workforce",
   D: "Infrastructure",
@@ -38,30 +50,30 @@ export function HeatmapGrid({ facilities }: HeatmapGridProps) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse">
+      <table className="w-full border-collapse text-sm">
         <thead>
           <tr>
-            <th className="border border-border bg-muted p-2 text-left text-xs font-semibold sticky left-0 z-10 min-w-48">
-              Facility
+            <th className="border border-border bg-slate-100 p-3 text-left text-xs font-semibold sticky left-0 z-10 min-w-48">
+              Facility × domain readiness
             </th>
             {DOMAIN_KEYS.map((domain) => (
               <th
                 key={domain}
-                className="border border-border bg-muted p-2 text-center text-xs font-semibold w-12"
-                title={DOMAIN_LABELS[domain]}
+                className="border border-border bg-slate-100 p-2 text-center text-xs font-semibold w-10"
+                title={DOMAIN_LONG_LABELS[domain]}
               >
                 {domain}
               </th>
             ))}
-            <th className="border border-border bg-muted p-2 text-center text-xs font-semibold w-16">
-              Composite
+            <th className="border border-border bg-slate-100 p-2 text-center text-xs font-semibold w-14">
+              Tier
             </th>
           </tr>
         </thead>
         <tbody>
           {sorted.map((facility) => (
-            <tr key={facility.slug} className="hover:bg-muted/30">
-              <td className="border border-border p-2 font-medium text-sm sticky left-0 z-10 bg-white">
+            <tr key={facility.slug} className="hover:bg-slate-50">
+              <td className="border border-border p-3 font-medium text-sm sticky left-0 z-10 bg-white">
                 {facility.name}
               </td>
               {DOMAIN_KEYS.map((domain) => {
@@ -70,7 +82,7 @@ export function HeatmapGrid({ facilities }: HeatmapGridProps) {
                 return (
                   <td
                     key={domain}
-                    className={`border border-border p-2 text-center text-xs font-medium h-10 ${getColorClass(
+                    className={`border border-border p-2 text-center text-xs font-semibold h-10 ${getColorClass(
                       domainScore
                     )}`}
                   >
@@ -78,8 +90,18 @@ export function HeatmapGrid({ facilities }: HeatmapGridProps) {
                   </td>
                 );
               })}
-              <td className="border border-border p-2 text-center text-xs font-semibold">
-                {facility.overall_score != null ? Math.round(facility.overall_score) : "—"}
+              <td className="border border-border p-2 text-center text-xs font-medium">
+                <span className={`inline-block px-2 py-1 rounded text-white ${
+                  facility.tier === "Tier 1 — HOS-Ready"
+                    ? "bg-emerald-600"
+                    : facility.tier?.includes("Deployment-Eligible") || facility.tier?.includes("Structured Remediation")
+                    ? "bg-blue-600"
+                    : facility.tier?.includes("Not Deployment-Ready")
+                    ? "bg-red-600"
+                    : "bg-slate-600"
+                }`}>
+                  {facility.tier?.replace("Tier ", "T")?.replace(" — ", " ") || "—"}
+                </span>
               </td>
             </tr>
           ))}
@@ -87,24 +109,27 @@ export function HeatmapGrid({ facilities }: HeatmapGridProps) {
       </table>
 
       {/* Legend */}
-      <div className="mt-6 flex gap-4 text-xs">
+      <div className="mt-6 flex gap-6 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-red-100 border border-border" />
-          <span>0 - No progress</span>
+          <div className="w-4 h-4 bg-red-100 border border-border" />
+          <span>0 blocker/none</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-orange-200 border border-border" />
-          <span>1 - Weak</span>
+          <div className="w-4 h-4 bg-orange-200 border border-border" />
+          <span>1 weak</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-yellow-100 border border-border" />
-          <span>2 - Adequate</span>
+          <div className="w-4 h-4 bg-yellow-100 border border-border" />
+          <span>2 adequate</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-emerald-100 border border-border" />
-          <span>3 - Strong</span>
+          <div className="w-4 h-4 bg-emerald-100 border border-border" />
+          <span>3 strong</span>
         </div>
       </div>
+      <p className="text-xs text-muted-foreground mt-3">
+        Every facility, every domain (0–3) in one view · sorted by composite · number shown for non-colour reading
+      </p>
     </div>
   );
 }

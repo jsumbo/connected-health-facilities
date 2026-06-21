@@ -8,6 +8,8 @@ import { PublicShell } from "@/components/public/PublicShell"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getDataQuality, getPublicOverview } from "@/lib/public-api"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = pageMetadata({
   title: "Data quality",
   description:

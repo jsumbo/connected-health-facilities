@@ -25,18 +25,18 @@ const NAV = [
   { href: "/dashboard/blockers", label: "Blockers", icon: AlertTriangle, section: "MAIN" },
 
   // EXPLORE
-  { href: "/readiness-heatmap", label: "Readiness Heatmap", icon: Grid3x3, section: "EXPLORE" },
+  { href: "/dashboard/readiness-heatmap", label: "Readiness Heatmap", icon: Grid3x3, section: "EXPLORE" },
   { href: "/dashboard/facilities", label: "Facilities", icon: Building2, section: "EXPLORE" },
-  { href: "/clusters", label: "Clusters", icon: Zap, section: "EXPLORE" },
-  { href: "/map", label: "Map", icon: MapPin, section: "EXPLORE" },
+  { href: "/dashboard/clusters", label: "Clusters", icon: Zap, section: "EXPLORE" },
+  { href: "/dashboard/map", label: "Map", icon: MapPin, section: "EXPLORE" },
 
   // SURVEYS
   { href: "/dla", label: "Digital Literacy", icon: GraduationCap, section: "SURVEYS" },
   { href: "/sentiment", label: "Staff Sentiment", icon: MessageSquareHeart, section: "SURVEYS" },
 
   // ANALYSIS
-  { href: "/what-drives-readiness", label: "What Drives Readiness", icon: BarChart3, section: "ANALYSIS" },
-  { href: "/data-quality", label: "Data Quality", icon: CheckCircle, section: "ANALYSIS" },
+  { href: "/dashboard/what-drives-readiness", label: "What Drives Readiness", icon: BarChart3, section: "ANALYSIS" },
+  { href: "/dashboard/data-quality", label: "Data Quality", icon: CheckCircle, section: "ANALYSIS" },
 ];
 
 export default function Sidebar() {

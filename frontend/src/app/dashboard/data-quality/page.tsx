@@ -1,6 +1,8 @@
 import { getPublicOverview, getPublicFacilities } from "@/lib/public-api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
+export const dynamic = "force-dynamic"
+
 export const metadata = {
   title: "Data Quality | Dashboard",
 }

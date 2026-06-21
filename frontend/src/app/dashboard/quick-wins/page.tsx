@@ -104,7 +104,7 @@ export default async function QuickWinsPage() {
                       <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-2">
                         Blocking Issue
                       </span>
-                      <p className="text-sm text-red-700 leading-snug font-medium bg-red-50 p-3 rounded-lg border-l-4 border-red-400">
+                      <p className="text-sm text-red-700 leading-snug font-medium bg-red-50 p-3 rounded-lg">
                         {blockerLabel}
                       </p>
                     </div>

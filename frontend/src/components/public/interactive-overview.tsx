@@ -25,6 +25,7 @@ import {
 } from "lucide-react"
 import { countQuickWins } from "@/lib/quick-wins"
 import { buildDlaInsight, getWeakestDomain } from "@/lib/overview-insights"
+import { formatAxisTick, formatPercentLabel } from "@/lib/format-number"
 
 interface InteractiveOverviewProps {
   overview: PublicOverview
@@ -230,7 +231,7 @@ export function InteractiveOverview({
           label="Weakest domain"
           value={weakestDomain ? weakestDomain.label.split(" ")[0] : "—"}
           description={
-            weakestDomain ? `${weakestDomain.value.toFixed(2)}/3 avg` : undefined
+            weakestDomain ? `${formatAxisTick(weakestDomain.value, 2)}/3 avg` : undefined
           }
         />
       </div>
@@ -241,12 +242,12 @@ export function InteractiveOverview({
           icon={ClipboardCheck}
           label="Assessed"
           value={`${overview.assessed_count} / ${overview.programme_target}`}
-          description={`${overview.completion_pct}%`}
+          description={formatPercentLabel(overview.completion_pct, 0)}
         />
         <KpiMetric
           icon={Gauge}
           label="Avg readiness"
-          value={overview.avg_score != null ? `${overview.avg_score}%` : "—"}
+          value={overview.avg_score != null ? formatPercentLabel(overview.avg_score, 0) : "—"}
         />
         <KpiMetric
           icon={MessageSquareHeart}
@@ -353,7 +354,7 @@ export function InteractiveOverview({
                   </p>
                 </div>
                 <p className="text-lg font-semibold tabular-nums">
-                  {c.avg_score != null ? `${c.avg_score}%` : "—"}
+                  {c.avg_score != null ? formatPercentLabel(c.avg_score, 0) : "—"}
                 </p>
               </a>
             ))}

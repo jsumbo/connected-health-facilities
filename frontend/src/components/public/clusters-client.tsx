@@ -8,6 +8,7 @@ import {
   DRF_DOMAIN_LABELS,
   getClusterDomainAverage,
 } from "@/lib/drf-domains"
+import { formatAxisTick, formatPercentLabel } from "@/lib/format-number"
 
 interface ClustersClientProps {
   clusters: ClusterSummary[]
@@ -52,7 +53,7 @@ export function ClustersClient({ clusters }: ClustersClientProps) {
                       </div>
                     </div>
                     <p className="text-3xl font-bold tabular-nums text-slate-900">
-                      {composite > 0 ? `${composite.toFixed(1)}%` : "—"}
+                      {composite > 0 ? formatPercentLabel(composite, 1) : "—"}
                     </p>
                   </div>
 
@@ -74,7 +75,7 @@ export function ClustersClient({ clusters }: ClustersClientProps) {
                             />
                           </div>
                           <span className="w-8 text-right text-xs font-medium tabular-nums text-slate-700">
-                            {value != null ? value.toFixed(1) : "—"}
+                            {value != null ? formatAxisTick(value, 1) : "—"}
                           </span>
                         </div>
                       )
@@ -87,7 +88,7 @@ export function ClustersClient({ clusters }: ClustersClientProps) {
                         DLA{" "}
                         <span className="font-semibold text-slate-900">
                           {cluster.avg_dla_score != null
-                            ? `${cluster.avg_dla_score.toFixed(1)}%`
+                            ? formatPercentLabel(cluster.avg_dla_score, 1)
                             : "—"}
                         </span>
                       </p>
@@ -95,7 +96,7 @@ export function ClustersClient({ clusters }: ClustersClientProps) {
                         Enthusiasm{" "}
                         <span className="font-semibold text-slate-900">
                           {cluster.avg_sentiment_enthusiasm != null
-                            ? `${cluster.avg_sentiment_enthusiasm.toFixed(1)}/10`
+                            ? `${formatAxisTick(cluster.avg_sentiment_enthusiasm, 1)}/10`
                             : "—"}
                         </span>
                       </p>

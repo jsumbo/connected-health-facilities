@@ -15,6 +15,11 @@ import {
 import type { DriverCorrelation } from "@/lib/readiness-drivers"
 import { correlationBarColor, correlationStrengthLabel } from "@/lib/readiness-drivers"
 import {
+  formatAxisTick,
+  formatSignedCorrelation,
+  roundAxisMax,
+} from "@/lib/format-number"
+import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -27,8 +32,7 @@ interface CorrelationChartProps {
 
 function formatSignedR(value: unknown): string {
   if (typeof value !== "number") return String(value ?? "")
-  const sign = value > 0 ? "+" : ""
-  return `${sign}${value.toFixed(2)}`
+  return formatSignedCorrelation(value)
 }
 
 export function CorrelationChart({ data }: CorrelationChartProps) {
@@ -60,7 +64,7 @@ export function CorrelationChart({ data }: CorrelationChartProps) {
   } satisfies ChartConfig
 
   const maxR = Math.max(...chartData.map((d) => d.absR), 0.75)
-  const xMax = Math.min(1, Math.ceil(maxR * 10) / 10 + 0.05)
+  const xMax = roundAxisMax(Math.min(1, Math.ceil(maxR * 10) / 10 + 0.05), 2)
 
   return (
     <div className="space-y-3">
@@ -102,7 +106,7 @@ export function CorrelationChart({ data }: CorrelationChartProps) {
             tickLine={false}
             axisLine={false}
             fontSize={11}
-            tickFormatter={(v) => `${v}`}
+            tickFormatter={formatAxisTick}
           />
           <YAxis
             dataKey="factor"

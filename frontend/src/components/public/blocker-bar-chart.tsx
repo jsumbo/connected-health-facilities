@@ -6,6 +6,7 @@ import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "rec
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { blockerShortLabel } from "@/lib/blockers"
 import { getBlockerCode } from "@/lib/quick-wins"
+import { formatAxisIntegerTick, roundAxisMaxCeil } from "@/lib/format-number"
 import {
   Card,
   CardContent,
@@ -117,11 +118,12 @@ export function BlockerBarChart({
           <CartesianGrid horizontal={false} strokeDasharray="3 3" className="stroke-border/60" />
           <XAxis
             type="number"
-            domain={[0, Math.ceil(maxCount * 1.15)]}
+            domain={[0, roundAxisMaxCeil(maxCount * 1.15)]}
             tickLine={false}
             axisLine={false}
             allowDecimals={false}
             fontSize={11}
+            tickFormatter={formatAxisIntegerTick}
           />
           <YAxis
             type="category"

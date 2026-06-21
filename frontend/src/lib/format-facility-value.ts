@@ -1,3 +1,5 @@
+import { formatPercentLabel, formatPercentValue } from "@/lib/format-number"
+
 const CHOICE_LABELS: Record<string, string> = {
   none: "None",
   grid: "Grid",
@@ -40,7 +42,11 @@ export function formatMbps(value: number | null | undefined): string {
   return `${value} Mbps`
 }
 
-export function formatPercent(value: number | null | undefined): string {
+export function formatPercent(value: number | null | undefined, decimals = 0): string {
+  return formatPercentLabel(value, decimals)
+}
+
+export function formatPercentPlain(value: number | null | undefined, decimals = 0): string {
   if (value == null) return "—"
-  return `${value}%`
+  return formatPercentValue(value, decimals)
 }

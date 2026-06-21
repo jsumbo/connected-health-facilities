@@ -3,6 +3,7 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { formatAxisIntegerTick } from "@/lib/format-number"
 
 interface DataQualityChartsProps {
   facilities: ProgrammeFacility[]
@@ -75,7 +76,7 @@ export function DataQualityCharts({ facilities }: DataQualityChartsProps) {
             <BarChart data={completenessBuckets} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="range" fontSize={11} tickLine={false} />
-              <YAxis allowDecimals={false} fontSize={11} tickLine={false} width={28} />
+              <YAxis allowDecimals={false} fontSize={11} tickLine={false} width={28} tickFormatter={formatAxisIntegerTick} />
               <Tooltip />
               <Bar dataKey="count" fill="var(--chart-3)" radius={[3, 3, 0, 0]} />
             </BarChart>
@@ -95,7 +96,7 @@ export function DataQualityCharts({ facilities }: DataQualityChartsProps) {
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={domainData} layout="vertical" margin={{ left: 8, right: 8 }}>
                 <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-                <XAxis type="number" allowDecimals={false} fontSize={11} />
+                <XAxis type="number" allowDecimals={false} fontSize={11} tickFormatter={formatAxisIntegerTick} />
                 <YAxis type="category" dataKey="domain" width={100} fontSize={10} tickLine={false} />
                 <Tooltip />
                 <Bar dataKey="count" fill="var(--chart-4)" radius={[0, 3, 3, 0]} />

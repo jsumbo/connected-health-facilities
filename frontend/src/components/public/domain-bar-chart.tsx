@@ -14,6 +14,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { formatAxisTick } from "@/lib/format-number"
 
 interface DomainBarChartProps {
   domainAverages: Record<string, number | null>
@@ -63,7 +64,14 @@ export function DomainBarChart({
     <ChartContainer config={chartConfig} className="h-[320px] w-full">
       <BarChart data={data} layout="vertical" margin={{ left: 4, right: 16 }}>
         <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-        <XAxis type="number" domain={[0, maxScore]} tickLine={false} axisLine={false} fontSize={11} />
+        <XAxis
+          type="number"
+          domain={[0, maxScore]}
+          tickLine={false}
+          axisLine={false}
+          fontSize={11}
+          tickFormatter={(v) => formatAxisTick(v, maxScore <= 3 ? 1 : 0)}
+        />
         <YAxis
           type="category"
           dataKey="name"

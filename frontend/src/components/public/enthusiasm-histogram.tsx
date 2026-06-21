@@ -2,6 +2,7 @@
 
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { formatAxisIntegerTick } from "@/lib/format-number"
 
 interface EnthusiasmHistogramProps {
   distribution: Record<string, number>
@@ -35,7 +36,7 @@ export function EnthusiasmHistogram({
           <BarChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="score" fontSize={11} tickLine={false} />
-            <YAxis allowDecimals={false} fontSize={11} tickLine={false} width={28} />
+            <YAxis allowDecimals={false} fontSize={11} tickLine={false} width={28} tickFormatter={formatAxisIntegerTick} />
             <Tooltip />
             <Bar dataKey="count" fill="var(--chart-1)" radius={[3, 3, 0, 0]} />
           </BarChart>

@@ -11,6 +11,7 @@ import {
   formatPercent,
 } from "@/lib/format-facility-value"
 import type { CompareBenchmarks } from "@/lib/compare-benchmarks"
+import { formatAxisTick, formatPercentLabel } from "@/lib/format-number"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
@@ -248,7 +249,7 @@ export function FacilityComparePanel({
         <p className="text-center text-sm text-muted-foreground">
           <span className="font-medium text-foreground">{scoreLead}</span> leads on readiness by{" "}
           <span className="tabular-nums font-medium text-foreground">
-            {Math.abs(scoreA - scoreB).toFixed(1)} pts
+            {formatAxisTick(Math.abs(scoreA - scoreB), 1)} pts
           </span>
         </p>
       ) : null}
@@ -268,7 +269,7 @@ export function FacilityComparePanel({
                     <div>
                       <p className="text-[10px] uppercase text-muted-foreground">National avg</p>
                       <p className="font-semibold tabular-nums">
-                        {bm.nationalAvgScore != null ? `${bm.nationalAvgScore.toFixed(1)}%` : "—"}
+                        {bm.nationalAvgScore != null ? formatPercentLabel(bm.nationalAvgScore, 1) : "—"}
                       </p>
                     </div>
                     <div>
@@ -276,7 +277,7 @@ export function FacilityComparePanel({
                         {bm.clusterName ?? "Cluster"} avg
                       </p>
                       <p className="font-semibold tabular-nums">
-                        {bm.clusterAvgScore != null ? `${bm.clusterAvgScore.toFixed(1)}%` : "—"}
+                        {bm.clusterAvgScore != null ? formatPercentLabel(bm.clusterAvgScore, 1) : "—"}
                       </p>
                     </div>
                     <div className="col-span-2">

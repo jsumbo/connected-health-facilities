@@ -21,6 +21,7 @@ import {
   SCATTER_TIER_LABELS,
   type ScatterTierCategory,
 } from "@/lib/scatter-tier"
+import { formatAxisIntegerTick, formatAxisPercentTick, formatPercentLabel, roundToDecimals } from "@/lib/format-number"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
@@ -90,7 +91,9 @@ export function QuickWinsScatter({ facilities }: QuickWinsScatterProps) {
               tickLine={false}
               axisLine={false}
               tickCount={maxBlockers + 2}
-              tickFormatter={(v) => (Number.isInteger(v) ? String(v) : "")}
+              tickFormatter={(v) =>
+                Number.isInteger(roundToDecimals(v, 0)) ? formatAxisIntegerTick(v) : ""
+              }
               label={{
                 value: "Deployment blockers",
                 position: "insideBottom",
@@ -108,6 +111,7 @@ export function QuickWinsScatter({ facilities }: QuickWinsScatterProps) {
               tickLine={false}
               axisLine={false}
               tickCount={7}
+              tickFormatter={(v) => formatAxisPercentTick(v, 0)}
               label={{
                 value: "Composite %",
                 angle: -90,
@@ -143,7 +147,7 @@ export function QuickWinsScatter({ facilities }: QuickWinsScatterProps) {
                     <p className="font-semibold text-foreground">{d.name}</p>
                     <p className="text-muted-foreground">{d.county}</p>
                     <p className="mt-1 tabular-nums">
-                      {d.score}% composite · {d.blockers} blocker{d.blockers === 1 ? "" : "s"}
+                      {formatPercentLabel(d.score, 0)} composite · {d.blockers} blocker{d.blockers === 1 ? "" : "s"}
                     </p>
                     <p className="mt-0.5 text-muted-foreground">{SCATTER_TIER_LABELS[d.category]}</p>
                     <Link

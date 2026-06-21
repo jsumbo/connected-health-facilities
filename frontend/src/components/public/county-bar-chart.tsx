@@ -9,6 +9,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import type { CountyRollup } from "@/lib/types-public"
+import { formatAxisIntegerTick } from "@/lib/format-number"
 
 const chartConfig = {
   assessed: { label: "Assessed", color: "var(--chart-2)" },
@@ -52,7 +53,7 @@ export function CountyBarChart({ counties, onCountyClick, selectedCounty }: Coun
           fontSize={10}
           style={{ cursor: onCountyClick ? "pointer" : "default" }}
         />
-        <YAxis tickLine={false} axisLine={false} allowDecimals={false} fontSize={11} />
+        <YAxis tickLine={false} axisLine={false} allowDecimals={false} fontSize={11} tickFormatter={formatAxisIntegerTick} />
         <ChartTooltip content={<ChartTooltipContent />} />
         <Bar
           dataKey="assessed"

@@ -21,6 +21,7 @@ import {
   linearRegression,
   pearsonCorrelation,
 } from "@/lib/readiness-drivers"
+import { formatAxisPercentTick, formatCorrelation, formatPercentLabel } from "@/lib/format-number"
 import { SCATTER_TIER_LABELS } from "@/lib/scatter-tier"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -88,7 +89,7 @@ export function DlaReadinessScatter({ facilities }: DlaReadinessScatterProps) {
           {correlation != null ? (
             <div className="rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs tabular-nums">
               <span className="text-muted-foreground">Correlation</span>{" "}
-              <span className="font-semibold text-foreground">{correlation.toFixed(2)}</span>
+              <span className="font-semibold text-foreground">{formatCorrelation(correlation)}</span>
               <span className="ml-2 text-muted-foreground">· {points.length} facilities</span>
             </div>
           ) : null}
@@ -110,6 +111,7 @@ export function DlaReadinessScatter({ facilities }: DlaReadinessScatterProps) {
               axisLine={false}
               fontSize={11}
               tickCount={6}
+              tickFormatter={(v) => formatAxisPercentTick(v, 0)}
               label={{
                 value: "DLA avg score (%)",
                 position: "insideBottom",
@@ -127,6 +129,7 @@ export function DlaReadinessScatter({ facilities }: DlaReadinessScatterProps) {
               axisLine={false}
               fontSize={11}
               tickCount={8}
+              tickFormatter={(v) => formatAxisPercentTick(v, 0)}
               label={{
                 value: "Composite readiness (%)",
                 angle: -90,
@@ -176,10 +179,10 @@ export function DlaReadinessScatter({ facilities }: DlaReadinessScatterProps) {
                     <p className="font-semibold text-foreground">{d.name}</p>
                     <p className="text-muted-foreground">{d.county}</p>
                     <p className="mt-1 tabular-nums">
-                      DLA <span className="font-medium text-foreground">{d.dla}%</span>
+                      DLA <span className="font-medium text-foreground">{formatPercentLabel(d.dla, 0)}</span>
                       {" · "}
                       Composite{" "}
-                      <span className="font-medium text-foreground">{d.composite}%</span>
+                      <span className="font-medium text-foreground">{formatPercentLabel(d.composite, 0)}</span>
                     </p>
                     <p className="mt-0.5 text-muted-foreground">{tierLabel}</p>
                     <Link

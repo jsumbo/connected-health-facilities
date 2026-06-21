@@ -1,5 +1,6 @@
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { DRF_DOMAIN_CODES, DRF_DOMAIN_KEYS, type DrfDomainKey } from "@/lib/drf-domains"
+import { formatCorrelation, roundToDecimals } from "@/lib/format-number"
 import {
   classifyScatterPoint,
   SCATTER_TIER_COLORS,
@@ -86,7 +87,7 @@ function correlateFactor(
   return {
     factor,
     key,
-    correlation: Math.round(r * 100) / 100,
+    correlation: roundToDecimals(r, 2),
     sampleSize: pairs.length,
   }
 }
@@ -206,7 +207,7 @@ export function correlationStrengthLabel(r: number): string {
 
 /** Plain-language correlation for dashboard labels (0–1, higher = moves with readiness). */
 export function formatCorrelationScore(r: number): string {
-  return Math.abs(r).toFixed(2)
+  return formatCorrelation(r)
 }
 
 export function formatCorrelationSummary(r: number): string {

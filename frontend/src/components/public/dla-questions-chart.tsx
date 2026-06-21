@@ -10,6 +10,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import type { QuestionStat } from "@/lib/types-public"
+import { formatAxisPercentTick } from "@/lib/format-number"
 
 const chartConfig = {
   correctRate: { label: "Correct Rate (%)", color: "var(--chart-1)" },
@@ -65,7 +66,7 @@ export function DlaQuestionsChart({ questions = [] }: DlaQuestionsChartProps) {
           margin={{ top: 8, right: 16, left: 80, bottom: 8 }}
         >
           <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-          <XAxis type="number" domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+          <XAxis type="number" domain={[0, 100]} tickFormatter={(v) => formatAxisPercentTick(v, 0)} />
           <YAxis
             dataKey="label"
             type="category"

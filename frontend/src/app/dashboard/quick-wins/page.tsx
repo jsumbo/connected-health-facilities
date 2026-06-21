@@ -33,48 +33,48 @@ export default async function QuickWinsPage() {
   const quickWins = facilities.filter(isQuickWin);
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div>
       {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-navy">Quick Wins</h1>
-        <p className="text-slate-500 text-sm mt-1 max-w-2xl">
-          Facilities in Tier 3 — Not Deployment-Ready with exactly one deployment
-          blocker. Resolving a single issue would move each of these facilities
-          closer to deployment eligibility.
+      <div className="mb-12">
+        <h1 className="text-4xl font-bold text-navy mb-3">Quick Wins</h1>
+        <p className="text-slate-600 text-base max-w-3xl leading-relaxed">
+          Facilities in Tier 3 — Not Deployment-Ready with exactly one deployment blocker. Resolving a single issue would move each of these facilities closer to deployment eligibility.
         </p>
       </div>
 
       {/* Error state */}
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+        <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
           <strong>Error loading data:</strong> {error}
         </div>
       )}
 
       {/* Count badge */}
       {!error && (
-        <div className="mb-6">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-sm font-medium">
-            <span className="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold">
+        <div className="mb-10">
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-amber-100 border-2 border-amber-400">
+            <span className="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center text-lg font-bold">
               {quickWins.length}
             </span>
-            {quickWins.length === 1
-              ? "quick win identified"
-              : "quick wins identified"}
-          </span>
+            <span className="text-amber-900 text-base font-semibold">
+              {quickWins.length === 1
+                ? "quick win identified"
+                : "quick wins identified"}
+            </span>
+          </div>
         </div>
       )}
 
       {/* Facility cards */}
       {quickWins.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {quickWins.map((facility) => {
             const blocker = facility.blockers[0];
             const blockerLabel = blocker ? getBlockerLabel(blocker) : "Unknown blocker";
             const score =
               facility.overall_score !== null
-                ? `${facility.overall_score}%`
-                : "—";
+                ? Math.round(facility.overall_score)
+                : null;
 
             return (
               <Link
@@ -82,29 +82,29 @@ export default async function QuickWinsPage() {
                 href={`/facility/${facility.slug}`}
                 className="group block"
               >
-                <Card className="h-full transition-colors hover:border-foreground/50 cursor-pointer">
-                  <CardHeader className="border-b">
-                    <CardTitle className="text-base leading-tight">
+                <Card className="h-full border-2 transition-all hover:border-amber-400 hover:shadow-lg cursor-pointer bg-white">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg leading-tight group-hover:text-amber-600 transition-colors">
                       {facility.name}
                     </CardTitle>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-slate-500 mt-1">
                       {facility.county}
                     </p>
                   </CardHeader>
-                  <CardContent className="pt-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-500 uppercase tracking-wide font-medium">
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between py-3 px-3 bg-slate-50 rounded-lg">
+                      <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
                         Score
                       </span>
-                      <span className="text-sm font-semibold text-slate-700">
-                        {score}
+                      <span className="text-2xl font-bold text-slate-700">
+                        {score !== null ? `${score}%` : "—"}
                       </span>
                     </div>
                     <div>
-                      <span className="text-xs text-slate-500 uppercase tracking-wide font-medium block mb-1">
-                        Blocking issue
+                      <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-2">
+                        Blocking Issue
                       </span>
-                      <p className="text-sm text-red-600 leading-snug">
+                      <p className="text-sm text-red-700 leading-snug font-medium bg-red-50 p-3 rounded-lg border-l-4 border-red-400">
                         {blockerLabel}
                       </p>
                     </div>
@@ -116,8 +116,8 @@ export default async function QuickWinsPage() {
         </div>
       ) : (
         !error && (
-          <div className="py-24 text-center">
-            <p className="text-slate-400 text-sm">
+          <div className="py-16 text-center">
+            <p className="text-slate-500 text-base">
               No quick wins found. Either all Tier 3 facilities have multiple
               blockers, or no Tier 3 facilities have been assessed.
             </p>

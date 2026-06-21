@@ -75,31 +75,37 @@ export default async function DashboardPage() {
             <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
               <h2 className="font-semibold text-navy mb-4">Readiness Tier Breakdown</h2>
               <div className="space-y-3">
-                {[
-                  { tier: "Deployment Ready", color: "bg-ready" },
-                  { tier: "Foundational", color: "bg-foundational" },
-                  { tier: "Not Ready", color: "bg-notready" },
-                  { tier: "Blocked", color: "bg-blocked" },
-                ].map(({ tier, color }) => {
-                  const count = summary.tier_counts[tier] ?? 0;
-                  const pct = summary.total_submissions > 0
-                    ? Math.round((count / summary.total_submissions) * 100)
-                    : 0;
-                  return (
-                    <div key={tier}>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="font-medium text-slate-700">{tier}</span>
-                        <span className="text-slate-500">{count} facilities ({pct}%)</span>
+                {Object.entries(summary.tier_counts || {}).length > 0 ? (
+                  Object.entries(summary.tier_counts).map(([tier, count]) => {
+                    const colorMap: Record<string, string> = {
+                      "Deployment Ready": "bg-ready",
+                      "Foundational": "bg-foundational",
+                      "Not Ready": "bg-notready",
+                      "Blocked": "bg-blocked",
+                      "Incomplete": "bg-slate-300",
+                    };
+                    const color = colorMap[tier] || "bg-slate-300";
+                    const pct = summary.total_submissions > 0
+                      ? Math.round((count / summary.total_submissions) * 100)
+                      : 0;
+                    return (
+                      <div key={tier}>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="font-medium text-slate-700">{tier}</span>
+                          <span className="text-slate-500">{count} facilities ({pct}%)</span>
+                        </div>
+                        <div className="w-full bg-slate-100 rounded-full h-2">
+                          <div
+                            className={`${color} h-2 rounded-full transition-all`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
                       </div>
-                      <div className="w-full bg-slate-100 rounded-full h-2">
-                        <div
-                          className={`${color} h-2 rounded-full transition-all`}
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <p className="text-slate-400 text-sm py-4">No tier data available yet.</p>
+                )}
               </div>
             </div>
 

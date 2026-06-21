@@ -143,6 +143,13 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
             </Card>
           )}
 
+          <Suspense fallback={null}>
+            <CountyFilter
+              counties={counties}
+              currentCounty={countyFilter ?? ""}
+            />
+          </Suspense>
+
           <Tabs defaultValue="by-facility" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="by-facility">By Facility</TabsTrigger>
@@ -150,13 +157,6 @@ export default async function DlaPage({ searchParams }: DlaPageProps) {
             </TabsList>
 
             <TabsContent value="by-facility" className="space-y-4">
-              <Suspense fallback={null}>
-                <CountyFilter
-                  counties={counties}
-                  currentCounty={countyFilter ?? ""}
-                />
-              </Suspense>
-
               <Card className="shadow-none">
                 <CardContent className="pt-6">
                   <DlaTable rows={rows} />

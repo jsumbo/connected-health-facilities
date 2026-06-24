@@ -12,7 +12,7 @@ export function QuickWinsCard({ count }: QuickWinsCardProps) {
   }
 
   return (
-    <Link href="/dashboard/quick-wins" className="block">
+    <Link href="/quick-wins" className="block">
       <Card className="hover:ring-amber-200/40 transition-all bg-amber-50/60 border-amber-200/80 shadow-none cursor-pointer">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between gap-3">

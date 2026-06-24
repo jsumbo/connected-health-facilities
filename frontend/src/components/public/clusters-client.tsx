@@ -8,6 +8,7 @@ import {
   DRF_DOMAIN_LABELS,
   getClusterDomainAverage,
 } from "@/lib/drf-domains"
+import { clusterSortIndex } from "@/lib/clusters"
 import { formatAxisTick, formatPercentLabel } from "@/lib/format-number"
 
 interface ClustersClientProps {
@@ -17,9 +18,11 @@ interface ClustersClientProps {
 const WEAK_THRESHOLD = 1.5
 
 export function ClustersClient({ clusters }: ClustersClientProps) {
-  const sorted = [...clusters].sort(
-    (a, b) => (b.avg_composite ?? 0) - (a.avg_composite ?? 0)
-  )
+  const sorted = [...clusters].sort((a, b) => {
+    const orderDiff = clusterSortIndex(a.cluster) - clusterSortIndex(b.cluster)
+    if (orderDiff !== 0) return orderDiff
+    return (b.avg_composite ?? 0) - (a.avg_composite ?? 0)
+  })
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

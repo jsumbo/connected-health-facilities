@@ -6,20 +6,20 @@ Sheets used: 7 Facility Scorecards, 8 County Summary, 9 Cluster Summary, 10 Bloc
 from __future__ import annotations
 
 import logging
+from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional, TypedDict
 
 from openpyxl import load_workbook
 
 from drf import (
-    DRF_DOMAIN_KEYS,
     build_drf_domain_scores,
     enrich_blockers,
     normalize_facility_name,
     parse_blocker_codes,
     tier_display_label,
 )
-from facility_master import all_programme_facilities, registry_by_slug
+from facility_master import all_programme_facilities, cluster_sort_key, registry_by_slug
 
 logger = logging.getLogger(__name__)
 
@@ -133,6 +133,60 @@ def _resolve_slug(facility_name: str, name_to_slug: Dict[str, str]) -> str | Non
     return name_to_slug.get(key)
 
 
+def _domain_score_value(scorecard: MasterScorecard, domain_key: str) -> float | None:
+    domain = (scorecard.get("domain_scores") or {}).get(domain_key)
+    if not isinstance(domain, dict):
+        return None
+    score = domain.get("score")
+    return float(score) if score is not None else None
+
+
+def _aggregate_cluster_summaries(
+    scorecards: Dict[str, MasterScorecard],
+) -> List[Dict[str, Any]]:
+    """Roll up cluster KPIs from facility scorecards (registry cluster assignment)."""
+    by_cluster: Dict[str, List[MasterScorecard]] = defaultdict(list)
+    for scorecard in scorecards.values():
+        by_cluster[scorecard["cluster"]].append(scorecard)
+
+    summaries: List[Dict[str, Any]] = []
+    for cluster in sorted(by_cluster.keys(), key=cluster_sort_key):
+        items = by_cluster[cluster]
+        composites = [float(item["composite"]) for item in items if item.get("composite") is not None]
+        tier_1_count = sum(1 for item in items if str(item.get("tier", "")).startswith("Tier 1"))
+        tier_2_count = sum(1 for item in items if str(item.get("tier", "")).startswith("Tier 2"))
+        tier_3_count = sum(1 for item in items if str(item.get("tier", "")).startswith("Tier 3"))
+
+        domain_avg_fields = {
+            "D_POW": "avg_pow",
+            "D_CON": "avg_con",
+            "D_ICT": "avg_ict",
+            "D_DIG": "avg_dig",
+            "D_SEN": "avg_sen",
+            "D_DAT": "avg_dat",
+        }
+        domain_avgs: Dict[str, float | None] = {}
+        for domain_key, field in domain_avg_fields.items():
+            vals = [
+                value
+                for item in items
+                if (value := _domain_score_value(item, domain_key)) is not None
+            ]
+            domain_avgs[field] = round(sum(vals) / len(vals), 2) if vals else None
+
+        summaries.append({
+            "cluster": cluster,
+            "facility_count": len(items),
+            "avg_composite": round(sum(composites) / len(composites), 2) if composites else None,
+            "tier_1_count": tier_1_count,
+            "tier_2_count": tier_2_count,
+            "tier_3_count": tier_3_count,
+            **domain_avgs,
+        })
+
+    return summaries
+
+
 def load_master_readiness(path: Path | None = None) -> MasterReadinessBundle:
     workbook_path = path or _default_workbook_path()
     if not workbook_path.is_file():
@@ -196,7 +250,7 @@ def load_master_readiness(path: Path | None = None) -> MasterReadinessBundle:
                 "slug": slug,
                 "facility_name": registry_by_slug()[slug]["name"],
                 "county": _cell_str(cells, 2),
-                "cluster": _cell_str(cells, 3),
+                "cluster": registry_by_slug()[slug]["cluster"],
                 "facility_type": _cell_str(cells, 4),
                 "rank": _safe_int(cells[0]),
                 "composite": _safe_float(cells[COMPOSITE_COL]) or 0.0,
@@ -241,26 +295,7 @@ def load_master_readiness(path: Path | None = None) -> MasterReadinessBundle:
                 "avg_dat": _safe_float(cells[11]),
             })
 
-    cluster_summaries: List[Dict[str, Any]] = []
-    if SHEET_CLUSTER in wb.sheetnames:
-        for row in wb[SHEET_CLUSTER].iter_rows(min_row=2, values_only=True):
-            cells = _row_cells(row)
-            if _is_blank_summary_row(cells):
-                continue
-            cluster_summaries.append({
-                "cluster": _cell_str(cells, 0),
-                "facility_count": _safe_int(cells[1]),
-                "avg_composite": _safe_float(cells[2]),
-                "tier_1_count": _safe_int(cells[3]),
-                "tier_2_count": _safe_int(cells[4]),
-                "tier_3_count": _safe_int(cells[5]),
-                "avg_pow": _safe_float(cells[6]),
-                "avg_con": _safe_float(cells[7]),
-                "avg_ict": _safe_float(cells[8]),
-                "avg_dig": _safe_float(cells[9]),
-                "avg_sen": _safe_float(cells[10]),
-                "avg_dat": _safe_float(cells[11]),
-            })
+    cluster_summaries = _aggregate_cluster_summaries(scorecards)
 
     wb.close()
 

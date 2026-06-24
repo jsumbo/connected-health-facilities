@@ -18,17 +18,27 @@ class FacilityRecord(TypedDict):
 
 PROGRAMME_FACILITY_TARGET = 37
 
+# Canonical deployment clusters (TRIBE programme geography)
+PROGRAMME_CLUSTERS: List[str] = [
+    "Montserrado",
+    "Margibi",
+    "Grand Cape Mount",
+    "Lofa",
+    "Nimba",
+    "Southeast Region",
+]
+
 # Region groupings for cluster-level views (TRIBE framework)
 _COUNTY_META: Dict[str, Dict[str, str]] = {
-    "grand_cape_mount": {"region": "Western", "cluster": "Western A"},
-    "margibi": {"region": "Western", "cluster": "Western B"},
     "montserrado": {"region": "Western", "cluster": "Montserrado"},
-    "nimba": {"region": "North", "cluster": "Nimba"},
+    "margibi": {"region": "Western", "cluster": "Margibi"},
+    "grand_cape_mount": {"region": "Western", "cluster": "Grand Cape Mount"},
     "lofa": {"region": "North", "cluster": "Lofa"},
-    "maryland": {"region": "South-East", "cluster": "Maryland"},
-    "river_gee": {"region": "South-East", "cluster": "River Gee"},
-    "grand_gedeh": {"region": "South-East", "cluster": "Grand Gedeh"},
-    "river_cess": {"region": "South-East", "cluster": "River Cess"},
+    "nimba": {"region": "North", "cluster": "Nimba"},
+    "maryland": {"region": "South-East", "cluster": "Southeast Region"},
+    "river_gee": {"region": "South-East", "cluster": "Southeast Region"},
+    "grand_gedeh": {"region": "South-East", "cluster": "Southeast Region"},
+    "river_cess": {"region": "South-East", "cluster": "Southeast Region"},
 }
 
 
@@ -98,3 +108,11 @@ def county_display(county_slug: str) -> str:
     if county_slug in ("unknown", "", None):
         return "Unknown"
     return _display_name(county_slug)
+
+
+def cluster_sort_key(cluster: str) -> tuple[int, int | str]:
+    """Sort clusters in programme display order, then alphabetically for unknowns."""
+    try:
+        return (0, PROGRAMME_CLUSTERS.index(cluster))
+    except ValueError:
+        return (1, cluster.lower())

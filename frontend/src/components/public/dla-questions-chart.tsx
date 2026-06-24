@@ -9,6 +9,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { ChartNote } from "@/components/public/chart-note"
 import type { QuestionStat } from "@/lib/types-public"
 import { formatAxisPercentTick } from "@/lib/format-number"
 
@@ -18,9 +19,10 @@ const chartConfig = {
 
 interface DlaQuestionsChartProps {
   questions?: QuestionStat[]
+  note?: string
 }
 
-export function DlaQuestionsChart({ questions = [] }: DlaQuestionsChartProps) {
+export function DlaQuestionsChart({ questions = [], note }: DlaQuestionsChartProps) {
   // Sort by correctRate descending (highest at top for horizontal bar)
   const sortedData = useMemo(() => {
     return [...questions]
@@ -41,24 +43,10 @@ export function DlaQuestionsChart({ questions = [] }: DlaQuestionsChartProps) {
     )
   }
 
-  // Find the weakest area (lowest correct rate)
-  const weakestQuestion = useMemo(() => {
-    if (sortedData.length === 0) return null
-    return sortedData[sortedData.length - 1] // Last item (lowest rate)
-  }, [sortedData])
+  // Find the weakest area (lowest correct rate) — surfaced in ChartNote below the chart.
 
   return (
     <div className="w-full space-y-4">
-      {weakestQuestion && (
-        <div className="rounded-lg border border-amber-200/50 bg-amber-50/40 p-3">
-          <div className="text-xs font-medium text-amber-900 mb-1">Weakest area</div>
-          <div className="text-sm font-semibold text-amber-950">
-            {weakestQuestion.label}: {weakestQuestion.correctRate}% correct
-          </div>
-          <div className="text-xs text-amber-900 mt-1">{weakestQuestion.question}</div>
-        </div>
-      )}
-
       <ChartContainer config={chartConfig} className="h-[400px] w-full">
         <BarChart
           data={sortedData}
@@ -90,18 +78,19 @@ export function DlaQuestionsChart({ questions = [] }: DlaQuestionsChartProps) {
           />
         </BarChart>
       </ChartContainer>
+      {note ? <ChartNote>{note}</ChartNote> : null}
     </div>
   )
 }
 
-export function DlaQuestionsCard({ questions = [] }: DlaQuestionsChartProps) {
+export function DlaQuestionsCard({ questions = [], note }: DlaQuestionsChartProps) {
   return (
     <Card className="shadow-none">
       <CardHeader className="pb-3">
         <CardTitle className="text-base">Questions (by correct rate)</CardTitle>
       </CardHeader>
       <CardContent>
-        <DlaQuestionsChart questions={questions} />
+        <DlaQuestionsChart questions={questions} note={note} />
       </CardContent>
     </Card>
   )

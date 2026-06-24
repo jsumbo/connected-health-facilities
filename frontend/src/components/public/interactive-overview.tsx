@@ -25,7 +25,17 @@ import {
 } from "lucide-react"
 import { buildDlaInsight } from "@/lib/overview-insights"
 import { clusterSortIndex } from "@/lib/clusters"
+import {
+  buildBlockerChartNote,
+  buildClusterListNote,
+  buildCountyChartNote,
+  buildDomainChartNote,
+  buildOverviewHeadlineNote,
+  buildTierChartNote,
+} from "@/lib/dashboard-notes"
 import { computeScopedOverviewMetrics } from "@/lib/overview-stats"
+import { ChartNote } from "@/components/public/chart-note"
+import { PageInsightBanner } from "@/components/public/page-insight-banner"
 import { formatAxisTick, formatPercentLabel } from "@/lib/format-number"
 
 interface InteractiveOverviewProps {
@@ -110,6 +120,18 @@ export function InteractiveOverview({
   const dlaInsight = buildDlaInsight(dlaQuestions)
   const weakestDla = [...dlaQuestions].sort((a, b) => a.correctRate - b.correctRate)[0]
 
+  const headlineNote = buildOverviewHeadlineNote(
+    overview,
+    metrics.quickWinsExpanded,
+    metrics.tier1Count,
+    metrics.blocked_count
+  )
+  const tierNote = buildTierChartNote(filtered.tier_counts)
+  const countyNote = buildCountyChartNote(filtered.by_county)
+  const domainNote = buildDomainChartNote(metrics.domain_averages, metrics.isScoped)
+  const blockerNote = buildBlockerChartNote(metrics.blocker_register, metrics.scopedFacilities)
+  const clusterNote = buildClusterListNote(overview.by_cluster)
+
   const tiers = [
     { value: "", label: "All tiers" },
     { value: "Tier 1 — HOS-Ready", label: "Tier 1 · HOS-Ready" },
@@ -123,6 +145,8 @@ export function InteractiveOverview({
 
   return (
     <>
+      {!metrics.isScoped ? <PageInsightBanner insight={headlineNote} /> : null}
+
       <ActiveFilterChips
         county={selectedCounty || undefined}
         tier={selectedTier || undefined}
@@ -272,7 +296,7 @@ export function InteractiveOverview({
       {dlaInsight ? (
         <Card className="mb-8 border-amber-200/60 bg-amber-50/40 shadow-none">
           <CardContent className="py-3 text-sm text-amber-950">
-            <strong>Training priority:</strong> {dlaInsight}
+            <ChartNote className="mt-0 border-0 pt-0 text-amber-950">{dlaInsight}</ChartNote>
           </CardContent>
         </Card>
       ) : null}
@@ -298,6 +322,7 @@ export function InteractiveOverview({
               handleTierChange(newTier)
             }}
             selectedTier={selectedTier}
+            note={tierNote}
           />
         </div>
         <div className="lg:col-span-2">
@@ -308,6 +333,7 @@ export function InteractiveOverview({
               handleCountyChange(newCounty)
             }}
             selectedCounty={selectedCounty}
+            note={countyNote}
           />
         </div>
       </div>
@@ -322,10 +348,12 @@ export function InteractiveOverview({
           }
           description="0–3 scale · % of max shown in tooltip"
           maxScore={overview.domain_scale_max ?? 3}
+          note={domainNote}
         />
         <BlockerBarCard
           data={metrics.blocker_register}
           facilities={metrics.scopedFacilities}
+          note={blockerNote}
         />
       </div>
 
@@ -354,6 +382,7 @@ export function InteractiveOverview({
                 </p>
               </a>
             ))}
+            <ChartNote>{clusterNote}</ChartNote>
           </CardContent>
         </Card>
       </div>

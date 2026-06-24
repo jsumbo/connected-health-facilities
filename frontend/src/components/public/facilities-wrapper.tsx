@@ -5,6 +5,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { FacilitiesTableClient } from "@/components/public/facilities-table-client"
 import { ActiveFilterChips } from "@/components/public/active-filter-chips"
+import { ChartNote } from "@/components/public/chart-note"
+import { buildFacilitiesTableNote } from "@/lib/dashboard-notes"
 import { Card, CardContent } from "@/components/ui/card"
 
 interface FacilitiesWrapperProps {
@@ -67,6 +69,12 @@ export function FacilitiesWrapper({ facilities }: FacilitiesWrapperProps) {
           onClearAll={handleClearAll}
         />
         <FacilitiesTableClient facilities={filteredFacilities} />
+        <ChartNote>
+          {buildFacilitiesTableNote(
+            filteredFacilities.length,
+            Boolean(county || tier || cluster)
+          )}
+        </ChartNote>
       </CardContent>
     </Card>
   )

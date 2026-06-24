@@ -14,6 +14,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { ChartNote } from "@/components/public/chart-note"
 import { formatAxisTick } from "@/lib/format-number"
 
 interface DomainBarChartProps {
@@ -91,15 +92,17 @@ export function DomainBarChart({
   )
 }
 
-export function DomainBarCard(props: DomainBarChartProps) {
+export function DomainBarCard(props: DomainBarChartProps & { note?: string }) {
+  const { note, ...chartProps } = props
   return (
     <Card className="shadow-none">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">{props.title ?? "Domains"}</CardTitle>
-        {props.description ? <CardDescription>{props.description}</CardDescription> : null}
+        <CardTitle className="text-base">{chartProps.title ?? "Domains"}</CardTitle>
+        {chartProps.description ? <CardDescription>{chartProps.description}</CardDescription> : null}
       </CardHeader>
       <CardContent>
-        <DomainBarChart {...props} />
+        <DomainBarChart {...chartProps} />
+        {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>
     </Card>
   )

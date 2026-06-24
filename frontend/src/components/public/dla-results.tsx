@@ -4,6 +4,8 @@ import { useState } from "react"
 import type { FacilityDlaSummary, QuestionStat } from "@/lib/types-public"
 import { DlaTable } from "@/components/public/dla-table"
 import { DlaQuestionsCard } from "@/components/public/dla-questions-chart"
+import { ChartNote } from "@/components/public/chart-note"
+import { buildDlaFacilityTableNote, buildDlaQuestionsNote } from "@/lib/dashboard-notes"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
@@ -27,6 +29,11 @@ const VIEWS: { value: DlaView; label: string }[] = [
 
 export function DlaResults({ rows, questionStats }: DlaResultsProps) {
   const [view, setView] = useState<DlaView>("by-facility")
+  const questionNote = buildDlaQuestionsNote(questionStats)
+  const facilityNote = buildDlaFacilityTableNote(
+    rows.length,
+    rows.reduce((sum, r) => sum + (r.response_count ?? 0), 0) || undefined
+  )
 
   return (
     <div className="space-y-4">
@@ -57,10 +64,11 @@ export function DlaResults({ rows, questionStats }: DlaResultsProps) {
         <Card className="shadow-none">
           <CardContent className="pt-6">
             <DlaTable rows={rows} />
+            <ChartNote>{facilityNote}</ChartNote>
           </CardContent>
         </Card>
       ) : questionStats.length > 0 ? (
-        <DlaQuestionsCard questions={questionStats} />
+        <DlaQuestionsCard questions={questionStats} note={questionNote ?? undefined} />
       ) : (
         <Card className="shadow-none">
           <CardContent className="py-12 text-center text-muted-foreground">

@@ -13,6 +13,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { ChartNote } from "@/components/public/chart-note"
 import { TIER_CHART_COLORS } from "./readiness-tier-styles"
 
 interface TierDonutChartProps {
@@ -107,7 +108,8 @@ export function TierDonutCard({
   tierCounts,
   onTierClick,
   selectedTier,
-}: TierDonutChartProps) {
+  note,
+}: TierDonutChartProps & { note?: string }) {
   return (
     <Card className="shadow-none">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
@@ -132,9 +134,10 @@ export function TierDonutCard({
           onTierClick={onTierClick}
           selectedTier={selectedTier}
         />
-        {onTierClick && (
-          <p className="text-xs text-muted-foreground mt-2">💡 Click a tier to filter</p>
-        )}
+        {onTierClick ? (
+          <p className="text-xs text-muted-foreground mt-2">Click a tier segment to filter this page.</p>
+        ) : null}
+        {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>
     </Card>
   )

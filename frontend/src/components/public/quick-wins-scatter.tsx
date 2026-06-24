@@ -22,11 +22,13 @@ import {
   type ScatterTierCategory,
 } from "@/lib/scatter-tier"
 import { formatAxisIntegerTick, formatAxisPercentTick, formatPercentLabel, roundToDecimals } from "@/lib/format-number"
+import { ChartNote } from "@/components/public/chart-note"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 interface QuickWinsScatterProps {
   facilities: ProgrammeFacility[]
+  note?: string
 }
 
 const CATEGORIES: ScatterTierCategory[] = ["tier1", "tier2", "remediation", "tier3"]
@@ -39,7 +41,7 @@ function jitterFromSlug(slug: string): number {
   return (hash / 1000 - 0.5) * 0.28
 }
 
-export function QuickWinsScatter({ facilities }: QuickWinsScatterProps) {
+export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
   const [hiddenCategories, setHiddenCategories] = useState<Set<ScatterTierCategory>>(new Set())
 
   const points = useMemo(() => {
@@ -200,6 +202,7 @@ export function QuickWinsScatter({ facilities }: QuickWinsScatterProps) {
             )
           })}
         </div>
+        {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>
     </Card>
   )

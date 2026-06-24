@@ -3,6 +3,11 @@
 import { useState } from "react"
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { filterQuickWins, countQuickWins } from "@/lib/quick-wins"
+import { ChartNote } from "@/components/public/chart-note"
+import {
+  buildQuickWinsQueueNote,
+  buildQuickWinsScatterNote,
+} from "@/lib/dashboard-notes"
 import { QuickWinsScatter } from "@/components/public/quick-wins-scatter"
 import { QuickWinsQueueTable } from "@/components/public/quick-wins-queue-table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,6 +27,8 @@ const VIEW_OPTIONS: { value: QuickWinMode; label: string }[] = [
 export function QuickWinsClient({ facilities }: QuickWinsClientProps) {
   const [mode, setMode] = useState<QuickWinMode>("expanded")
   const activeCount = countQuickWins(facilities, mode)
+  const scatterNote = buildQuickWinsScatterNote(facilities)
+  const queueNote = buildQuickWinsQueueNote(facilities, mode)
 
   return (
     <div className="space-y-6">
@@ -57,7 +64,7 @@ export function QuickWinsClient({ facilities }: QuickWinsClientProps) {
         })}
       </div>
 
-      <QuickWinsScatter facilities={facilities} />
+      <QuickWinsScatter facilities={facilities} note={scatterNote} />
 
       <Card className="shadow-none">
         <CardHeader className="pb-2">
@@ -68,6 +75,7 @@ export function QuickWinsClient({ facilities }: QuickWinsClientProps) {
         </CardHeader>
         <CardContent>
           <QuickWinsQueueTable facilities={facilities} mode={mode} />
+          <ChartNote>{queueNote}</ChartNote>
         </CardContent>
       </Card>
     </div>

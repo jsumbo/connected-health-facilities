@@ -76,7 +76,7 @@ export function buildDlaInsight(questions: QuestionStat[]): string | null {
   const sorted = [...questions].sort((a, b) => a.correctRate - b.correctRate)
   const weakest = sorted[0]
   if (!weakest) return null
-  return `Phishing and password security is the universal training gap — Q${weakest.questionNumber} at ${Math.round(weakest.correctRate)}% correct nationally. Prioritize before national platform connectivity.`
+  return `Question ${weakest.questionNumber} (${weakest.questionText.slice(0, 48)}${weakest.questionText.length > 48 ? "…" : ""}) scores lowest at ${Math.round(weakest.correctRate)}% correct nationally — mainly phishing and password items.`
 }
 
 export function buildSentimentInsight(avgEnthusiasm: number | null | undefined): string {

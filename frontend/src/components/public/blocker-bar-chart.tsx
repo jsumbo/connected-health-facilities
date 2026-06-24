@@ -18,6 +18,7 @@ import {
   ChartTooltip,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { ChartNote } from "@/components/public/chart-note"
 import { cn } from "@/lib/utils"
 
 interface BlockerData {
@@ -219,7 +220,8 @@ export function BlockerBarChart({
 export function BlockerBarCard({
   data,
   facilities,
-}: BlockerBarChartProps) {
+  note,
+}: BlockerBarChartProps & { note?: string }) {
   return (
     <Card className="shadow-none">
       <CardHeader className="pb-2">
@@ -228,6 +230,7 @@ export function BlockerBarCard({
       </CardHeader>
       <CardContent>
         <BlockerBarChart data={data} facilities={facilities} />
+        {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>
     </Card>
   )

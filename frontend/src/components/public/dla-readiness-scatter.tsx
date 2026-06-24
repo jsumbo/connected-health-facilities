@@ -23,10 +23,12 @@ import {
 } from "@/lib/readiness-drivers"
 import { formatAxisPercentTick, formatCorrelation, formatPercentLabel } from "@/lib/format-number"
 import { SCATTER_TIER_LABELS } from "@/lib/scatter-tier"
+import { ChartNote } from "@/components/public/chart-note"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface DlaReadinessScatterProps {
   facilities: ProgrammeFacility[]
+  note?: string
 }
 
 const TIER_LEGEND: Array<{ key: string; label: string; color: string }> = [
@@ -36,7 +38,7 @@ const TIER_LEGEND: Array<{ key: string; label: string; color: string }> = [
   { key: "T3", label: SCATTER_TIER_LABELS.tier3, color: "#c64e31" },
 ]
 
-export function DlaReadinessScatter({ facilities }: DlaReadinessScatterProps) {
+export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterProps) {
   const points = useMemo(() => buildDlaScatterPoints(facilities), [facilities])
 
   const correlation = useMemo(() => {
@@ -224,6 +226,7 @@ export function DlaReadinessScatter({ facilities }: DlaReadinessScatterProps) {
             Trend line
           </span>
         </div>
+        {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>
     </Card>
   )

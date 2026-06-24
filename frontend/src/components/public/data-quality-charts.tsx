@@ -2,6 +2,11 @@
 
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import type { ProgrammeFacility } from "@/lib/types-public"
+import { ChartNote } from "@/components/public/chart-note"
+import {
+  buildDataQualityCompletenessNote,
+  buildDataQualityMissingNote,
+} from "@/lib/dashboard-notes"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { formatAxisIntegerTick } from "@/lib/format-number"
 
@@ -35,8 +40,13 @@ function inferDomainFromField(field: string): string {
   return "Other"
 }
 
-export function DataQualityCharts({ facilities }: DataQualityChartsProps) {
+export function DataQualityCharts({
+  facilities,
+  programmeTarget = 37,
+}: DataQualityChartsProps & { programmeTarget?: number }) {
   const assessed = facilities.filter((f) => f.assessment_status === "complete")
+  const completenessNote = buildDataQualityCompletenessNote(facilities, programmeTarget)
+  const missingNote = buildDataQualityMissingNote(facilities)
 
   const completenessBuckets = [
     { range: "<70%", count: 0 },
@@ -81,6 +91,7 @@ export function DataQualityCharts({ facilities }: DataQualityChartsProps) {
               <Bar dataKey="count" fill="var(--chart-3)" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+          <ChartNote>{completenessNote}</ChartNote>
         </CardContent>
       </Card>
 
@@ -103,6 +114,7 @@ export function DataQualityCharts({ facilities }: DataQualityChartsProps) {
               </BarChart>
             </ResponsiveContainer>
           )}
+          <ChartNote>{missingNote}</ChartNote>
         </CardContent>
       </Card>
     </div>

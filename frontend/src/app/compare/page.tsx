@@ -7,6 +7,8 @@ import { FacilityComparePicker } from "@/components/public/facility-compare-pick
 import { PublicShell } from "@/components/public/PublicShell"
 import { getPublicFacilities, getPublicFacility } from "@/lib/public-api"
 import { computeCompareBenchmarks } from "@/lib/compare-benchmarks"
+import { ChartNote } from "@/components/public/chart-note"
+import { buildComparePanelNote } from "@/lib/dashboard-notes"
 
 export const metadata: Metadata = pageMetadata({
   title: "Compare facilities",
@@ -92,12 +94,15 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
         ) : null}
 
         {canCompare && facilityA && facilityB && (
-          <FacilityComparePanel
-            facilityA={facilityA}
-            facilityB={facilityB}
-            benchmarksA={computeCompareBenchmarks(facilityA, facilities)}
-            benchmarksB={computeCompareBenchmarks(facilityB, facilities)}
-          />
+          <>
+            <FacilityComparePanel
+              facilityA={facilityA}
+              facilityB={facilityB}
+              benchmarksA={computeCompareBenchmarks(facilityA, facilities)}
+              benchmarksB={computeCompareBenchmarks(facilityB, facilities)}
+            />
+            <ChartNote>{buildComparePanelNote()}</ChartNote>
+          </>
         )}
       </div>
     </PublicShell>

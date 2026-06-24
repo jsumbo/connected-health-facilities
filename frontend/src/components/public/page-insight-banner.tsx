@@ -1,21 +1,19 @@
-import { Lightbulb } from "lucide-react"
-
 interface PageInsightBannerProps {
   insight: string
 }
 
+/** One-line page summary — shown above filters on overview only. */
 export function PageInsightBanner({ insight }: PageInsightBannerProps) {
+  const text = insight.trim()
+  if (!text) return null
+
   return (
     <div
-      className="mb-6 flex gap-3 rounded-lg border border-primary/20 bg-primary/[0.04] px-4 py-3"
+      className="mb-6 rounded-lg border border-border bg-muted/30 px-4 py-3"
       role="note"
-      aria-label="Key insight"
+      aria-label="Summary"
     >
-      <Lightbulb className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
-      <p className="text-sm leading-relaxed text-foreground">
-        <span className="font-medium">So what: </span>
-        {insight}
-      </p>
+      <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
     </div>
   )
 }

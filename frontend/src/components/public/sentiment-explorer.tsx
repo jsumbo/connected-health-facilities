@@ -3,6 +3,11 @@
 import { useMemo, useState } from "react"
 import type { FacilitySentimentSummary, ProgrammeFacility } from "@/lib/types-public"
 import { EnthusiasmHistogram } from "@/components/public/enthusiasm-histogram"
+import { ChartNote } from "@/components/public/chart-note"
+import {
+  buildSentimentEnthusiasmNote,
+  buildSentimentManagementNote,
+} from "@/lib/dashboard-notes"
 import { ManagementEngagementChart } from "@/components/public/management-engagement-chart"
 import { SentimentTable } from "@/components/public/sentiment-table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -76,6 +81,12 @@ export function SentimentExplorer({ rows, facilities }: SentimentExplorerProps) 
     }
   }
 
+  const enthusiasmNote = buildSentimentEnthusiasmNote(
+    enthusiasmDistribution,
+    filtered.length
+  )
+  const managementNote = buildSentimentManagementNote(managementDistribution)
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap gap-3">
@@ -120,6 +131,7 @@ export function SentimentExplorer({ rows, facilities }: SentimentExplorerProps) 
           </CardHeader>
           <CardContent>
             <EnthusiasmHistogram distribution={enthusiasmDistribution} />
+            <ChartNote>{enthusiasmNote}</ChartNote>
           </CardContent>
         </Card>
         <Card className="shadow-none">
@@ -128,6 +140,7 @@ export function SentimentExplorer({ rows, facilities }: SentimentExplorerProps) 
           </CardHeader>
           <CardContent>
             <ManagementEngagementChart distribution={managementDistribution} />
+            <ChartNote>{managementNote}</ChartNote>
           </CardContent>
         </Card>
       </div>

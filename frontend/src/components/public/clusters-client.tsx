@@ -9,6 +9,8 @@ import {
   getClusterDomainAverage,
 } from "@/lib/drf-domains"
 import { clusterSortIndex } from "@/lib/clusters"
+import { buildClusterCardNote } from "@/lib/dashboard-notes"
+import { ChartNote } from "@/components/public/chart-note"
 import { formatAxisTick, formatPercentLabel } from "@/lib/format-number"
 
 interface ClustersClientProps {
@@ -84,6 +86,8 @@ export function ClustersClient({ clusters }: ClustersClientProps) {
                       )
                     })}
                   </div>
+
+                  <ChartNote>{buildClusterCardNote(cluster)}</ChartNote>
 
                   <div className="flex items-center justify-between border-t border-slate-100 pt-4">
                     <div className="space-y-1 text-sm text-slate-600">

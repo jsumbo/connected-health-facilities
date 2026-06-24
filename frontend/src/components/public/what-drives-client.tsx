@@ -14,6 +14,11 @@ import {
   pearsonCorrelation,
   buildDlaScatterPoints,
 } from "@/lib/readiness-drivers"
+import {
+  buildWhatDrivesCorrelationNote,
+  buildWhatDrivesDlaScatterNote,
+} from "@/lib/dashboard-notes"
+import { ChartNote } from "@/components/public/chart-note"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface WhatDrivesClientProps {
@@ -47,6 +52,9 @@ export function WhatDrivesClient({ facilities }: WhatDrivesClientProps) {
       dlaPoints.map((p) => p.composite)
     )
   }, [dlaPoints])
+
+  const correlationNote = buildWhatDrivesCorrelationNote(correlations)
+  const dlaScatterNote = buildWhatDrivesDlaScatterNote(dlaPoints.length, dlaR)
 
   return (
     <div className="space-y-6">
@@ -103,10 +111,11 @@ export function WhatDrivesClient({ facilities }: WhatDrivesClientProps) {
           </CardHeader>
           <CardContent>
             <CorrelationChart data={correlations} />
+            <ChartNote>{correlationNote}</ChartNote>
           </CardContent>
         </Card>
 
-        <DlaReadinessScatter facilities={facilities} />
+        <DlaReadinessScatter facilities={facilities} note={dlaScatterNote} />
       </div>
     </div>
   )

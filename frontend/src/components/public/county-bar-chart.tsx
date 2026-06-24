@@ -8,6 +8,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { ChartNote } from "@/components/public/chart-note"
 import type { CountyRollup } from "@/lib/types-public"
 import { formatAxisIntegerTick } from "@/lib/format-number"
 
@@ -70,7 +71,8 @@ export function CountyBarCard({
   counties,
   onCountyClick,
   selectedCounty,
-}: CountyBarChartProps) {
+  note,
+}: CountyBarChartProps & { note?: string }) {
   return (
     <Card className="shadow-none">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
@@ -91,9 +93,10 @@ export function CountyBarCard({
           </p>
         )}
         <CountyBarChart counties={counties} onCountyClick={onCountyClick} selectedCounty={selectedCounty} />
-        {onCountyClick && (
-          <p className="text-xs text-muted-foreground mt-2">💡 Click a county to filter</p>
-        )}
+        {onCountyClick ? (
+          <p className="text-xs text-muted-foreground mt-2">Click a county bar to filter this page.</p>
+        ) : null}
+        {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>
     </Card>
   )

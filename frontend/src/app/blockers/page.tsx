@@ -7,6 +7,8 @@ import { PublicShell } from "@/components/public/PublicShell"
 import { unlockCountForBlocker } from "@/lib/blockers"
 import { getPublicOverview, getPublicFacilities } from "@/lib/public-api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ChartNote } from "@/components/public/chart-note"
+import { buildBlockerChartNote, buildBlockerHeatmapNote } from "@/lib/dashboard-notes"
 
 export const metadata: Metadata = pageMetadata({
   title: "Blockers",
@@ -31,6 +33,8 @@ export default async function BlockersPage() {
   }
 
   const register = overview?.blocker_register ?? []
+  const blockerNote = buildBlockerChartNote(register, facilities)
+  const heatmapNote = buildBlockerHeatmapNote()
 
   return (
     <PublicShell
@@ -42,7 +46,7 @@ export default async function BlockersPage() {
 
       {!error && overview ? (
         <div className="space-y-8">
-          <BlockerBarCard data={register} facilities={facilities} />
+          <BlockerBarCard data={register} facilities={facilities} note={blockerNote} />
 
           <Card className="shadow-none">
             <CardHeader>
@@ -50,11 +54,15 @@ export default async function BlockersPage() {
             </CardHeader>
             <CardContent>
               <BlockerClusterHeatmap facilities={facilities} blockerRegister={register} />
+              <ChartNote>{heatmapNote}</ChartNote>
             </CardContent>
           </Card>
 
           <div className="space-y-2">
             <h2 className="text-base font-semibold">Single-blocker unlocks</h2>
+            <p className="text-sm text-muted-foreground">
+              Tier 3 facilities with exactly one blocker — clearing that item moves them out of the blocked set.
+            </p>
             {register.map((blocker) => {
               const unlockCount = unlockCountForBlocker(facilities, blocker.code)
               return (

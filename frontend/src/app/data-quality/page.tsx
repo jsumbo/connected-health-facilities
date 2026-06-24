@@ -43,7 +43,10 @@ export default async function DataQualityPage() {
 
       {report && (
         <>
-          <DataQualityCharts facilities={report.facilities} />
+          <DataQualityCharts
+            facilities={report.facilities}
+            programmeTarget={report.programme_target}
+          />
 
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <KpiMetric

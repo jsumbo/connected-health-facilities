@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { pageMetadata } from "@/lib/site-metadata"
 import { ClustersClient } from "@/components/public/clusters-client"
+import { PageInsightBanner } from "@/components/public/page-insight-banner"
+import { buildClustersPageNote } from "@/lib/dashboard-notes"
 import { ErrorBanner } from "@/components/public/error-banner"
 import { PublicShell } from "@/components/public/PublicShell"
 import { getPublicClusters, getPublicFacilities } from "@/lib/public-api"
@@ -34,7 +36,12 @@ export default async function ClustersPage() {
   return (
     <PublicShell title="Clusters" assessed={assessedCount} target={targetCount}>
       {error ? <ErrorBanner message={error} /> : null}
-      {!error ? <ClustersClient clusters={clusters} /> : null}
+      {!error ? (
+        <>
+          <PageInsightBanner insight={buildClustersPageNote(clusters)} />
+          <ClustersClient clusters={clusters} />
+        </>
+      ) : null}
     </PublicShell>
   )
 }

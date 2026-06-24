@@ -5,6 +5,8 @@ import dynamic from "next/dynamic"
 import { Maximize2, Minimize2 } from "lucide-react"
 import type { MapFacility } from "@/components/public/facility-map"
 import { FacilityMapLegend } from "@/components/public/facility-map-legend"
+import { ChartNote } from "@/components/public/chart-note"
+import { buildMapNote } from "@/lib/dashboard-notes"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -95,6 +97,10 @@ export function FacilityMapView({ facilities, totalCount }: FacilityMapViewProps
           />
         </div>
       </div>
+
+      {!isFullscreen ? (
+        <ChartNote>{buildMapNote(facilities.length, totalCount)}</ChartNote>
+      ) : null}
     </div>
   )
 }

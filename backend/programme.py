@@ -11,6 +11,7 @@ from data_quality_flags import assess_instrument_flags, instrument_confidence_su
 from facility_master import (
     PROGRAMME_FACILITY_TARGET,
     all_programme_facilities,
+    cluster_sort_key,
     county_display,
 )
 from drf import DRF_DOMAINS, DRF_DOMAIN_KEYS, BLOCKER_REMEDIATION
@@ -54,8 +55,6 @@ def _apply_master_readiness(row: Dict[str, Any], master: Dict[str, Any]) -> None
         row["master_dla_n"] = master["dla_n"]
     if master.get("sentiment_n") is not None:
         row["master_sentiment_n"] = master["sentiment_n"]
-    if master.get("cluster"):
-        row["cluster"] = master["cluster"]
 
 
 def build_facility_rows() -> List[Dict[str, Any]]:
@@ -201,7 +200,7 @@ def build_overview() -> Dict[str, Any]:
                 "facility_count": c.get("facility_count") or 0,
                 "avg_score": c.get("avg_composite"),
             }
-            for c in master_clusters
+            for c in sorted(master_clusters, key=lambda item: cluster_sort_key(item["cluster"]))
         ]
     else:
         by_cluster: Dict[str, Dict[str, Any]] = {}
@@ -214,7 +213,7 @@ def build_overview() -> Dict[str, Any]:
                 by_cluster[cl]["scores"].append(r["overall_score"])
 
         cluster_summaries = []
-        for cl, data in sorted(by_cluster.items()):
+        for cl, data in sorted(by_cluster.items(), key=lambda item: cluster_sort_key(item[0])):
             scores = data["scores"]
             cluster_summaries.append({
                 "cluster": cl,
@@ -742,9 +741,9 @@ def build_cluster_overview() -> Dict[str, Any]:
     }
 
     if master_cache.is_populated and master_by_cluster:
-        cluster_names = sorted(master_by_cluster.keys())
+        cluster_names = sorted(master_by_cluster.keys(), key=cluster_sort_key)
     else:
-        cluster_names = sorted(set(by_cluster) | set(master_by_cluster))
+        cluster_names = sorted(set(by_cluster) | set(master_by_cluster), key=cluster_sort_key)
 
     clusters: List[Dict[str, Any]] = []
     for cluster in cluster_names:

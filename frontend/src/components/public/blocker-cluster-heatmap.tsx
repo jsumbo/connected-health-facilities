@@ -4,6 +4,7 @@ import { useMemo } from "react"
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { getBlockerCode } from "@/lib/quick-wins"
 import { blockerShortLabel } from "@/lib/blockers"
+import { clusterSortIndex } from "@/lib/clusters"
 import type { BlockerSummary } from "@/lib/types-public"
 
 interface BlockerClusterHeatmapProps {
@@ -18,7 +19,9 @@ export function BlockerClusterHeatmap({
   const { clusters, codes, matrix } = useMemo(() => {
     const assessed = facilities.filter((f) => f.assessment_status === "complete")
     const clusterSet = new Set(assessed.map((f) => f.cluster).filter(Boolean))
-    const clusters = [...clusterSet].sort((a, b) => a.localeCompare(b))
+    const clusters = [...clusterSet].sort(
+      (a, b) => clusterSortIndex(a) - clusterSortIndex(b) || a.localeCompare(b)
+    )
 
     const codes = [...blockerRegister]
       .sort((a, b) => b.count - a.count)

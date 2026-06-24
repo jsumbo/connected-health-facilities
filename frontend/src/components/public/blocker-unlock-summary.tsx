@@ -60,7 +60,7 @@ export function BlockerUnlockSummary({ blockers, facilities }: BlockerUnlockSumm
           })}
         </div>
         <Link
-          href="/dashboard/blockers"
+          href="/blockers"
           className="inline-block text-xs font-medium text-primary hover:underline underline-offset-2"
         >
           Full blocker analysis →

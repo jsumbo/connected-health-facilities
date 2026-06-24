@@ -24,6 +24,7 @@ import {
   Zap,
 } from "lucide-react"
 import { buildDlaInsight } from "@/lib/overview-insights"
+import { clusterSortIndex } from "@/lib/clusters"
 import { computeScopedOverviewMetrics } from "@/lib/overview-stats"
 import { formatAxisTick, formatPercentLabel } from "@/lib/format-number"
 
@@ -334,7 +335,9 @@ export function InteractiveOverview({
             <CardTitle className="text-base">By cluster</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            {overview.by_cluster.map((c) => (
+            {[...overview.by_cluster]
+              .sort((a, b) => clusterSortIndex(a.cluster) - clusterSortIndex(b.cluster))
+              .map((c) => (
               <a
                 key={c.cluster}
                 href={`/facilities?cluster=${encodeURIComponent(c.cluster)}`}

@@ -1,12 +1,19 @@
 import { cookies } from "next/headers";
 import { getSummary, getFacilities } from "@/lib/api";
+import { parseDashboardScope } from "@/lib/dashboard-scope";
 import StatCard from "@/components/StatCard";
 import ReadinessBadge from "@/components/ReadinessBadge";
 import CountyChart from "@/components/charts/CountyChart";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ facility_type?: string }>;
+}) {
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token")!.value;
+  const sp = await searchParams;
+  const { facilityTypeQuery, facilityTypeLabel } = parseDashboardScope(sp);
 
   let summary = null;
   let recentItems: import("@/lib/types").FacilitySummary[] = [];
@@ -15,8 +22,8 @@ export default async function DashboardPage() {
 
   try {
     const [summaryData, recentPage] = await Promise.all([
-      getSummary(token),
-      getFacilities(token, { limit: 8 }),
+      getSummary(token, facilityTypeQuery),
+      getFacilities(token, { limit: 8, ...facilityTypeQuery }),
     ]);
     summary = summaryData;
     recentItems = recentPage.items;
@@ -31,6 +38,7 @@ export default async function DashboardPage() {
         <h1 className="text-2xl font-bold text-navy">Programme Overview</h1>
         <p className="text-slate-500 text-sm mt-1">
           Connected Facilities Baseline Assessment
+          {facilityTypeLabel ? ` · ${facilityTypeLabel} only` : ""}
         </p>
       </div>
 

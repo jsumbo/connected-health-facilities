@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Building2,
   LogOut,
@@ -42,6 +42,13 @@ const NAV = [
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const facilityType = searchParams.get("facility_type");
+
+  const hrefWithScope = (href: string) => {
+    if (!facilityType) return href;
+    return `${href}?facility_type=${encodeURIComponent(facilityType)}`;
+  };
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -83,7 +90,7 @@ export default function Sidebar() {
                   return (
                     <Link
                       key={href}
-                      href={href}
+                      href={hrefWithScope(href)}
                       className={clsx(
                         "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors",
                         active

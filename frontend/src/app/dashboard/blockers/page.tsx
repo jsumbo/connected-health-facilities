@@ -1,4 +1,6 @@
 import { getPublicOverview, getPublicFacilities } from "@/lib/public-api"
+import { parseDashboardScope } from "@/lib/dashboard-scope"
+import { buildBlockerRegister } from "@/lib/overview-stats"
 import { BlockerBarCard } from "@/components/public/blocker-bar-chart"
 import { BlockerClusterHeatmap } from "@/components/public/blocker-cluster-heatmap"
 import { PageHeader } from "@/components/public/page-header"
@@ -9,14 +11,27 @@ export const metadata = {
   title: "Blockers | Dashboard",
 }
 
-export default async function BlockersPage() {
+export default async function BlockersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ facility_type?: string }>
+}) {
+  const sp = await searchParams
+  const { facilityTypeQuery } = parseDashboardScope(sp)
+
   const [overview, facilitiesData] = await Promise.all([
     getPublicOverview(),
-    getPublicFacilities(),
+    getPublicFacilities(facilityTypeQuery),
   ])
 
   const facilities = facilitiesData.items || []
-  const register = overview.blocker_register ?? []
+  const descriptionByCode = new Map(
+    (overview.blocker_register ?? []).map((b) => [b.code, b.description])
+  )
+  const register = buildBlockerRegister(
+    facilities.filter((f) => f.assessment_status === "complete"),
+    descriptionByCode
+  )
 
   return (
     <div className="space-y-8">

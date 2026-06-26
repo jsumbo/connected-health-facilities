@@ -17,8 +17,14 @@ async function apiFetch<T>(path: string, token: string): Promise<T> {
   return res.json();
 }
 
-export async function getSummary(token: string): Promise<DashboardSummary> {
-  return apiFetch<DashboardSummary>("/dashboard/summary", token);
+export async function getSummary(
+  token: string,
+  filters: { facility_type?: string } = {}
+): Promise<DashboardSummary> {
+  const params = new URLSearchParams();
+  if (filters.facility_type) params.set("facility_type", filters.facility_type);
+  const query = params.toString() ? `?${params.toString()}` : "";
+  return apiFetch<DashboardSummary>(`/dashboard/summary${query}`, token);
 }
 
 export async function getFacilities(
@@ -27,6 +33,7 @@ export async function getFacilities(
     county?: string;
     tier?: string;
     blocked?: boolean;
+    facility_type?: string;
     limit?: number;
     offset?: number;
   } = {}
@@ -35,6 +42,7 @@ export async function getFacilities(
   if (filters.county) params.set("county", filters.county);
   if (filters.tier) params.set("tier", filters.tier);
   if (filters.blocked !== undefined) params.set("blocked", String(filters.blocked));
+  if (filters.facility_type) params.set("facility_type", filters.facility_type);
   if (filters.limit !== undefined) params.set("limit", String(filters.limit));
   if (filters.offset !== undefined) params.set("offset", String(filters.offset));
   const query = params.toString() ? `?${params.toString()}` : "";
@@ -48,8 +56,14 @@ export async function getFacility(
   return apiFetch<FacilitySummary>(`/dashboard/facilities/${id}`, token);
 }
 
-export async function getAnalytics(token: string): Promise<AnalyticsSummary> {
-  return apiFetch<AnalyticsSummary>("/dashboard/analytics", token);
+export async function getAnalytics(
+  token: string,
+  filters: { facility_type?: string } = {}
+): Promise<AnalyticsSummary> {
+  const params = new URLSearchParams();
+  if (filters.facility_type) params.set("facility_type", filters.facility_type);
+  const query = params.toString() ? `?${params.toString()}` : "";
+  return apiFetch<AnalyticsSummary>(`/dashboard/analytics${query}`, token);
 }
 
 export async function loginRequest(

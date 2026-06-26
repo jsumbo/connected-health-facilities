@@ -42,12 +42,14 @@ export function getPublicFacilities(params?: {
   tier?: string
   region?: string
   status?: string
+  facility_type?: string
 }): Promise<{ total: number; items: ProgrammeFacility[] }> {
   const q = new URLSearchParams()
   if (params?.county) q.set("county", params.county)
   if (params?.tier) q.set("tier", params.tier)
   if (params?.region) q.set("region", params.region)
   if (params?.status) q.set("status", params.status)
+  if (params?.facility_type) q.set("facility_type", params.facility_type)
   const query = q.toString() ? `?${q}` : ""
   return publicFetch(`/public/facilities${query}`)
 }

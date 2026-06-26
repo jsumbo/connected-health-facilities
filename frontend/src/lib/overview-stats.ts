@@ -63,7 +63,7 @@ function computeDrfDomainAverages(
   return result
 }
 
-function buildBlockerRegister(
+export function buildBlockerRegister(
   assessed: ProgrammeFacility[],
   descriptionByCode: Map<string, string>
 ): BlockerSummary[] {

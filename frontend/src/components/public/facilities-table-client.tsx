@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Download, Search } from "lucide-react"
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { buildCsv, downloadCsv } from "@/lib/export-csv"
-import { DomainMiniBars } from "@/components/public/domain-mini-bars"
+import { getBlockerCode } from "@/lib/quick-wins"
 import { TierBadge } from "@/components/public/tier-badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-type SortKey = "name" | "county" | "score" | "tier" | "completeness"
+type SortKey = "name" | "county" | "score" | "tier" | "blockers"
 type SortDir = "asc" | "desc"
 
 interface FacilitiesTableClientProps {
@@ -58,8 +58,8 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
         case "tier":
           cmp = a.tier.localeCompare(b.tier)
           break
-        case "completeness":
-          cmp = a.completeness_pct - b.completeness_pct
+        case "blockers":
+          cmp = a.blockers.length - b.blockers.length
           break
       }
       return sortDir === "asc" ? cmp : -cmp
@@ -72,7 +72,7 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
       setSortDir((d) => (d === "asc" ? "desc" : "asc"))
     } else {
       setSortKey(key)
-      setSortDir(key === "score" || key === "completeness" ? "desc" : "asc")
+      setSortDir(key === "score" || key === "blockers" ? "desc" : "asc")
     }
   }
 
@@ -83,7 +83,6 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
       "Cluster",
       "Score",
       "Tier",
-      "Completeness",
       "Blockers",
     ]
     const rows = filtered.map((f) => [
@@ -92,8 +91,7 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
       f.cluster,
       f.overall_score ?? "",
       f.tier,
-      f.completeness_pct,
-      f.blocker_codes?.join("; ") ?? "",
+      formatBlockerCell(f),
     ])
     downloadCsv("facilities-readiness.csv", buildCsv(headers, rows))
   }
@@ -145,9 +143,6 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
               {!compact ? (
                 <TableHead className="text-xs uppercase tracking-wide">Cluster</TableHead>
               ) : null}
-              {!compact ? (
-                <TableHead className="text-xs uppercase tracking-wide">Domains</TableHead>
-              ) : null}
               <TableHead className="text-right">
                 <SortButton label="Score" active={sortKey === "score"} onClick={() => handleSort("score")} className="ml-auto">
                   Score{sortIndicator("score")}
@@ -160,8 +155,8 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
               </TableHead>
               {!compact ? (
                 <TableHead className="text-right">
-                  <SortButton label="Data completeness" active={sortKey === "completeness"} onClick={() => handleSort("completeness")} className="ml-auto">
-                    Data{sortIndicator("completeness")}
+                  <SortButton label="Blockers" active={sortKey === "blockers"} onClick={() => handleSort("blockers")} className="ml-auto">
+                    Blockers{sortIndicator("blockers")}
                   </SortButton>
                 </TableHead>
               ) : null}
@@ -186,11 +181,6 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
                 {!compact ? (
                   <TableCell className="text-xs text-muted-foreground">{f.cluster}</TableCell>
                 ) : null}
-                {!compact ? (
-                  <TableCell>
-                    <DomainMiniBars facility={f} compact />
-                  </TableCell>
-                ) : null}
                 <TableCell className="text-right tabular-nums font-medium">
                   {f.overall_score != null ? `${f.overall_score}%` : "—"}
                 </TableCell>
@@ -198,8 +188,12 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
                   <TierBadge tier={f.tier} compact />
                 </TableCell>
                 {!compact ? (
-                  <TableCell className="text-right text-xs tabular-nums text-muted-foreground">
-                    {f.assessment_status === "complete" ? `${f.completeness_pct}%` : "—"}
+                  <TableCell className="text-right text-xs">
+                    {f.blockers.length > 0 ? (
+                      <span className="font-medium text-destructive">{formatBlockerCell(f)}</span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </TableCell>
                 ) : null}
               </TableRow>
@@ -209,6 +203,18 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
       </div>
     </div>
   )
+}
+
+function formatBlockerCell(facility: ProgrammeFacility): string {
+  if (facility.blockers.length === 0) return "—"
+  if (facility.blocker_codes?.length) {
+    return facility.blocker_codes.join(", ")
+  }
+  const codes = facility.blockers
+    .map((blocker) => getBlockerCode(blocker))
+    .filter((code): code is string => Boolean(code))
+  if (codes.length > 0) return codes.join(", ")
+  return `${facility.blockers.length} blocker${facility.blockers.length > 1 ? "s" : ""}`
 }
 
 function SortButton({

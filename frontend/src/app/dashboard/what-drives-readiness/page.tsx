@@ -1,14 +1,22 @@
 import { PageHeader } from "@/components/public/page-header"
 import { WhatDrivesClient } from "@/components/public/what-drives-client"
 import { getPublicFacilities, getPublicOverview } from "@/lib/public-api"
+import { parseDashboardScope } from "@/lib/dashboard-scope"
 
 export const metadata = {
   title: "What Drives Readiness | Dashboard",
 }
 
-export default async function WhatDrivesPage() {
+export default async function WhatDrivesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ facility_type?: string }>
+}) {
+  const sp = await searchParams
+  const { facilityTypeQuery } = parseDashboardScope(sp)
+
   const [facilitiesData, overview] = await Promise.all([
-    getPublicFacilities(),
+    getPublicFacilities(facilityTypeQuery),
     getPublicOverview().catch(() => null),
   ])
 

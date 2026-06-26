@@ -1,4 +1,5 @@
 import { getPublicFacilities, getPublicOverview } from "@/lib/public-api"
+import { parseDashboardScope } from "@/lib/dashboard-scope"
 import { QuickWinsClient } from "@/components/public/quick-wins-client"
 import { PageHeader } from "@/components/public/page-header"
 
@@ -6,7 +7,14 @@ export const metadata = {
   title: "Quick Wins | Dashboard",
 }
 
-export default async function QuickWinsPage() {
+export default async function QuickWinsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ facility_type?: string }>
+}) {
+  const sp = await searchParams
+  const { facilityTypeQuery } = parseDashboardScope(sp)
+
   let facilities: Awaited<ReturnType<typeof getPublicFacilities>>["items"] = []
   let error: string | null = null
   let assessedCount = 0
@@ -14,7 +22,7 @@ export default async function QuickWinsPage() {
 
   try {
     const [result, overview] = await Promise.all([
-      getPublicFacilities(),
+      getPublicFacilities(facilityTypeQuery),
       getPublicOverview().catch(() => null),
     ])
     facilities = result.items

@@ -3,6 +3,7 @@ import { ErrorBanner } from "@/components/public/error-banner"
 import type { MapFacility } from "@/components/public/facility-map"
 import { FacilityMapView } from "@/components/public/facility-map-view"
 import { getPublicFacilities, getPublicOverview, getFacilityPhotoUrl } from "@/lib/public-api"
+import { parseDashboardScope } from "@/lib/dashboard-scope"
 
 export const metadata: Metadata = {
   title: "Map | Dashboard",
@@ -10,13 +11,23 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic"
 
-export default async function MapPage() {
+export default async function MapPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ facility_type?: string }>
+}) {
+  const sp = await searchParams
+  const { facilityTypeQuery } = parseDashboardScope(sp)
+
   let mapFacilities: MapFacility[] = []
   let overview = null
   let error: string | null = null
 
   try {
-    const [page, ov] = await Promise.all([getPublicFacilities(), getPublicOverview()])
+    const [page, ov] = await Promise.all([
+      getPublicFacilities(facilityTypeQuery),
+      getPublicOverview(),
+    ])
     overview = ov
     mapFacilities = page.items
       .filter((f) => f.latitude != null && f.longitude != null)

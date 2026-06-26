@@ -30,6 +30,7 @@ from master_cache import master_cache
 from sentiment_cache import sentiment_cache
 from dla_cache import dla_cache
 from dla import load_csv_rows
+from facility_filters import matches_facility_type
 
 router = APIRouter()
 
@@ -58,11 +59,14 @@ def public_facilities(
     tier: Optional[str] = Query(None),
     region: Optional[str] = Query(None),
     status: Optional[str] = Query(None, description="complete | not_assessed"),
+    facility_type: Optional[str] = Query(None, description="hospital | health_centre | clinic"),
 ):
     """All programme facilities including those awaiting assessment."""
     _require_cache()
     rows = build_facility_rows()
 
+    if facility_type:
+        rows = [r for r in rows if matches_facility_type(r.get("facility_type"), facility_type)]
     if county:
         rows = [r for r in rows if r["county"].lower() == county.lower() or r["county_slug"] == county.lower()]
     if tier:

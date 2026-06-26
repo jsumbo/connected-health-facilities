@@ -1,18 +1,25 @@
 import { cookies } from "next/headers";
 import { getAnalytics } from "@/lib/api";
+import { parseDashboardScope } from "@/lib/dashboard-scope";
 import { AnalyticsSummary } from "@/lib/types";
 import StatCard from "@/components/StatCard";
 import DonutChart from "@/components/charts/DonutChart";
 
-export default async function InfrastructurePage() {
+export default async function InfrastructurePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ facility_type?: string }>;
+}) {
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token")!.value;
+  const sp = await searchParams;
+  const { facilityTypeQuery, facilityTypeLabel } = parseDashboardScope(sp);
 
   let data: AnalyticsSummary | null = null;
   let error: string | null = null;
 
   try {
-    data = await getAnalytics(token);
+    data = await getAnalytics(token, facilityTypeQuery);
   } catch (e: unknown) {
     error = e instanceof Error ? e.message : "Failed to load";
   }
@@ -27,6 +34,7 @@ export default async function InfrastructurePage() {
         <h1 className="text-2xl font-bold text-navy">Infrastructure Overview</h1>
         <p className="text-slate-500 text-sm mt-1">
           Connectivity, power, and device readiness across all facilities
+          {facilityTypeLabel ? ` · ${facilityTypeLabel} only` : ""}
         </p>
       </div>
 

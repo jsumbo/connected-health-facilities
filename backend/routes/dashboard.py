@@ -4,6 +4,7 @@ from auth import get_current_user
 from scoring import aggregate_summary, aggregate_analytics
 from models import FacilitySummary, DashboardSummary, PaginatedFacilities, AnalyticsSummary
 from cache import cache
+from facility_filters import matches_facility_type
 
 router = APIRouter()
 
@@ -16,10 +17,19 @@ def _require_cache() -> List[dict]:
     return cache.get()
 
 
+def _filter_scored(scored: List[dict], facility_type: Optional[str]) -> List[dict]:
+    if not facility_type:
+        return scored
+    return [s for s in scored if matches_facility_type(s.get("facility_type"), facility_type)]
+
+
 @router.get("/summary", response_model=DashboardSummary)
-async def get_summary(current_user: dict = Depends(get_current_user)):
+async def get_summary(
+    facility_type: Optional[str] = Query(None, description="Filter by facility type: hospital | health_centre | clinic"),
+    current_user: dict = Depends(get_current_user),
+):
     """Programme-level summary: counts, tiers, completion, county breakdown."""
-    return aggregate_summary(_require_cache())
+    return aggregate_summary(_filter_scored(_require_cache(), facility_type))
 
 
 @router.get("/facilities", response_model=PaginatedFacilities)
@@ -27,12 +37,13 @@ async def get_facilities(
     county: Optional[str] = Query(None, description="Filter by county name"),
     tier: Optional[str] = Query(None, description="Filter by tier: Deployment Ready | Foundational | Not Ready | Blocked"),
     blocked: Optional[bool] = Query(None, description="Filter to only blocked (true) or unblocked (false) facilities"),
+    facility_type: Optional[str] = Query(None, description="Filter by facility type: hospital | health_centre | clinic"),
     limit: int = Query(50, ge=1, le=200, description="Results per page"),
     offset: int = Query(0, ge=0, description="Number of results to skip"),
     current_user: dict = Depends(get_current_user),
 ):
-    """All facilities with scores. Filterable by county, tier, and blocked status. Paginated."""
-    scored = _require_cache()
+    """All facilities with scores. Filterable by county, tier, blocked status, and facility type. Paginated."""
+    scored = _filter_scored(_require_cache(), facility_type)
 
     if county:
         scored = [s for s in scored if (s.get("county") or "").lower() == county.lower()]
@@ -73,9 +84,12 @@ async def cache_status(current_user: dict = Depends(get_current_user)):
 
 
 @router.get("/analytics", response_model=AnalyticsSummary)
-async def get_analytics(current_user: dict = Depends(get_current_user)):
+async def get_analytics(
+    facility_type: Optional[str] = Query(None, description="Filter by facility type: hospital | health_centre | clinic"),
+    current_user: dict = Depends(get_current_user),
+):
     """Infrastructure, power, device, and deployment-progress analytics."""
-    return aggregate_analytics(_require_cache())
+    return aggregate_analytics(_filter_scored(_require_cache(), facility_type))
 
 
 @router.post("/cache/sync", tags=["cache"])

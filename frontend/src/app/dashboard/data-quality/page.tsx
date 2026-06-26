@@ -1,4 +1,5 @@
 import { getPublicOverview, getPublicFacilities } from "@/lib/public-api"
+import { parseDashboardScope } from "@/lib/dashboard-scope"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const dynamic = "force-dynamic"
@@ -7,10 +8,17 @@ export const metadata = {
   title: "Data Quality | Dashboard",
 }
 
-export default async function DataQualityPage() {
+export default async function DataQualityPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ facility_type?: string }>
+}) {
+  const sp = await searchParams
+  const { facilityTypeQuery } = parseDashboardScope(sp)
+
   const [overview, facilitiesData] = await Promise.all([
     getPublicOverview(),
-    getPublicFacilities(),
+    getPublicFacilities(facilityTypeQuery),
   ])
 
   const facilities = facilitiesData.items || []

@@ -310,7 +310,7 @@ export function buildFacilitiesTableNote(
   if (hasFilters) {
     return `${count} facilities match the current filters. Sort columns, search by name or cluster, or export CSV for offline review.`
   }
-  return `${count} programme facilities. Sort columns, search by name or cluster, or export CSV. Domain mini-bars show the score shape without opening each record.`
+  return `${count} programme facilities. Sort columns, search by name or cluster, or export CSV. Blocker codes show deployment constraints at a glance.`
 }
 
 export function buildComparePanelNote(): string {

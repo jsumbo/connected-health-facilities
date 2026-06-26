@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import { getFacilities } from "@/lib/api";
+import { parseDashboardScope } from "@/lib/dashboard-scope";
+import { FACILITY_TYPE_FILTER_OPTIONS } from "@/lib/facility-types";
 import { PaginatedFacilities } from "@/lib/types";
 import ReadinessBadge from "@/components/ReadinessBadge";
 import Link from "next/link";
@@ -9,11 +11,12 @@ const PAGE_SIZE = 50;
 export default async function FacilitiesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ county?: string; tier?: string; blocked?: string; page?: string }>;
+  searchParams: Promise<{ county?: string; tier?: string; blocked?: string; page?: string; facility_type?: string }>;
 }) {
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token")!.value;
   const sp = await searchParams;
+  const { facilityType } = parseDashboardScope(sp);
 
   const page = Math.max(1, parseInt(sp.page || "1", 10));
   const offset = (page - 1) * PAGE_SIZE;
@@ -26,6 +29,7 @@ export default async function FacilitiesPage({
       county: sp.county,
       tier: sp.tier,
       blocked: sp.blocked === "true" ? true : sp.blocked === "false" ? false : undefined,
+      facility_type: facilityType,
       limit: PAGE_SIZE,
       offset,
     });
@@ -54,6 +58,7 @@ export default async function FacilitiesPage({
 
       {/* Filters */}
       <form className="flex flex-wrap gap-3 mb-6">
+        {facilityType ? <input type="hidden" name="facility_type" value={facilityType} /> : null}
         <select
           name="county"
           defaultValue={sp.county || ""}
@@ -89,10 +94,19 @@ export default async function FacilitiesPage({
         >
           Filter
         </button>
-        <a href="/dashboard/facilities" className="px-5 py-2 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+        <a
+          href={facilityType ? `/dashboard/facilities?facility_type=${encodeURIComponent(facilityType)}` : "/dashboard/facilities"}
+          className="px-5 py-2 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-colors"
+        >
           Clear
         </a>
       </form>
+
+      {facilityType ? (
+        <p className="mb-4 text-sm text-slate-500">
+          Showing {FACILITY_TYPE_FILTER_OPTIONS.find((opt) => opt.value === facilityType)?.label ?? facilityType} facilities
+        </p>
+      ) : null}
 
       {error && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm mb-4">

@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import { getPublicFacilities, getPublicOverview } from "@/lib/public-api"
+import { parseDashboardScope } from "@/lib/dashboard-scope"
 import { HeatmapGridClient } from "@/components/public/heatmap-grid-client"
 import { PageHeader } from "@/components/public/page-header"
 
@@ -7,9 +8,16 @@ export const metadata = {
   title: "Readiness Heatmap | Dashboard",
 }
 
-async function HeatmapContent() {
+async function HeatmapContent({
+  searchParams,
+}: {
+  searchParams: Promise<{ facility_type?: string }>
+}) {
+  const sp = await searchParams
+  const { facilityTypeQuery } = parseDashboardScope(sp)
+
   const [facilities, overview] = await Promise.all([
-    getPublicFacilities(),
+    getPublicFacilities(facilityTypeQuery),
     getPublicOverview(),
   ])
 
@@ -27,12 +35,16 @@ async function HeatmapContent() {
   )
 }
 
-export default function ReadinessHeatmapPage() {
+export default function ReadinessHeatmapPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ facility_type?: string }>
+}) {
   return (
     <Suspense
       fallback={<div className="h-96 animate-pulse rounded-lg bg-muted" />}
     >
-      <HeatmapContent />
+      <HeatmapContent searchParams={searchParams} />
     </Suspense>
   )
 }

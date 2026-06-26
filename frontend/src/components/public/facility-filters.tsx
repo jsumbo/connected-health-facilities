@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { ReadinessTier } from "@/lib/types-public"
+import { FACILITY_TYPE_FILTER_OPTIONS } from "@/lib/facility-types"
 import { cn } from "@/lib/utils"
 
 const selectClassName = cn(
@@ -26,12 +27,14 @@ interface FacilityFiltersProps {
   counties: readonly string[]
   currentCounty?: string
   currentTier?: string
+  currentFacilityType?: string
 }
 
 export function FacilityFilters({
   counties,
   currentCounty = "",
   currentTier = "",
+  currentFacilityType = "",
 }: FacilityFiltersProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -63,7 +66,18 @@ export function FacilityFilters({
     router.push(query ? `${pathname}?${query}` : pathname)
   }
 
-  const hasFilters = Boolean(currentCounty || currentTier)
+  const handleFacilityTypeChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value) {
+      params.set("facility_type", value)
+    } else {
+      params.delete("facility_type")
+    }
+    const query = params.toString()
+    router.push(query ? `${pathname}?${query}` : pathname)
+  }
+
+  const hasFilters = Boolean(currentCounty || currentTier || currentFacilityType)
 
   return (
     <div className="flex flex-wrap items-end gap-4">
@@ -97,6 +111,24 @@ export function FacilityFilters({
           className={selectClassName}
         >
           {FACILITY_TIER_FILTER_OPTIONS.map((opt) => (
+            <option key={opt.label} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="facility-filter-type" className="text-xs font-medium text-muted-foreground">
+          Facility type
+        </label>
+        <select
+          id="facility-filter-type"
+          value={currentFacilityType}
+          onChange={(e) => handleFacilityTypeChange(e.target.value)}
+          className={selectClassName}
+        >
+          {FACILITY_TYPE_FILTER_OPTIONS.map((opt) => (
             <option key={opt.label} value={opt.value}>
               {opt.label}
             </option>

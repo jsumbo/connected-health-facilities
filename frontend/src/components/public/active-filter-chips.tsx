@@ -1,14 +1,17 @@
 "use client"
 
 import { X } from "lucide-react"
+import { facilityTypeLabel } from "@/lib/facility-types"
 
 interface ActiveFilterChipsProps {
   county?: string
   tier?: string
   cluster?: string
+  facilityType?: string
   onClearCounty?: () => void
   onClearTier?: () => void
   onClearCluster?: () => void
+  onClearFacilityType?: () => void
   onClearAll: () => void
 }
 
@@ -16,12 +19,14 @@ export function ActiveFilterChips({
   county,
   tier,
   cluster,
+  facilityType,
   onClearCounty,
   onClearTier,
   onClearCluster,
+  onClearFacilityType,
   onClearAll,
 }: ActiveFilterChipsProps) {
-  const hasFilters = Boolean(county || tier || cluster)
+  const hasFilters = Boolean(county || tier || cluster || facilityType)
   if (!hasFilters) return null
 
   return (
@@ -35,6 +40,9 @@ export function ActiveFilterChips({
       ) : null}
       {cluster ? (
         <FilterChip label={`Cluster: ${cluster}`} onRemove={onClearCluster ?? onClearAll} />
+      ) : null}
+      {facilityType ? (
+        <FilterChip label={`Type: ${facilityTypeLabel(facilityType)}`} onRemove={onClearFacilityType ?? onClearAll} />
       ) : null}
       <button
         type="button"

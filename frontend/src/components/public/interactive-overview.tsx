@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import type { PublicOverview, ProgrammeFacility, QuestionStat } from "@/lib/types-public"
+import { FACILITY_TYPE_FILTER_OPTIONS, normalizeFacilityType } from "@/lib/facility-types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TierDonutCard } from "./tier-donut-chart"
 import { CountyBarCard } from "./county-bar-chart"
@@ -56,12 +57,15 @@ export function InteractiveOverview({
 
   const [selectedCounty, setSelectedCounty] = useState<string>("")
   const [selectedTier, setSelectedTier] = useState<string>("")
+  const [selectedFacilityType, setSelectedFacilityType] = useState<string>("")
 
   useEffect(() => {
     const county = searchParams.get("county") || ""
     const tier = searchParams.get("tier") || ""
+    const facilityType = searchParams.get("facility_type") || ""
     setSelectedCounty(county)
     setSelectedTier(tier)
+    setSelectedFacilityType(facilityType)
   }, [searchParams])
 
   const handleCountyChange = (county: string) => {
@@ -80,9 +84,19 @@ export function InteractiveOverview({
     router.push(`?${params.toString()}`)
   }
 
+  const handleFacilityTypeChange = (facilityType: string) => {
+    setSelectedFacilityType(facilityType)
+    const params = new URLSearchParams()
+    if (selectedCounty) params.set("county", selectedCounty)
+    if (selectedTier) params.set("tier", selectedTier)
+    if (facilityType) params.set("facility_type", facilityType)
+    router.push(`?${params.toString()}`)
+  }
+
   const handleClearFilters = () => {
     setSelectedCounty("")
     setSelectedTier("")
+    setSelectedFacilityType("")
     router.push("?")
   }
 
@@ -91,8 +105,9 @@ export function InteractiveOverview({
       computeScopedOverviewMetrics(facilities, overview, {
         county: selectedCounty || undefined,
         tier: selectedTier || undefined,
+        facilityType: selectedFacilityType || undefined,
       }),
-    [facilities, overview, selectedCounty, selectedTier]
+    [facilities, overview, selectedCounty, selectedTier, selectedFacilityType]
   )
 
   const filtered = useMemo(() => {
@@ -150,8 +165,10 @@ export function InteractiveOverview({
       <ActiveFilterChips
         county={selectedCounty || undefined}
         tier={selectedTier || undefined}
+        facilityType={selectedFacilityType || undefined}
         onClearCounty={() => handleCountyChange("")}
         onClearTier={() => handleTierChange("")}
+        onClearFacilityType={() => handleFacilityTypeChange("")}
         onClearAll={handleClearFilters}
       />
 
@@ -194,7 +211,25 @@ export function InteractiveOverview({
           </select>
         </div>
 
-        {(selectedCounty || selectedTier) && (
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="facility-type-filter" className="text-xs font-medium text-muted-foreground">
+            Facility type
+          </label>
+          <select
+            id="facility-type-filter"
+            value={selectedFacilityType}
+            onChange={(e) => handleFacilityTypeChange(e.target.value)}
+            className={selectClassName}
+          >
+            {FACILITY_TYPE_FILTER_OPTIONS.map((opt) => (
+              <option key={opt.label} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {(selectedCounty || selectedTier || selectedFacilityType) && (
           <button
             type="button"
             onClick={handleClearFilters}

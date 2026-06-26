@@ -17,7 +17,7 @@ export const metadata: Metadata = pageMetadata({
 })
 
 interface FacilitiesPageProps {
-  searchParams: Promise<{ county?: string; tier?: string; cluster?: string }>
+  searchParams: Promise<{ county?: string; tier?: string; cluster?: string; facility_type?: string }>
 }
 
 export default async function FacilitiesPage({ searchParams }: FacilitiesPageProps) {
@@ -103,6 +103,7 @@ export default async function FacilitiesPage({ searchParams }: FacilitiesPagePro
           counties={counties}
           currentCounty={sp.county?.trim() ?? ""}
           currentTier={sp.tier?.trim() ?? ""}
+          currentFacilityType={sp.facility_type?.trim() ?? ""}
         />
       </Suspense>
 

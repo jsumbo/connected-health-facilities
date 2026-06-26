@@ -3,8 +3,10 @@
 import { useMemo } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { ProgrammeFacility } from "@/lib/types-public"
+import { normalizeFacilityType } from "@/lib/facility-types"
 import { FacilitiesTableClient } from "@/components/public/facilities-table-client"
 import { ActiveFilterChips } from "@/components/public/active-filter-chips"
+import { BlockerKeyLegend } from "@/components/public/blocker-key-legend"
 import { ChartNote } from "@/components/public/chart-note"
 import { buildFacilitiesTableNote } from "@/lib/dashboard-notes"
 import { Card, CardContent } from "@/components/ui/card"
@@ -20,6 +22,7 @@ export function FacilitiesWrapper({ facilities }: FacilitiesWrapperProps) {
   const county = searchParams.get("county") || ""
   const tier = searchParams.get("tier") || ""
   const cluster = searchParams.get("cluster") || ""
+  const facilityType = searchParams.get("facility_type") || ""
 
   const filteredFacilities = useMemo(() => {
     let filtered = facilities
@@ -36,8 +39,12 @@ export function FacilitiesWrapper({ facilities }: FacilitiesWrapperProps) {
       filtered = filtered.filter((f) => f.cluster === cluster)
     }
 
+    if (facilityType) {
+      filtered = filtered.filter((f) => normalizeFacilityType(f.facility_type) === normalizeFacilityType(facilityType))
+    }
+
     return filtered
-  }, [facilities, county, tier, cluster])
+  }, [facilities, county, tier, cluster, facilityType])
 
   const handleClearAll = () => router.push(pathname)
 
@@ -48,6 +55,7 @@ export function FacilitiesWrapper({ facilities }: FacilitiesWrapperProps) {
           county={county || undefined}
           tier={tier || undefined}
           cluster={cluster || undefined}
+          facilityType={facilityType || undefined}
           onClearCounty={() => {
             const params = new URLSearchParams(searchParams.toString())
             params.delete("county")
@@ -66,13 +74,20 @@ export function FacilitiesWrapper({ facilities }: FacilitiesWrapperProps) {
             const q = params.toString()
             router.push(q ? `${pathname}?${q}` : pathname)
           }}
+          onClearFacilityType={() => {
+            const params = new URLSearchParams(searchParams.toString())
+            params.delete("facility_type")
+            const q = params.toString()
+            router.push(q ? `${pathname}?${q}` : pathname)
+          }}
           onClearAll={handleClearAll}
         />
+        <BlockerKeyLegend />
         <FacilitiesTableClient facilities={filteredFacilities} />
         <ChartNote>
           {buildFacilitiesTableNote(
             filteredFacilities.length,
-            Boolean(county || tier || cluster)
+            Boolean(county || tier || cluster || facilityType)
           )}
         </ChartNote>
       </CardContent>

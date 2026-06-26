@@ -1,6 +1,7 @@
 import type { BlockerSummary, ProgrammeFacility, PublicOverview } from "@/lib/types-public"
 import { blockerShortLabel } from "@/lib/blockers"
 import { DRF_DOMAIN_KEYS, DRF_DOMAIN_LABELS, getDrfDomainScore } from "@/lib/drf-domains"
+import { normalizeFacilityType } from "@/lib/facility-types"
 import { roundToDecimals } from "@/lib/format-number"
 import { getWeakestDomain } from "@/lib/overview-insights"
 import { countQuickWins, getBlockerCode } from "@/lib/quick-wins"
@@ -12,6 +13,7 @@ const TIER_2_REMED = "Tier 2 — Structured Remediation"
 export interface OverviewScopeFilter {
   county?: string
   tier?: string
+  facilityType?: string
 }
 
 export interface ScopedOverviewMetrics {
@@ -43,6 +45,7 @@ export function filterFacilitiesByScope(
   return facilities.filter((f) => {
     if (filter.county && f.county !== filter.county) return false
     if (filter.tier && f.tier !== filter.tier) return false
+    if (filter.facilityType && normalizeFacilityType(f.facility_type) !== normalizeFacilityType(filter.facilityType)) return false
     return true
   })
 }
@@ -116,7 +119,7 @@ export function computeScopedOverviewMetrics(
   overview: PublicOverview,
   filter: OverviewScopeFilter
 ): ScopedOverviewMetrics {
-  const isScoped = Boolean(filter.county || filter.tier)
+  const isScoped = Boolean(filter.county || filter.tier || filter.facilityType)
   if (!isScoped) {
     return nationalMetrics(overview, facilities)
   }

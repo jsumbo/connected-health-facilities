@@ -2,7 +2,6 @@ export const FACILITY_TYPE_FILTER_OPTIONS = [
   { value: "", label: "All facility types" },
   { value: "hospital", label: "Hospital" },
   { value: "health_centre", label: "Health Centre" },
-  { value: "clinic", label: "Clinic" },
 ] as const
 
 export type FacilityTypeFilter = (typeof FACILITY_TYPE_FILTER_OPTIONS)[number]["value"]

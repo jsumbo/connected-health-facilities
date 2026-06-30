@@ -102,7 +102,7 @@ export function FacilityFilters({
           id="facility-filter-tier"
           value={currentTier}
           onChange={(e) => handleTierChange(e.target.value)}
-          className={selectClassName}
+          className={cn(selectClassName, "min-w-[20rem]")}
         >
           {FACILITY_TIER_FILTER_OPTIONS.map((opt) => (
             <option key={opt.label} value={opt.value}>

@@ -49,7 +49,7 @@ export function HeatmapGridClient({ initialFacilities, counties }: HeatmapGridCl
           <select
             value={selectedTier}
             onChange={(e) => setSelectedTier(e.target.value)}
-            className="h-9 min-w-[11rem] rounded-lg border border-input bg-card px-3 text-sm text-foreground shadow-sm"
+            className="h-9 min-w-[20rem] rounded-lg border border-input bg-card px-3 text-sm text-foreground shadow-sm"
           >
             {TIER_FILTER_OPTIONS.map((option) => (
               <option key={option.label} value={option.value}>

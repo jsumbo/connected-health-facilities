@@ -24,6 +24,15 @@ DRF_DOMAINS: List[DrfDomainSpec] = [
 
 DRF_DOMAIN_KEYS = [d["key"] for d in DRF_DOMAINS]
 
+BLOCKER_LABELS: Dict[str, str] = {
+    "BLK-01": "No primary power",
+    "BLK-02": "No connectivity / <2 Mbps",
+    "BLK-03": "Zero computers or tablets",
+    "BLK-04": "Not reporting to DHIS2",
+    "BLK-05": "No IT support",
+    "BLK-06": "Not operational",
+}
+
 BLOCKER_REMEDIATION: Dict[str, str] = {
     "BLK-01": "Solar/grid + UPS at critical workstations (procurement)",
     "BLK-02": "Fixed connectivity or offline-first tooling; bandwidth upgrade (procurement)",
@@ -32,6 +41,11 @@ BLOCKER_REMEDIATION: Dict[str, str] = {
     "BLK-05": "Assign or share IT support across ≤5 facilities (in-scope or procurement)",
     "BLK-06": "Facility not operational — MoH follow-up; exclude from deployment planning",
 }
+
+
+def blocker_display_label(code: str) -> str:
+    label = BLOCKER_LABELS.get(code, "Unknown blocker")
+    return f"{code}: {label}"
 
 
 def normalize_facility_name(name: str) -> str:

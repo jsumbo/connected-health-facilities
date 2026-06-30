@@ -3,7 +3,7 @@
 import { useMemo } from "react"
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { getBlockerCode } from "@/lib/quick-wins"
-import { blockerShortLabel } from "@/lib/blockers"
+import { blockerDisplayLabel, blockerShortLabel } from "@/lib/blockers"
 import { clusterSortIndex } from "@/lib/clusters"
 import type { BlockerSummary } from "@/lib/types-public"
 
@@ -84,7 +84,7 @@ export function BlockerClusterHeatmap({
               <th
                 key={code}
                 className="min-w-[7rem] border border-border bg-slate-100 p-2 text-center text-[10px] font-semibold leading-tight"
-                title={code}
+                title={blockerDisplayLabel(code)}
               >
                 {blockerShortLabel(code)}
               </th>

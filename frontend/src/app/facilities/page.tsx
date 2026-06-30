@@ -72,7 +72,7 @@ export default async function FacilitiesPage({ searchParams }: FacilitiesPagePro
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm text-sky-700">
                 <Zap className="size-4" aria-hidden />
-                Deployment-Eligible
+                Deployment-Eligible with Targeted Investment
               </CardTitle>
             </CardHeader>
             <CardContent>

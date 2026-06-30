@@ -14,6 +14,7 @@ import { FacilityDataTable } from "@/components/public/facility-data-table"
 import { PublicShell } from "@/components/public/PublicShell"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { InteractiveOverview } from "@/components/public/interactive-overview"
+import { MethodologyDocLink } from "@/components/public/methodology-doc-link"
 import { getPublicDlaQuestionStats, getPublicFacilities, getPublicOverview } from "@/lib/public-api"
 
 export default async function HomePage() {
@@ -83,6 +84,8 @@ export default async function HomePage() {
               <FacilityDataTable facilities={topFacilities} compact />
             </CardContent>
           </Card>
+
+          <MethodologyDocLink />
 
           {overview.not_assessed_count > 0 && (
             <Card className="border-amber-200/80 bg-amber-50/80 shadow-none">

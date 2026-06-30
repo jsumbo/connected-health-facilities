@@ -34,7 +34,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getFacilityPhotoUrl, getPublicFacility } from "@/lib/public-api"
 import { blockerKey, formatBlocker } from "@/lib/format-blocker"
-import { blockerShortLabel } from "@/lib/blockers"
+import { blockerDisplayLabel } from "@/lib/blockers"
 import {
   formatFacilityChoice,
   formatMbps,
@@ -218,7 +218,7 @@ export default async function FacilityPage({ params }: PageProps) {
               <div className="mt-3 flex flex-wrap gap-1">
                 {facility.blocker_codes.map((code) => (
                   <Badge key={code} variant="outline" className="text-[10px]">
-                    {blockerShortLabel(code)}
+                    {blockerDisplayLabel(code)}
                   </Badge>
                 ))}
               </div>

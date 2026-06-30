@@ -1,8 +1,16 @@
 /**
  * TRIBE master workbook (sheet 7) stores Tier 1 | Tier 2 | Tier 3 plus Wave.
- * Wave refines labels: Wave 1 → HOS-Ready, Wave 2 → Deployment-Eligible,
+ * Wave refines labels: Wave 1 → HOS-Ready, Wave 2 → Deployment-Eligible with Targeted Investment,
  * Wave 3 → Structured Remediation (when present), Tier 3 → Not Deployment-Ready.
  */
+
+/** User-facing tier labels (canonical API tier strings unchanged). */
+export const TIER_DISPLAY_LABELS: Record<string, string> = {
+  "Tier 1 — HOS-Ready": "Tier 1 · HOS-Ready",
+  "Tier 2 — Deployment-Eligible": "Tier 2 · Deployment-Eligible with Targeted Investment",
+  "Tier 2 — Structured Remediation": "Tier 2 · Structured Remediation",
+  "Tier 3 — Not Deployment-Ready": "Tier 3 · Not Deployment-Ready",
+}
 
 export interface TierFilterOption {
   value: string
@@ -29,5 +37,5 @@ export function tierFilterLabel(filterValue: string): string {
 }
 
 export function formatTierLabel(tier: string): string {
-  return tier.replace(" — ", " · ")
+  return TIER_DISPLAY_LABELS[tier] ?? tier.replace(" — ", " · ")
 }

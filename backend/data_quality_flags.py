@@ -4,7 +4,7 @@ Per-facility data quality gates (TRIBE framework A2).
 
 from typing import Any, Dict, List, Optional
 
-from drf import BLOCKER_REMEDIATION
+from drf import BLOCKER_REMEDIATION, blocker_display_label
 
 MIN_INSTRUMENT_N = 3
 ADOPTION_RISK_ENTHUSIASM_MAX = 5.0
@@ -112,7 +112,7 @@ def assess_instrument_flags(facility_row: Dict[str, Any]) -> List[Dict[str, str]
         flags.append(
             _flag(
                 "operational_blocker",
-                label="Not operational (BLK-06)",
+                label=blocker_display_label("BLK-06"),
                 detail=BLOCKER_REMEDIATION.get(
                     "BLK-06",
                     "Facility not operational — exclude from deployment planning",

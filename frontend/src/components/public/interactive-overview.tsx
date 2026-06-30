@@ -26,7 +26,7 @@ import {
 } from "lucide-react"
 import { TIER_FILTER_OPTIONS, facilityMatchesTierFilter } from "@/lib/readiness-tiers"
 import { buildDlaInsight } from "@/lib/overview-insights"
-import { clusterSortIndex } from "@/lib/clusters"
+import { clusterSortIndex, CLUSTER_DEFINITION } from "@/lib/clusters"
 import {
   buildBlockerChartNote,
   buildCountyChartNote,
@@ -251,9 +251,9 @@ export function InteractiveOverview({
         />
         <KpiMetric
           icon={Target}
-          label="Deploy-eligible"
+          label="Targeted investment"
           value={metrics.deploymentEligible}
-          description="Tier 2"
+          description="Deployment-Eligible with Targeted Investment"
         />
         <KpiMetric
           icon={Wrench}
@@ -391,10 +391,7 @@ export function InteractiveOverview({
         <Card className="shadow-none">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Digital readiness by cluster</CardTitle>
-            <p className="text-xs text-muted-foreground">
-              Cluster = programme deployment region (counties grouped for phased HOS rollout).
-              Sub-label shows geographic region (Western, North, South-East).
-            </p>
+            <p className="text-xs text-muted-foreground">{CLUSTER_DEFINITION}</p>
           </CardHeader>
           <CardContent className="space-y-2">
             {[...overview.by_cluster]

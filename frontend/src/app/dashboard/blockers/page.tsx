@@ -4,7 +4,8 @@ import { buildBlockerRegister } from "@/lib/overview-stats"
 import { BlockerBarCard } from "@/components/public/blocker-bar-chart"
 import { BlockerClusterHeatmap } from "@/components/public/blocker-cluster-heatmap"
 import { PageHeader } from "@/components/public/page-header"
-import { unlockCountForBlocker, blockerShortLabel } from "@/lib/blockers"
+import { unlockCountForBlocker, blockerDisplayLabel } from "@/lib/blockers"
+import { CLUSTER_DEFINITION } from "@/lib/clusters"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const metadata = {
@@ -47,7 +48,7 @@ export default async function BlockersPage({
         <CardHeader>
           <CardTitle className="text-base">Digital readiness by cluster</CardTitle>
           <p className="text-xs text-muted-foreground">
-            Cluster = programme deployment region. Tier 3 blocker counts by cluster.
+            {CLUSTER_DEFINITION}. Tier 3 blocker counts by cluster.
           </p>
         </CardHeader>
         <CardContent>
@@ -63,12 +64,10 @@ export default async function BlockersPage({
             <Card key={blocker.code} className="shadow-none">
               <CardContent className="flex items-center justify-between py-4">
                 <div>
-                  <p className="font-semibold">
-                    {blockerShortLabel(blocker.code, blocker.description)}
-                  </p>
+                  <p className="font-semibold">{blockerDisplayLabel(blocker.code, blocker.description)}</p>
                   <p className="text-sm text-muted-foreground">
-                    {blocker.description}
-                    <span className="ml-1 text-xs">({blocker.code})</span>
+                    {blocker.count} {blocker.count === 1 ? "facility" : "facilities"} ·{" "}
+                    {unlockCount} single-blocker unlock{unlockCount === 1 ? "" : "s"}
                   </p>
                 </div>
                 <p className="text-2xl font-bold tabular-nums text-emerald-600">{unlockCount}</p>

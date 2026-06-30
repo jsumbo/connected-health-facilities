@@ -4,7 +4,7 @@ import { useMemo, useState } from "react"
 import Link from "next/link"
 import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "recharts"
 import type { ProgrammeFacility } from "@/lib/types-public"
-import { blockerShortLabel } from "@/lib/blockers"
+import { blockerDisplayLabel } from "@/lib/blockers"
 import { getBlockerCode } from "@/lib/quick-wins"
 import { formatAxisIntegerTick, roundAxisMaxCeil } from "@/lib/format-number"
 import {
@@ -73,7 +73,7 @@ export function BlockerBarChart({
     () =>
       sortedData.map((item, index) => ({
         code: item.code,
-        label: blockerShortLabel(item.code, item.description),
+        label: blockerDisplayLabel(item.code, item.description),
         count: item.count,
         description: item.description,
         fill: getBlockerColor(
@@ -136,7 +136,7 @@ export function BlockerBarChart({
           <YAxis
             type="category"
             dataKey="label"
-            width={140}
+            width={168}
             tickLine={false}
             axisLine={false}
             fontSize={10}
@@ -150,7 +150,6 @@ export function BlockerBarChart({
               return (
                 <div className="rounded-lg border border-border bg-card p-3 shadow-lg max-w-xs">
                   <p className="font-semibold text-sm text-foreground">{row.label}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{row.code}</p>
                   <p className="text-sm text-foreground mt-2 tabular-nums">
                     <span className="font-semibold">{row.count}</span>{" "}
                     {row.count === 1 ? "facility" : "facilities"}
@@ -189,11 +188,10 @@ export function BlockerBarChart({
         <div className="rounded-lg border border-border bg-muted/30 p-3">
           <div className="mb-2 flex items-center justify-between gap-2">
             <p className="text-sm font-medium">
-              {blockerShortLabel(
+              {blockerDisplayLabel(
                 activeCode,
                 sortedData.find((d) => d.code === activeCode)?.description
               )}
-              <span className="ml-1.5 text-xs font-normal text-muted-foreground">({activeCode})</span>
             </p>
             <button
               type="button"

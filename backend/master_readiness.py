@@ -37,13 +37,20 @@ DOMAIN_COLS = {
     "D_DAT": 10,
 }
 
-COMPOSITE_COL = 11
-TIER_COL = 12
-WAVE_COL = 13
-BLOCKERS_COL = 14
-DLA_PCT_COL = 15
-DLA_N_COL = 16
-SENTIMENT_N_COL = 17
+
+class ScorecardColumnMap(TypedDict):
+    rank: int
+    facility: int
+    county: int
+    facility_type: int
+    composite: int
+    tier: int
+    wave: int
+    blockers: int
+    blockers_exp: int | None
+    dla_pct: int | None
+    dla_n: int | None
+    sentiment_n: int | None
 
 
 class MasterScorecard(TypedDict):
@@ -133,6 +140,52 @@ def _resolve_slug(facility_name: str, name_to_slug: Dict[str, str]) -> str | Non
     return name_to_slug.get(key)
 
 
+def _normalize_header_cell(value: Any) -> str:
+    return " ".join(str(value or "").split()).strip().lower()
+
+
+def _resolve_scorecard_columns(header_row: tuple) -> ScorecardColumnMap:
+    """Map scorecard sheet headers to column indices (supports v1 and v2 layouts)."""
+    by_header: Dict[str, int] = {}
+    for idx, cell in enumerate(header_row):
+        key = _normalize_header_cell(cell)
+        if key:
+            by_header[key] = idx
+
+    def col(*candidates: str) -> int | None:
+        for name in candidates:
+            if name in by_header:
+                return by_header[name]
+        return None
+
+    def require(*candidates: str) -> int:
+        found = col(*candidates)
+        if found is None:
+            raise ValueError(f"Missing scorecard column: {candidates[0]}")
+        return found
+
+    return ScorecardColumnMap(
+        rank=require("rank"),
+        facility=require("facility"),
+        county=require("county"),
+        facility_type=require("type"),
+        composite=require("composite"),
+        tier=require("tier"),
+        wave=require("wave"),
+        blockers=require("blockers"),
+        blockers_exp=col("blockers exp"),
+        dla_pct=col("dla %"),
+        dla_n=col("dla n"),
+        sentiment_n=col("sent n"),
+    )
+
+
+def _cell_at(cells: List[Any], index: int | None) -> Any:
+    if index is None or index >= len(cells):
+        return None
+    return cells[index]
+
+
 def _domain_score_value(scorecard: MasterScorecard, domain_key: str) -> float | None:
     domain = (scorecard.get("domain_scores") or {}).get(domain_key)
     if not isinstance(domain, dict):
@@ -220,12 +273,18 @@ def load_master_readiness(path: Path | None = None) -> MasterReadinessBundle:
 
     scorecards: Dict[str, MasterScorecard] = {}
     if SHEET_SCORECARDS in wb.sheetnames:
-        for row in wb[SHEET_SCORECARDS].iter_rows(min_row=2, values_only=True):
+        scorecard_ws = wb[SHEET_SCORECARDS]
+        header_row = next(scorecard_ws.iter_rows(min_row=1, max_row=1, values_only=True), None)
+        if header_row is None:
+            raise ValueError(f"Missing header row in {SHEET_SCORECARDS}")
+        scorecard_cols = _resolve_scorecard_columns(header_row)
+
+        for row in scorecard_ws.iter_rows(min_row=2, values_only=True):
             cells = _row_cells(row)
-            if len(cells) <= COMPOSITE_COL or not _row_has_value(cells, 1):
+            if len(cells) <= scorecard_cols["composite"] or not _row_has_value(cells, scorecard_cols["facility"]):
                 continue
 
-            facility_name = _cell_str(cells, 1)
+            facility_name = _cell_str(cells, scorecard_cols["facility"])
             slug = _resolve_slug(facility_name, name_to_slug)
             if not slug:
                 logger.warning("Master scorecard facility not in registry: %s", facility_name)
@@ -235,10 +294,10 @@ def load_master_readiness(path: Path | None = None) -> MasterReadinessBundle:
                 key: _safe_int(cells[col]) if col < len(cells) else None
                 for key, col in DOMAIN_COLS.items()
             }
-            wave_raw = _cell_str(cells, WAVE_COL)
+            wave_raw = _cell_str(cells, scorecard_cols["wave"])
             wave = None if wave_raw in ("", "—", "-") else wave_raw
-            tier = _cell_str(cells, TIER_COL) or "Not Assessed"
-            blocker_codes = parse_blocker_codes(_cell_str(cells, BLOCKERS_COL))
+            tier = _cell_str(cells, scorecard_cols["tier"]) or "Not Assessed"
+            blocker_codes = parse_blocker_codes(_cell_str(cells, scorecard_cols["blockers"]))
             remediation = remediation_by_name.get(normalize_facility_name(facility_name).lower())
             if not remediation and blocker_codes:
                 remediation = "; ".join(
@@ -246,14 +305,18 @@ def load_master_readiness(path: Path | None = None) -> MasterReadinessBundle:
                     for i in range(len(blocker_codes))
                 )
 
+            dla_pct_col = scorecard_cols["dla_pct"]
+            dla_n_col = scorecard_cols["dla_n"]
+            sentiment_n_col = scorecard_cols["sentiment_n"]
+
             scorecards[slug] = {
                 "slug": slug,
                 "facility_name": registry_by_slug()[slug]["name"],
-                "county": _cell_str(cells, 2),
+                "county": _cell_str(cells, scorecard_cols["county"]),
                 "cluster": registry_by_slug()[slug]["cluster"],
-                "facility_type": _cell_str(cells, 4),
-                "rank": _safe_int(cells[0]),
-                "composite": _safe_float(cells[COMPOSITE_COL]) or 0.0,
+                "facility_type": _cell_str(cells, scorecard_cols["facility_type"]),
+                "rank": _safe_int(_cell_at(cells, scorecard_cols["rank"])),
+                "composite": _safe_float(_cell_at(cells, scorecard_cols["composite"])) or 0.0,
                 "tier": tier,
                 "tier_label": tier_display_label(tier, wave),
                 "wave": wave,
@@ -263,11 +326,9 @@ def load_master_readiness(path: Path | None = None) -> MasterReadinessBundle:
                 "blocker_remediation": remediation,
                 "deployment_blocked": tier == "Tier 3" or bool(blocker_codes),
                 "domain_scores": build_drf_domain_scores(domain_raw),
-                "dla_pct": _safe_float(cells[DLA_PCT_COL]) if len(cells) > DLA_PCT_COL else None,
-                "dla_n": _safe_int(cells[DLA_N_COL]) if len(cells) > DLA_N_COL else None,
-                "sentiment_n": (
-                    _safe_int(cells[SENTIMENT_N_COL]) if len(cells) > SENTIMENT_N_COL else None
-                ),
+                "dla_pct": _safe_float(_cell_at(cells, dla_pct_col)),
+                "dla_n": _safe_int(_cell_at(cells, dla_n_col)),
+                "sentiment_n": _safe_int(_cell_at(cells, sentiment_n_col)),
                 "scoring_source": "tribe_master_workbook",
             }
 

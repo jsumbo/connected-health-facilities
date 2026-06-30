@@ -4,7 +4,7 @@ import { getBlockerCode } from "@/lib/quick-wins"
 export const BLOCKER_SHORT_LABELS: Record<string, string> = {
   "BLK-01": "No primary power",
   "BLK-02": "No connectivity / <2 Mbps",
-  "BLK-03": "Zero computers & tablets",
+  "BLK-03": "Zero computers or tablets",
   "BLK-04": "Not reporting to DHIS2",
   "BLK-05": "No IT support",
   "BLK-06": "Not operational",

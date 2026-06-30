@@ -67,7 +67,10 @@ export default async function HomePage() {
           <Card className="shadow-none">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div>
-                <div className="text-base font-semibold">Top scores</div>
+                <div className="text-base font-semibold">Top digital readiness scores</div>
+                <p className="text-xs text-muted-foreground">
+                  Highest composite DRF scores across assessed facilities
+                </p>
               </div>
               <Link
                 href="/facilities"

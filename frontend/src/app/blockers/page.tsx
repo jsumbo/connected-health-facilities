@@ -4,7 +4,7 @@ import { BlockerBarCard } from "@/components/public/blocker-bar-chart"
 import { BlockerClusterHeatmap } from "@/components/public/blocker-cluster-heatmap"
 import { ErrorBanner } from "@/components/public/error-banner"
 import { PublicShell } from "@/components/public/PublicShell"
-import { unlockCountForBlocker } from "@/lib/blockers"
+import { unlockCountForBlocker, blockerShortLabel } from "@/lib/blockers"
 import { getPublicOverview, getPublicFacilities } from "@/lib/public-api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartNote } from "@/components/public/chart-note"
@@ -50,7 +50,10 @@ export default async function BlockersPage() {
 
           <Card className="shadow-none">
             <CardHeader>
-              <CardTitle className="text-base">By cluster</CardTitle>
+              <CardTitle className="text-base">Digital readiness by cluster</CardTitle>
+              <p className="text-xs text-muted-foreground">
+                Cluster = programme deployment region. Tier 3 blocker counts by cluster.
+              </p>
             </CardHeader>
             <CardContent>
               <BlockerClusterHeatmap facilities={facilities} blockerRegister={register} />
@@ -69,8 +72,13 @@ export default async function BlockersPage() {
                 <Card key={blocker.code} className="shadow-none">
                   <CardContent className="flex items-center justify-between py-4">
                     <div>
-                      <p className="font-semibold">{blocker.code}</p>
-                      <p className="text-sm text-muted-foreground">{blocker.description}</p>
+                      <p className="font-semibold">
+                        {blockerShortLabel(blocker.code, blocker.description)}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {blocker.description}
+                        <span className="ml-1 text-xs">({blocker.code})</span>
+                      </p>
                     </div>
                     <p className="text-2xl font-bold tabular-nums text-emerald-600">{unlockCount}</p>
                   </CardContent>

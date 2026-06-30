@@ -127,7 +127,7 @@ export function buildClusterListNote(byCluster: PublicOverview["by_cluster"]): s
     return "Click a cluster to open the facilities list with that filter applied."
   }
 
-  return `${highest.cluster} leads on average readiness (${highest.avg_score != null ? `${Math.round(highest.avg_score)}%` : "—"}); ${lowest.cluster} is lowest (${lowest.avg_score != null ? `${Math.round(lowest.avg_score)}%` : "—"}). Each row links to facilities in that cluster.`
+  return `${highest.cluster} leads on average digital readiness (${highest.avg_score != null ? `${Math.round(highest.avg_score)}%` : "—"}); ${lowest.cluster} is lowest (${lowest.avg_score != null ? `${Math.round(lowest.avg_score)}%` : "—"}). Each row links to facilities in that cluster.`
 }
 
 export function buildQuickWinsScatterNote(facilities: ProgrammeFacility[]): string {
@@ -157,7 +157,7 @@ export function buildQuickWinsQueueNote(
 }
 
 export function buildBlockerHeatmapNote(): string {
-  return "Rows are deployment clusters; columns are blocker codes. Counts are Tier 3 facilities only — use this to see where the same fix applies across geography."
+  return "Rows are deployment clusters; columns are blocker types. Counts are Tier 3 facilities only — use this to see where the same fix applies across geography."
 }
 
 export function buildClusterCardNote(cluster: ClusterSummary): string {

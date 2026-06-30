@@ -13,6 +13,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { DEPLOYMENT_CATEGORY_HELP } from "@/lib/readiness-tiers"
 import { ChartNote } from "@/components/public/chart-note"
 import { TIER_CHART_COLORS } from "./readiness-tier-styles"
 
@@ -113,7 +114,10 @@ export function TierDonutCard({
   return (
     <Card className="shadow-none">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
-        <CardTitle className="text-base">Tiers</CardTitle>
+        <div>
+          <CardTitle className="text-base">Deployment categories</CardTitle>
+          <p className="text-xs text-muted-foreground mt-0.5">{DEPLOYMENT_CATEGORY_HELP}</p>
+        </div>
         {selectedTier && onTierClick && (
           <button
             onClick={() => onTierClick("")}
@@ -135,7 +139,7 @@ export function TierDonutCard({
           selectedTier={selectedTier}
         />
         {onTierClick ? (
-          <p className="text-xs text-muted-foreground mt-2">Click a tier segment to filter this page.</p>
+          <p className="text-xs text-muted-foreground mt-2">Click a category to filter this page.</p>
         ) : null}
         {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>

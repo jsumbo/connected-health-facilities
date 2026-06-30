@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react"
 import { HeatmapGrid } from "@/components/public/heatmap-grid"
 import type { ProgrammeFacility } from "@/lib/types-public"
-import { DEPLOYMENT_CATEGORY_FILTER_OPTIONS, DEPLOYMENT_CATEGORY_HELP } from "@/lib/readiness-tiers"
+import { TIER_FILTER_OPTIONS, facilityMatchesTierFilter } from "@/lib/readiness-tiers"
 
 interface HeatmapGridClientProps {
   initialFacilities: ProgrammeFacility[]
@@ -20,7 +20,7 @@ export function HeatmapGridClient({ initialFacilities, counties }: HeatmapGridCl
       result = result.filter((f) => f.county === selectedCounty)
     }
     if (selectedTier) {
-      result = result.filter((f) => f.tier === selectedTier)
+      result = result.filter((f) => facilityMatchesTierFilter(f.tier, selectedTier))
     }
     return result
   }, [initialFacilities, selectedCounty, selectedTier])
@@ -45,24 +45,18 @@ export function HeatmapGridClient({ initialFacilities, counties }: HeatmapGridCl
         </div>
 
         <div>
-          <label className="text-xs font-medium text-muted-foreground block mb-1">
-            Deployment category
-          </label>
+          <label className="text-xs font-medium text-muted-foreground block mb-1">Tier</label>
           <select
             value={selectedTier}
             onChange={(e) => setSelectedTier(e.target.value)}
             className="h-9 min-w-[11rem] rounded-lg border border-input bg-card px-3 text-sm text-foreground shadow-sm"
-            aria-describedby="heatmap-tier-help"
           >
-            {DEPLOYMENT_CATEGORY_FILTER_OPTIONS.map((option) => (
+            {TIER_FILTER_OPTIONS.map((option) => (
               <option key={option.label} value={option.value}>
                 {option.label}
               </option>
             ))}
           </select>
-          <p id="heatmap-tier-help" className="mt-1 max-w-xs text-[11px] text-muted-foreground">
-            {DEPLOYMENT_CATEGORY_HELP}
-          </p>
         </div>
 
         {(selectedCounty || selectedTier) && (

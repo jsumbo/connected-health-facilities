@@ -5,6 +5,7 @@ import { normalizeFacilityType } from "@/lib/facility-types"
 import { roundToDecimals } from "@/lib/format-number"
 import { getWeakestDomain } from "@/lib/overview-insights"
 import { countQuickWins, getBlockerCode } from "@/lib/quick-wins"
+import { facilityMatchesTierFilter, tierFilterLabel } from "@/lib/readiness-tiers"
 
 const TIER_1 = "Tier 1 — HOS-Ready"
 const TIER_2_DEPLOY = "Tier 2 — Deployment-Eligible"
@@ -44,7 +45,7 @@ export function filterFacilitiesByScope(
 ): ProgrammeFacility[] {
   return facilities.filter((f) => {
     if (filter.county && f.county !== filter.county) return false
-    if (filter.tier && f.tier !== filter.tier) return false
+    if (filter.tier && !facilityMatchesTierFilter(f.tier, filter.tier)) return false
     if (filter.facilityType && normalizeFacilityType(f.facility_type) !== normalizeFacilityType(filter.facilityType)) return false
     return true
   })
@@ -179,7 +180,7 @@ export function computeScopedOverviewMetrics(
         : undefined
   } else {
     assessedDisplay = String(assessed.length)
-    assessedDescription = filter.tier?.replace(/^Tier \d+ — /, "") ?? undefined
+    assessedDescription = filter.tier ? tierFilterLabel(filter.tier) : undefined
   }
 
   return {

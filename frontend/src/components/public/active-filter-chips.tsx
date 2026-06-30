@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react"
 import { facilityTypeLabel } from "@/lib/facility-types"
+import { tierFilterLabel } from "@/lib/readiness-tiers"
 
 interface ActiveFilterChipsProps {
   county?: string
@@ -36,7 +37,7 @@ export function ActiveFilterChips({
         <FilterChip label={`County: ${county}`} onRemove={onClearCounty ?? onClearAll} />
       ) : null}
       {tier ? (
-        <FilterChip label={`Tier: ${tier.replace(" — ", " · ")}`} onRemove={onClearTier ?? onClearAll} />
+        <FilterChip label={`Tier: ${tierFilterLabel(tier)}`} onRemove={onClearTier ?? onClearAll} />
       ) : null}
       {cluster ? (
         <FilterChip label={`Cluster: ${cluster}`} onRemove={onClearCluster ?? onClearAll} />

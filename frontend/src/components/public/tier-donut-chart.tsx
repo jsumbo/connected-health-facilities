@@ -13,7 +13,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
-import { DEPLOYMENT_CATEGORY_HELP } from "@/lib/readiness-tiers"
+import { tierFilterLabel } from "@/lib/readiness-tiers"
 import { ChartNote } from "@/components/public/chart-note"
 import { TIER_CHART_COLORS } from "./readiness-tier-styles"
 
@@ -115,8 +115,7 @@ export function TierDonutCard({
     <Card className="shadow-none">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <div>
-          <CardTitle className="text-base">Deployment categories</CardTitle>
-          <p className="text-xs text-muted-foreground mt-0.5">{DEPLOYMENT_CATEGORY_HELP}</p>
+          <CardTitle className="text-base">Tiers</CardTitle>
         </div>
         {selectedTier && onTierClick && (
           <button
@@ -130,7 +129,7 @@ export function TierDonutCard({
       <CardContent>
         {selectedTier && (
           <p className="text-xs text-muted-foreground mb-2">
-            Filtered by: <span className="font-semibold text-foreground">{selectedTier.replace(" — ", " · ")}</span>
+            Filtered by: <span className="font-semibold text-foreground">{tierFilterLabel(selectedTier)}</span>
           </p>
         )}
         <TierDonutChart
@@ -139,7 +138,7 @@ export function TierDonutCard({
           selectedTier={selectedTier}
         />
         {onTierClick ? (
-          <p className="text-xs text-muted-foreground mt-2">Click a category to filter this page.</p>
+          <p className="text-xs text-muted-foreground mt-2">Click a tier to filter this page.</p>
         ) : null}
         {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>

@@ -6,7 +6,6 @@ import type { ProgrammeFacility } from "@/lib/types-public"
 import { normalizeFacilityType } from "@/lib/facility-types"
 import { FacilitiesTableClient } from "@/components/public/facilities-table-client"
 import { ActiveFilterChips } from "@/components/public/active-filter-chips"
-import { BlockerKeyLegend } from "@/components/public/blocker-key-legend"
 import { ChartNote } from "@/components/public/chart-note"
 import { buildFacilitiesTableNote } from "@/lib/dashboard-notes"
 import { Card, CardContent } from "@/components/ui/card"
@@ -82,7 +81,6 @@ export function FacilitiesWrapper({ facilities }: FacilitiesWrapperProps) {
           }}
           onClearAll={handleClearAll}
         />
-        <BlockerKeyLegend />
         <FacilitiesTableClient facilities={filteredFacilities} />
         <ChartNote>
           {buildFacilitiesTableNote(

@@ -1,6 +1,7 @@
 import Link from "next/link"
 import type { BlockerSummary, ProgrammeFacility } from "@/lib/types-public"
 import { getBlockerCode } from "@/lib/quick-wins"
+import { blockerShortLabel } from "@/lib/blockers"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface BlockerUnlockSummaryProps {
@@ -34,9 +35,11 @@ export function BlockerUnlockSummary({ blockers, facilities }: BlockerUnlockSumm
       <CardContent className="space-y-4">
         {top ? (
           <p className="text-sm text-muted-foreground">
-            <strong className="text-foreground">{top.code}</strong> affects the most facilities (
-            {top.count}) — {top.description.toLowerCase()}. Clearing a single blocker unlocks
-            facilities listed below.
+            <strong className="text-foreground">
+              {blockerShortLabel(top.code, top.description)}
+            </strong>{" "}
+            affects the most facilities ({top.count}) — {top.description.toLowerCase()}. Clearing a
+            single blocker unlocks facilities listed below.
           </p>
         ) : null}
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -48,8 +51,12 @@ export function BlockerUnlockSummary({ blockers, facilities }: BlockerUnlockSumm
                 className="flex items-center justify-between rounded-md border border-border bg-muted/20 px-3 py-2"
               >
                 <div className="min-w-0 pr-2">
-                  <p className="text-xs font-semibold text-foreground">{blocker.code}</p>
-                  <p className="truncate text-[10px] text-muted-foreground">{blocker.count} facilities</p>
+                  <p className="text-xs font-semibold text-foreground">
+                    {blockerShortLabel(blocker.code, blocker.description)}
+                  </p>
+                  <p className="truncate text-[10px] text-muted-foreground">
+                    {blocker.count} facilities · {blocker.code}
+                  </p>
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-lg font-bold tabular-nums text-emerald-600">{unlock}</p>

@@ -395,7 +395,11 @@ export function InteractiveOverview({
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-1 mb-8">
         <Card className="shadow-none">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">By cluster</CardTitle>
+            <CardTitle className="text-base">Digital readiness by cluster</CardTitle>
+            <p className="text-xs text-muted-foreground">
+              Cluster = programme deployment region (counties grouped for phased HOS rollout).
+              Sub-label shows geographic region (Western, North, South-East).
+            </p>
           </CardHeader>
           <CardContent className="space-y-2">
             {[...overview.by_cluster]

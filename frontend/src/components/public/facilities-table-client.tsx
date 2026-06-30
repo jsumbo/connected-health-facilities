@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Download, Search } from "lucide-react"
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { buildCsv, downloadCsv } from "@/lib/export-csv"
-import { getBlockerCode } from "@/lib/quick-wins"
+import { formatFacilityBlockers } from "@/lib/blockers"
 import { TierBadge } from "@/components/public/tier-badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -91,7 +91,7 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
       f.cluster,
       f.overall_score ?? "",
       f.tier,
-      formatBlockerCell(f),
+      formatFacilityBlockers(f, "; "),
     ])
     downloadCsv("facilities-readiness.csv", buildCsv(headers, rows))
   }
@@ -190,7 +190,7 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
                 {!compact ? (
                   <TableCell className="text-right text-xs">
                     {f.blockers.length > 0 ? (
-                      <span className="font-medium text-destructive">{formatBlockerCell(f)}</span>
+                      <span className="font-medium text-destructive">{formatFacilityBlockers(f, ", ")}</span>
                     ) : (
                       <span className="text-muted-foreground">—</span>
                     )}
@@ -203,18 +203,6 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
       </div>
     </div>
   )
-}
-
-function formatBlockerCell(facility: ProgrammeFacility): string {
-  if (facility.blockers.length === 0) return "—"
-  if (facility.blocker_codes?.length) {
-    return facility.blocker_codes.join(", ")
-  }
-  const codes = facility.blockers
-    .map((blocker) => getBlockerCode(blocker))
-    .filter((code): code is string => Boolean(code))
-  if (codes.length > 0) return codes.join(", ")
-  return `${facility.blockers.length} blocker${facility.blockers.length > 1 ? "s" : ""}`
 }
 
 function SortButton({

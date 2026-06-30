@@ -83,10 +83,10 @@ export function BlockerClusterHeatmap({
             {codes.map((code) => (
               <th
                 key={code}
-                className="border border-border bg-slate-100 p-2 text-center text-xs font-semibold"
-                title={blockerShortLabel(code)}
+                className="min-w-[7rem] border border-border bg-slate-100 p-2 text-center text-[10px] font-semibold leading-tight"
+                title={code}
               >
-                {code}
+                {blockerShortLabel(code)}
               </th>
             ))}
           </tr>

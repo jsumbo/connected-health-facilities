@@ -14,6 +14,26 @@ export function blockerShortLabel(code: string, fallback?: string): string {
   return BLOCKER_SHORT_LABELS[code] ?? fallback ?? code
 }
 
+export function formatBlockerCodes(codes: string[], separator = "; "): string {
+  if (codes.length === 0) return "—"
+  return codes.map((code) => blockerShortLabel(code)).join(separator)
+}
+
+export function formatFacilityBlockers(
+  facility: Pick<ProgrammeFacility, "blockers" | "blocker_codes">,
+  separator = "; "
+): string {
+  if (facility.blocker_codes?.length) {
+    return formatBlockerCodes(facility.blocker_codes, separator)
+  }
+  const codes = facility.blockers
+    .map((blocker) => getBlockerCode(blocker))
+    .filter((code): code is string => Boolean(code))
+  if (codes.length > 0) return formatBlockerCodes(codes, separator)
+  if (facility.blockers.length === 0) return "—"
+  return `${facility.blockers.length} blocker${facility.blockers.length > 1 ? "s" : ""}`
+}
+
 export function formatBlockerLine(
   blocker: ProgrammeFacility["blockers"][number]
 ): { code: string; label: string } {

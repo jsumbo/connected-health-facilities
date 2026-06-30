@@ -4,6 +4,7 @@ import { useMemo } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { normalizeFacilityType } from "@/lib/facility-types"
+import { facilityMatchesTierFilter } from "@/lib/readiness-tiers"
 import { FacilitiesTableClient } from "@/components/public/facilities-table-client"
 import { ActiveFilterChips } from "@/components/public/active-filter-chips"
 import { ChartNote } from "@/components/public/chart-note"
@@ -31,7 +32,7 @@ export function FacilitiesWrapper({ facilities }: FacilitiesWrapperProps) {
     }
 
     if (tier) {
-      filtered = filtered.filter((f) => f.tier === tier)
+      filtered = filtered.filter((f) => facilityMatchesTierFilter(f.tier, tier))
     }
 
     if (cluster) {

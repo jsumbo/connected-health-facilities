@@ -63,7 +63,7 @@ export function buildTierChartNote(tierCounts: Record<string, number>): string {
     return `${tier3} of ${total} assessed facilities are Tier 3. Most are held back by blockers rather than uniformly low scores.`
   }
 
-  return `${tier1} HOS-ready · ${tier2Eligible} deployment-eligible · ${tier2Remed} structured remediation · ${tier3} Tier 3 (${total} facilities). Click a segment to filter.`
+  return `${tier1} Tier 1 · ${tier2} Tier 2 · ${tier3} Tier 3 (${total} facilities). Click a segment to filter.`
 }
 
 export function buildCountyChartNote(counties: CountyRollup[]): string {

@@ -1,8 +1,7 @@
 "use client"
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import type { ReadinessTier } from "@/lib/types-public"
-import { DEPLOYMENT_CATEGORY_FILTER_OPTIONS, DEPLOYMENT_CATEGORY_HELP } from "@/lib/readiness-tiers"
+import { TIER_FILTER_OPTIONS } from "@/lib/readiness-tiers"
 import { FACILITY_TYPE_FILTER_OPTIONS } from "@/lib/facility-types"
 import { cn } from "@/lib/utils"
 
@@ -14,12 +13,9 @@ const selectClassName = cn(
 )
 
 export const FACILITY_TIER_FILTER_OPTIONS: ReadonlyArray<{
-  value: ReadinessTier | ""
+  value: string
   label: string
-}> = DEPLOYMENT_CATEGORY_FILTER_OPTIONS.map((option) => ({
-  value: option.value as ReadinessTier | "",
-  label: option.label,
-}))
+}> = [...TIER_FILTER_OPTIONS]
 
 interface FacilityFiltersProps {
   counties: readonly string[]
@@ -100,14 +96,13 @@ export function FacilityFilters({
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="facility-filter-tier" className="text-xs font-medium text-muted-foreground">
-          Deployment category
+          Tier
         </label>
         <select
           id="facility-filter-tier"
           value={currentTier}
           onChange={(e) => handleTierChange(e.target.value)}
           className={selectClassName}
-          aria-describedby="facility-filter-tier-help"
         >
           {FACILITY_TIER_FILTER_OPTIONS.map((opt) => (
             <option key={opt.label} value={opt.value}>
@@ -115,9 +110,6 @@ export function FacilityFilters({
             </option>
           ))}
         </select>
-        <p id="facility-filter-tier-help" className="max-w-sm text-[11px] leading-snug text-muted-foreground">
-          {DEPLOYMENT_CATEGORY_HELP}
-        </p>
       </div>
 
       <div className="flex flex-col gap-1.5">

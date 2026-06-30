@@ -24,7 +24,7 @@ import {
   Wrench,
   Zap,
 } from "lucide-react"
-import { DEPLOYMENT_CATEGORY_FILTER_OPTIONS, DEPLOYMENT_CATEGORY_HELP } from "@/lib/readiness-tiers"
+import { TIER_FILTER_OPTIONS, facilityMatchesTierFilter } from "@/lib/readiness-tiers"
 import { buildDlaInsight } from "@/lib/overview-insights"
 import { clusterSortIndex } from "@/lib/clusters"
 import {
@@ -124,7 +124,9 @@ export function InteractiveOverview({
       result = {
         ...result,
         tier_counts: Object.fromEntries(
-          Object.entries(metrics.tier_counts).filter(([tier]) => tier === selectedTier)
+          Object.entries(metrics.tier_counts).filter(([tier]) =>
+            facilityMatchesTierFilter(tier, selectedTier)
+          )
         ),
       }
     }
@@ -146,7 +148,7 @@ export function InteractiveOverview({
   const domainNote = buildDomainChartNote(metrics.domain_averages, metrics.isScoped)
   const blockerNote = buildBlockerChartNote(metrics.blocker_register, metrics.scopedFacilities)
 
-  const tiers = DEPLOYMENT_CATEGORY_FILTER_OPTIONS
+  const tiers = TIER_FILTER_OPTIONS
 
   const selectClassName =
     "h-9 min-w-[12rem] rounded-lg border border-input bg-card px-3 text-sm text-foreground shadow-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
@@ -188,14 +190,13 @@ export function InteractiveOverview({
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="tier-filter" className="text-xs font-medium text-muted-foreground">
-            Deployment category
+            Tier
           </label>
           <select
             id="tier-filter"
             value={selectedTier}
             onChange={(e) => handleTierChange(e.target.value)}
             className={selectClassName}
-            aria-describedby="tier-filter-help"
           >
             {tiers.map((tier) => (
               <option key={tier.label} value={tier.value}>
@@ -203,9 +204,6 @@ export function InteractiveOverview({
               </option>
             ))}
           </select>
-          <p id="tier-filter-help" className="max-w-xs text-[11px] leading-snug text-muted-foreground">
-            {DEPLOYMENT_CATEGORY_HELP}
-          </p>
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -255,7 +253,7 @@ export function InteractiveOverview({
           icon={Target}
           label="Deploy-eligible"
           value={metrics.deploymentEligible}
-          description="Tier 2 · Wave 2"
+          description="Tier 2"
         />
         <KpiMetric
           icon={Wrench}

@@ -21,7 +21,7 @@ export interface TierFilterOption {
 export const TIER_FILTER_OPTIONS: readonly TierFilterOption[] = [
   { value: "", label: "All tiers" },
   { value: "Tier 1 — HOS-Ready", label: "Tier 1 · HOS-Ready" },
-  { value: "tier-2", label: "Tier 2" },
+  { value: "tier-2", label: TIER_DISPLAY_LABELS["Tier 2 — Deployment-Eligible"] },
   { value: "Tier 3 — Not Deployment-Ready", label: "Tier 3 · Not Deployment-Ready" },
 ]
 

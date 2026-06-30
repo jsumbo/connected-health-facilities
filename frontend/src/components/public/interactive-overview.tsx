@@ -196,7 +196,7 @@ export function InteractiveOverview({
             id="tier-filter"
             value={selectedTier}
             onChange={(e) => handleTierChange(e.target.value)}
-            className={selectClassName}
+            className={`${selectClassName} min-w-[20rem]`}
           >
             {tiers.map((tier) => (
               <option key={tier.label} value={tier.value}>

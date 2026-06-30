@@ -4,7 +4,7 @@ import { getBlockerCode } from "@/lib/quick-wins"
 export const BLOCKER_SHORT_LABELS: Record<string, string> = {
   "BLK-01": "No primary power",
   "BLK-02": "No connectivity / <2 Mbps",
-  "BLK-03": "Zero computers & tablets",
+  "BLK-03": "Zero computers or tablets",
   "BLK-04": "Not reporting to DHIS2",
   "BLK-05": "No IT support",
   "BLK-06": "Not operational",
@@ -12,6 +12,26 @@ export const BLOCKER_SHORT_LABELS: Record<string, string> = {
 
 export function blockerShortLabel(code: string, fallback?: string): string {
   return BLOCKER_SHORT_LABELS[code] ?? fallback ?? code
+}
+
+export function formatBlockerCodes(codes: string[], separator = "; "): string {
+  if (codes.length === 0) return "—"
+  return codes.map((code) => blockerShortLabel(code)).join(separator)
+}
+
+export function formatFacilityBlockers(
+  facility: Pick<ProgrammeFacility, "blockers" | "blocker_codes">,
+  separator = "; "
+): string {
+  if (facility.blocker_codes?.length) {
+    return formatBlockerCodes(facility.blocker_codes, separator)
+  }
+  const codes = facility.blockers
+    .map((blocker) => getBlockerCode(blocker))
+    .filter((code): code is string => Boolean(code))
+  if (codes.length > 0) return formatBlockerCodes(codes, separator)
+  if (facility.blockers.length === 0) return "—"
+  return `${facility.blockers.length} blocker${facility.blockers.length > 1 ? "s" : ""}`
 }
 
 export function formatBlockerLine(

@@ -72,8 +72,8 @@ export function BlockerBarChart({
   const chartData = useMemo(
     () =>
       sortedData.map((item, index) => ({
-        label: item.code,
-        shortLabel: blockerShortLabel(item.code, item.description),
+        code: item.code,
+        label: blockerShortLabel(item.code, item.description),
         count: item.count,
         description: item.description,
         fill: getBlockerColor(
@@ -84,6 +84,11 @@ export function BlockerBarChart({
         index,
       })),
     [sortedData, activeCode]
+  )
+
+  const codeByLabel = useMemo(
+    () => Object.fromEntries(chartData.map((entry) => [entry.label, entry.code])),
+    [chartData]
   )
 
   const affectedFacilities = useMemo(() => {
@@ -109,11 +114,13 @@ export function BlockerBarChart({
         <BarChart
           data={chartData}
           layout="vertical"
-          margin={{ left: 56, right: 40, top: 8, bottom: 8 }}
+          margin={{ left: 8, right: 40, top: 8, bottom: 8 }}
           barCategoryGap="14%"
           onClick={(state) => {
             const label = state?.activeLabel
-            if (typeof label === "string" && label) handleSelect(label)
+            if (typeof label !== "string" || !label) return
+            const code = codeByLabel[label]
+            if (code) handleSelect(code)
           }}
         >
           <CartesianGrid horizontal={false} strokeDasharray="3 3" className="stroke-border/60" />
@@ -129,10 +136,10 @@ export function BlockerBarChart({
           <YAxis
             type="category"
             dataKey="label"
-            width={52}
+            width={140}
             tickLine={false}
             axisLine={false}
-            fontSize={11}
+            fontSize={10}
             tick={{ fill: "var(--foreground)" }}
           />
           <ChartTooltip
@@ -143,7 +150,7 @@ export function BlockerBarChart({
               return (
                 <div className="rounded-lg border border-border bg-card p-3 shadow-lg max-w-xs">
                   <p className="font-semibold text-sm text-foreground">{row.label}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{row.shortLabel}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{row.code}</p>
                   <p className="text-sm text-foreground mt-2 tabular-nums">
                     <span className="font-semibold">{row.count}</span>{" "}
                     {row.count === 1 ? "facility" : "facilities"}
@@ -161,11 +168,11 @@ export function BlockerBarChart({
           >
             {chartData.map((entry) => (
               <Cell
-                key={entry.label}
+                key={entry.code}
                 fill={entry.fill}
                 className={cn(
                   "transition-opacity duration-150",
-                  activeCode && activeCode !== entry.label && "opacity-40"
+                  activeCode && activeCode !== entry.code && "opacity-40"
                 )}
               />
             ))}
@@ -182,7 +189,11 @@ export function BlockerBarChart({
         <div className="rounded-lg border border-border bg-muted/30 p-3">
           <div className="mb-2 flex items-center justify-between gap-2">
             <p className="text-sm font-medium">
-              {activeCode} · {blockerShortLabel(activeCode, sortedData.find((d) => d.code === activeCode)?.description)}
+              {blockerShortLabel(
+                activeCode,
+                sortedData.find((d) => d.code === activeCode)?.description
+              )}
+              <span className="ml-1.5 text-xs font-normal text-muted-foreground">({activeCode})</span>
             </p>
             <button
               type="button"

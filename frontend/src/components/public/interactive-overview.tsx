@@ -29,7 +29,6 @@ import { buildDlaInsight } from "@/lib/overview-insights"
 import { clusterSortIndex } from "@/lib/clusters"
 import {
   buildBlockerChartNote,
-  buildClusterListNote,
   buildCountyChartNote,
   buildDomainChartNote,
   buildOverviewHeadlineNote,
@@ -146,7 +145,6 @@ export function InteractiveOverview({
   const countyNote = buildCountyChartNote(filtered.by_county)
   const domainNote = buildDomainChartNote(metrics.domain_averages, metrics.isScoped)
   const blockerNote = buildBlockerChartNote(metrics.blocker_register, metrics.scopedFacilities)
-  const clusterNote = buildClusterListNote(overview.by_cluster)
 
   const tiers = DEPLOYMENT_CATEGORY_FILTER_OPTIONS
 
@@ -420,7 +418,6 @@ export function InteractiveOverview({
                 </p>
               </a>
             ))}
-            <ChartNote>{clusterNote}</ChartNote>
           </CardContent>
         </Card>
       </div>

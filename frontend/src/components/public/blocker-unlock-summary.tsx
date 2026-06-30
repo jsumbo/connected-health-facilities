@@ -1,7 +1,7 @@
 import Link from "next/link"
 import type { BlockerSummary, ProgrammeFacility } from "@/lib/types-public"
 import { getBlockerCode } from "@/lib/quick-wins"
-import { blockerShortLabel } from "@/lib/blockers"
+import { blockerDisplayLabel } from "@/lib/blockers"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface BlockerUnlockSummaryProps {
@@ -36,10 +36,10 @@ export function BlockerUnlockSummary({ blockers, facilities }: BlockerUnlockSumm
         {top ? (
           <p className="text-sm text-muted-foreground">
             <strong className="text-foreground">
-              {blockerShortLabel(top.code, top.description)}
+              {blockerDisplayLabel(top.code, top.description)}
             </strong>{" "}
-            affects the most facilities ({top.count}) — {top.description.toLowerCase()}. Clearing a
-            single blocker unlocks facilities listed below.
+            affects the most facilities ({top.count}). Clearing a single blocker unlocks
+            facilities listed below.
           </p>
         ) : null}
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -52,10 +52,10 @@ export function BlockerUnlockSummary({ blockers, facilities }: BlockerUnlockSumm
               >
                 <div className="min-w-0 pr-2">
                   <p className="text-xs font-semibold text-foreground">
-                    {blockerShortLabel(blocker.code, blocker.description)}
+                    {blockerDisplayLabel(blocker.code, blocker.description)}
                   </p>
                   <p className="truncate text-[10px] text-muted-foreground">
-                    {blocker.count} facilities · {blocker.code}
+                    {blocker.count} facilities
                   </p>
                 </div>
                 <div className="text-right shrink-0">

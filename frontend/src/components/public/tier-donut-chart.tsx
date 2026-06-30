@@ -13,7 +13,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
-import { tierFilterLabel } from "@/lib/readiness-tiers"
+import { tierFilterLabel, formatTierLabel } from "@/lib/readiness-tiers"
 import { ChartNote } from "@/components/public/chart-note"
 import { TIER_CHART_COLORS } from "./readiness-tier-styles"
 
@@ -28,7 +28,7 @@ export function TierDonutChart({ tierCounts, onTierClick, selectedTier }: TierDo
     .filter(([, count]) => count > 0)
     .map(([tier, count]) => ({
       tier,
-      tierDisplay: tier.replace(" — ", " · "),
+      tierDisplay: formatTierLabel(tier),
       count,
       fill: TIER_CHART_COLORS[tier] ?? "var(--chart-5)",
     }))

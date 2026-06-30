@@ -154,8 +154,8 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
                 </SortButton>
               </TableHead>
               {!compact ? (
-                <TableHead className="text-right">
-                  <SortButton label="Blockers" active={sortKey === "blockers"} onClick={() => handleSort("blockers")} className="ml-auto">
+                <TableHead>
+                  <SortButton label="Blockers" active={sortKey === "blockers"} onClick={() => handleSort("blockers")}>
                     Blockers{sortIndicator("blockers")}
                   </SortButton>
                 </TableHead>
@@ -188,7 +188,7 @@ export function FacilitiesTableClient({ facilities, compact }: FacilitiesTableCl
                   <TierBadge tier={f.tier} compact />
                 </TableCell>
                 {!compact ? (
-                  <TableCell className="text-right text-xs">
+                  <TableCell className="text-xs">
                     {f.blockers.length > 0 ? (
                       <span className="font-medium text-destructive">{formatFacilityBlockers(f, ", ")}</span>
                     ) : (

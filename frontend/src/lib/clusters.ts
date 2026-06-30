@@ -8,6 +8,10 @@ export const PROGRAMME_CLUSTERS = [
   "Southeast Region",
 ] as const
 
+/** Shared copy for cluster explainer text across dashboard views. */
+export const CLUSTER_DEFINITION =
+  "Cluster — a grouping of neighbouring counties used for field assessment and rollout sequencing"
+
 export type ProgrammeCluster = (typeof PROGRAMME_CLUSTERS)[number]
 
 export function clusterSortIndex(cluster: string): number {

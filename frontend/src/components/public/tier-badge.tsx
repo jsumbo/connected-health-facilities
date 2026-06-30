@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { formatTierLabel } from "@/lib/readiness-tiers"
 import { tierStyle } from "./readiness-tier-styles"
 
 interface TierBadgeProps {
@@ -9,7 +10,7 @@ interface TierBadgeProps {
 
 export function TierBadge({ tier, compact }: TierBadgeProps) {
   const s = tierStyle(tier)
-  const short = tier.replace(" — ", " · ")
+  const short = formatTierLabel(tier)
 
   return (
     <Badge

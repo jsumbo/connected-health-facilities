@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 
 const LEGEND_ITEMS = [
   { label: "Tier 1 · HOS-Ready", color: "#3e8343" }, /* chart-2 green */
-  { label: "Tier 2 · Deployment-Eligible", color: "#355781" }, /* chart-1 blue */
+  { label: "Tier 2 · Deployment-Eligible with Targeted Investment", color: "#355781" }, /* chart-1 blue */
   { label: "Tier 2 · Structured Remediation", color: "#b67700" }, /* chart-3 amber */
   { label: "Tier 3 · Not Deployment-Ready", color: "#c64e31" }, /* chart-4 orange-red */
   { label: "Not assessed", color: "#8b8b8b" }, /* neutral gray */

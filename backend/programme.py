@@ -14,7 +14,7 @@ from facility_master import (
     cluster_sort_key,
     county_display,
 )
-from drf import DRF_DOMAINS, DRF_DOMAIN_KEYS, BLOCKER_REMEDIATION
+from drf import DRF_DOMAINS, DRF_DOMAIN_KEYS, BLOCKER_LABELS, BLOCKER_REMEDIATION
 from master_cache import master_cache
 from scoring import DOMAIN_LABELS
 from sentiment_cache import sentiment_cache
@@ -271,7 +271,7 @@ def build_overview() -> Dict[str, Any]:
     blocker_register = [
         {
             "code": code,
-            "description": BLOCKER_REMEDIATION.get(code, "Unknown blocker"),
+            "description": BLOCKER_LABELS.get(code, "Unknown blocker"),
             "count": count,
         }
         for code, count in sorted(blocker_counts.items())

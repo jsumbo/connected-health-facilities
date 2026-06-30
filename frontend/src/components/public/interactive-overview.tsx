@@ -24,6 +24,7 @@ import {
   Wrench,
   Zap,
 } from "lucide-react"
+import { DEPLOYMENT_CATEGORY_FILTER_OPTIONS, DEPLOYMENT_CATEGORY_HELP } from "@/lib/readiness-tiers"
 import { buildDlaInsight } from "@/lib/overview-insights"
 import { clusterSortIndex } from "@/lib/clusters"
 import {
@@ -147,13 +148,7 @@ export function InteractiveOverview({
   const blockerNote = buildBlockerChartNote(metrics.blocker_register, metrics.scopedFacilities)
   const clusterNote = buildClusterListNote(overview.by_cluster)
 
-  const tiers = [
-    { value: "", label: "All tiers" },
-    { value: "Tier 1 — HOS-Ready", label: "Tier 1 · HOS-Ready" },
-    { value: "Tier 2 — Deployment-Eligible", label: "Tier 2 · Deployment-Eligible" },
-    { value: "Tier 2 — Structured Remediation", label: "Tier 2 · Structured Remediation" },
-    { value: "Tier 3 — Not Deployment-Ready", label: "Tier 3 · Not Deployment-Ready" },
-  ]
+  const tiers = DEPLOYMENT_CATEGORY_FILTER_OPTIONS
 
   const selectClassName =
     "h-9 min-w-[12rem] rounded-lg border border-input bg-card px-3 text-sm text-foreground shadow-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
@@ -195,20 +190,24 @@ export function InteractiveOverview({
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="tier-filter" className="text-xs font-medium text-muted-foreground">
-            Tier
+            Deployment category
           </label>
           <select
             id="tier-filter"
             value={selectedTier}
             onChange={(e) => handleTierChange(e.target.value)}
             className={selectClassName}
+            aria-describedby="tier-filter-help"
           >
             {tiers.map((tier) => (
-              <option key={tier.value} value={tier.value}>
+              <option key={tier.label} value={tier.value}>
                 {tier.label}
               </option>
             ))}
           </select>
+          <p id="tier-filter-help" className="max-w-xs text-[11px] leading-snug text-muted-foreground">
+            {DEPLOYMENT_CATEGORY_HELP}
+          </p>
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -258,19 +257,19 @@ export function InteractiveOverview({
           icon={Target}
           label="Deploy-eligible"
           value={metrics.deploymentEligible}
-          description="Tier 2"
+          description="Tier 2 · Wave 2"
         />
         <KpiMetric
           icon={Wrench}
           label="Structured remediation"
           value={metrics.structuredRemediation}
-          description="Tier 2"
+          description="Tier 2 · Wave 3"
         />
         <KpiMetric
           icon={Ban}
           label="Tier 3 blocked"
           value={metrics.blocked_count}
-          description="Any BLK"
+          description="Tier 3 · blockers"
         />
         <KpiMetric
           icon={Gauge}

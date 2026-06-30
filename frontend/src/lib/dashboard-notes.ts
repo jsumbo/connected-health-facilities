@@ -54,15 +54,16 @@ export function buildOverviewHeadlineNote(
 export function buildTierChartNote(tierCounts: Record<string, number>): string {
   const tier3 = tierCounts["Tier 3 — Not Deployment-Ready"] ?? 0
   const tier1 = tierCounts["Tier 1 — HOS-Ready"] ?? 0
-  const tier2 =
-    (tierCounts["Tier 2 — Deployment-Eligible"] ?? 0) +
-    (tierCounts["Tier 2 — Structured Remediation"] ?? 0)
+  const tier2Eligible = tierCounts["Tier 2 — Deployment-Eligible"] ?? 0
+  const tier2Remed = tierCounts["Tier 2 — Structured Remediation"] ?? 0
+  const tier2 = tier2Eligible + tier2Remed
+  const total = tier1 + tier2 + tier3
 
   if (tier3 > tier1 + tier2) {
-    return `${tier3} of ${tier1 + tier2 + tier3} assessed facilities are Tier 3. Most are held back by blockers rather than uniformly low scores.`
+    return `${tier3} of ${total} assessed facilities are Tier 3. Most are held back by blockers rather than uniformly low scores.`
   }
 
-  return `${tier1} HOS-ready, ${tier2} Tier 2, ${tier3} Tier 3. Click a segment to filter the rest of the page.`
+  return `${tier1} HOS-ready · ${tier2Eligible} deployment-eligible · ${tier2Remed} structured remediation · ${tier3} Tier 3 (${total} facilities). Click a segment to filter.`
 }
 
 export function buildCountyChartNote(counties: CountyRollup[]): string {

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react"
 import { HeatmapGrid } from "@/components/public/heatmap-grid"
 import type { ProgrammeFacility } from "@/lib/types-public"
+import { DEPLOYMENT_CATEGORY_FILTER_OPTIONS, DEPLOYMENT_CATEGORY_HELP } from "@/lib/readiness-tiers"
 
 interface HeatmapGridClientProps {
   initialFacilities: ProgrammeFacility[]
@@ -44,18 +45,24 @@ export function HeatmapGridClient({ initialFacilities, counties }: HeatmapGridCl
         </div>
 
         <div>
-          <label className="text-xs font-medium text-muted-foreground block mb-1">Tier</label>
+          <label className="text-xs font-medium text-muted-foreground block mb-1">
+            Deployment category
+          </label>
           <select
             value={selectedTier}
             onChange={(e) => setSelectedTier(e.target.value)}
             className="h-9 min-w-[11rem] rounded-lg border border-input bg-card px-3 text-sm text-foreground shadow-sm"
+            aria-describedby="heatmap-tier-help"
           >
-            <option value="">All tiers</option>
-            <option value="Tier 1 — HOS-Ready">Tier 1 · HOS-Ready</option>
-            <option value="Tier 2 — Deployment-Eligible">Tier 2 · Deployment-Eligible</option>
-            <option value="Tier 2 — Structured Remediation">Tier 2 · Structured Remediation</option>
-            <option value="Tier 3 — Not Deployment-Ready">Tier 3 · Not Deployment-Ready</option>
+            {DEPLOYMENT_CATEGORY_FILTER_OPTIONS.map((option) => (
+              <option key={option.label} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </select>
+          <p id="heatmap-tier-help" className="mt-1 max-w-xs text-[11px] text-muted-foreground">
+            {DEPLOYMENT_CATEGORY_HELP}
+          </p>
         </div>
 
         {(selectedCounty || selectedTier) && (

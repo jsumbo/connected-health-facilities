@@ -86,6 +86,11 @@ export function BlockerBarChart({
     [sortedData, activeCode]
   )
 
+  const codeByLabel = useMemo(
+    () => Object.fromEntries(chartData.map((entry) => [entry.label, entry.code])),
+    [chartData]
+  )
+
   const affectedFacilities = useMemo(() => {
     if (!activeCode) return []
     return facilities.filter((f) =>
@@ -112,8 +117,10 @@ export function BlockerBarChart({
           margin={{ left: 8, right: 40, top: 8, bottom: 8 }}
           barCategoryGap="14%"
           onClick={(state) => {
-            const payload = state?.activePayload?.[0]?.payload as (typeof chartData)[0] | undefined
-            if (payload?.code) handleSelect(payload.code)
+            const label = state?.activeLabel
+            if (typeof label !== "string" || !label) return
+            const code = codeByLabel[label]
+            if (code) handleSelect(code)
           }}
         >
           <CartesianGrid horizontal={false} strokeDasharray="3 3" className="stroke-border/60" />

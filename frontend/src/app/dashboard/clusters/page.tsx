@@ -2,6 +2,7 @@ import { getPublicClusters, getPublicFacilities } from "@/lib/public-api"
 import { parseDashboardScope } from "@/lib/dashboard-scope"
 import { ClustersClient } from "@/components/public/clusters-client"
 import { PageHeader } from "@/components/public/page-header"
+import { CLUSTER_DEFINITION } from "@/lib/clusters"
 
 export const dynamic = "force-dynamic"
 
@@ -34,6 +35,7 @@ export default async function ClustersPage({
           assessed={assessedCount}
           target={facilitiesData.total}
         />
+        <p className="mb-4 text-sm leading-relaxed text-muted-foreground">{CLUSTER_DEFINITION}</p>
         {facilityTypeLabel ? (
           <p className="mb-4 text-sm text-muted-foreground">
             Facility counts reflect {facilityTypeLabel} only. Cluster rollups below remain programme-wide.

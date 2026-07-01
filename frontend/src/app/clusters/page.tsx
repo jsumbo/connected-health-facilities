@@ -6,6 +6,7 @@ import { buildClustersPageNote } from "@/lib/dashboard-notes"
 import { ErrorBanner } from "@/components/public/error-banner"
 import { PublicShell } from "@/components/public/PublicShell"
 import { getPublicClusters, getPublicFacilities } from "@/lib/public-api"
+import { CLUSTER_DEFINITION } from "@/lib/clusters"
 
 export const dynamic = "force-dynamic"
 
@@ -38,6 +39,7 @@ export default async function ClustersPage() {
       {error ? <ErrorBanner message={error} /> : null}
       {!error ? (
         <>
+          <p className="mb-4 text-sm leading-relaxed text-muted-foreground">{CLUSTER_DEFINITION}</p>
           <PageInsightBanner insight={buildClustersPageNote(clusters)} />
           <ClustersClient clusters={clusters} />
         </>

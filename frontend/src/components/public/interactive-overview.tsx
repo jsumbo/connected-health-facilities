@@ -21,7 +21,6 @@ import {
   MessageSquareHeart,
   ShieldCheck,
   Target,
-  Wrench,
   Zap,
 } from "lucide-react"
 import { TIER_FILTER_OPTIONS, facilityMatchesTierFilter } from "@/lib/readiness-tiers"
@@ -236,7 +235,7 @@ export function InteractiveOverview({
       </div>
 
       {/* Decision-first KPIs (existing metrics retained below) */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6 mb-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5 mb-4">
         <KpiMetric
           icon={ShieldCheck}
           label="HOS-ready now"
@@ -254,12 +253,6 @@ export function InteractiveOverview({
           label="Targeted investment"
           value={metrics.deploymentEligible}
           description="Deployment-Eligible with Targeted Investment"
-        />
-        <KpiMetric
-          icon={Wrench}
-          label="Structured remediation"
-          value={metrics.structuredRemediation}
-          description="Tier 2 · Wave 3"
         />
         <KpiMetric
           icon={Ban}

@@ -7,7 +7,7 @@ import { FacilitiesWrapper } from "@/components/public/facilities-wrapper"
 import { PublicShell } from "@/components/public/PublicShell"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getPublicFacilities, getPublicOverview } from "@/lib/public-api"
-import { CheckCircle2, AlertCircle, Zap } from "lucide-react"
+import { CheckCircle2, Zap } from "lucide-react"
 
 export const metadata: Metadata = pageMetadata({
   title: "Facilities",
@@ -53,7 +53,7 @@ export default async function FacilitiesPage({ searchParams }: FacilitiesPagePro
       {error && <ErrorBanner message={error} />}
 
       {overview && (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <Card className="shadow-none">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm text-emerald-700">
@@ -78,20 +78,6 @@ export default async function FacilitiesPage({ searchParams }: FacilitiesPagePro
             <CardContent>
               <p className="text-3xl font-bold text-sky-600">
                 {overview.tier_counts["Tier 2 — Deployment-Eligible"] ?? 0}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-none">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-sm text-amber-700">
-                <AlertCircle className="size-4" aria-hidden />
-                Structured Remediation
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-amber-600">
-                {overview.tier_counts["Tier 2 — Structured Remediation"] ?? 0}
               </p>
             </CardContent>
           </Card>

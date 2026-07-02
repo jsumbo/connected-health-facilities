@@ -89,8 +89,8 @@ export default async function FacilityPage({ params }: PageProps) {
   if (!facility || facility.assessment_status !== "complete") {
     return (
       <PublicShell title={facility?.name ?? "Facility"} description="Not assessed">
-        <Link href="/data-quality" className="text-sm text-primary hover:underline underline-offset-2">
-          ← Data quality
+        <Link href="/facilities" className="text-sm text-primary hover:underline underline-offset-2">
+          ← All facilities
         </Link>
       </PublicShell>
     )
@@ -190,12 +190,6 @@ export default async function FacilityPage({ params }: PageProps) {
                 </Badge>
               ))}
             </div>
-            <Link
-              href="/data-quality"
-              className="mt-3 inline-block text-xs text-primary hover:underline underline-offset-2"
-            >
-              Data quality report →
-            </Link>
           </CardContent>
         </Card>
       )}

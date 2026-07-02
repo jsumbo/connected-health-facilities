@@ -32,8 +32,8 @@ interface DlaReadinessScatterProps {
 }
 
 const TIER_LEGEND: Array<{ key: string; label: string; color: string }> = [
-  { key: "T1", label: SCATTER_TIER_LABELS.tier1, color: "#3e8343" },
-  { key: "T2", label: SCATTER_TIER_LABELS.tier2, color: "#80a2b4" },
+  { key: "T1", label: SCATTER_TIER_LABELS.tier1, color: "#f54343" },
+  { key: "T2", label: SCATTER_TIER_LABELS.tier2, color: "#0f0f0f" },
   { key: "T3", label: SCATTER_TIER_LABELS.tier3, color: "#c64e31" },
 ]
 
@@ -99,8 +99,8 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
       <CardContent>
         <ResponsiveContainer width="100%" height={380}>
           <ComposedChart margin={{ top: 16, right: 28, bottom: 32, left: 16 }}>
-            <ReferenceArea y1={75} y2={95} fill="#3e8343" fillOpacity={0.06} />
-            <ReferenceArea y1={25} y2={75} fill="#80a2b4" fillOpacity={0.06} />
+            <ReferenceArea y1={75} y2={95} fill="#f54343" fillOpacity={0.06} />
+            <ReferenceArea y1={25} y2={75} fill="#0f0f0f" fillOpacity={0.06} />
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis
               type="number"
@@ -142,17 +142,17 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
             <ZAxis range={[64, 64]} />
             <ReferenceLine
               y={75}
-              stroke="#3e8343"
+              stroke="#f54343"
               strokeDasharray="5 5"
               strokeOpacity={0.75}
-              label={{ value: "T1 · 75%", position: "insideTopRight", fontSize: 10, fill: "#3e8343" }}
+              label={{ value: "T1 · 75%", position: "insideTopRight", fontSize: 10, fill: "#f54343" }}
             />
             <ReferenceLine
               y={55}
-              stroke="#80a2b4"
+              stroke="#0f0f0f"
               strokeDasharray="5 5"
               strokeOpacity={0.75}
-              label={{ value: "T2 · 55%", position: "insideTopRight", fontSize: 10, fill: "#80a2b4" }}
+              label={{ value: "T2 · 55%", position: "insideTopRight", fontSize: 10, fill: "#0f0f0f" }}
             />
             {trendLine ? (
               <Line

@@ -84,8 +84,8 @@ export default function OpenGraphImage() {
 
         <div style={{ display: "flex", gap: 28, alignItems: "center" }}>
           {[
-            { label: "Tier 1", color: "#10b981" },
-            { label: "Tier 2", color: "#0ea5e9" },
+            { label: "Tier 1", color: "#f54343" },
+            { label: "Tier 2", color: "#0f0f0f" },
             { label: "Tier 3", color: "#f59e0b" },
             { label: "Tier 4", color: "#f43f5e" },
           ].map((tier) => (

@@ -34,7 +34,7 @@ export function GeoMap({ facilities }: GeoMapProps) {
         const lon = facility.longitude
         const tierColor =
           facility.tier === "Tier 1 — HOS-Ready"
-            ? "#10b981"
+            ? "#f54343"
             : facility.tier === "Tier 2 — Deployment-Eligible" ||
                 facility.tier === "Tier 2 — Structured Remediation"
               ? "#f59e0b"

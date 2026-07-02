@@ -5,8 +5,8 @@ const HOSPITAL_PATHS =
   '<path d="M12 7v4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M14 9h-4"/><path d="M18 11h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2"/><path d="M18 21V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16"/>'
 
 export function tierMarkerColor(tier: string): string {
-  if (tier.startsWith("Tier 1")) return "#3e8343"
-  if (tier.startsWith("Tier 2")) return "#80a2b4"
+  if (tier.startsWith("Tier 1")) return "#f54343"
+  if (tier.startsWith("Tier 2")) return "#0f0f0f"
   if (tier.startsWith("Tier 3") || tier.startsWith("Tier 4")) return "#c64e31"
   if (tier === "Not Assessed") return "#8b8b8b"
   return "#8b8b8b"

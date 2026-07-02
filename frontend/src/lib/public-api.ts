@@ -1,6 +1,5 @@
 import type {
   ClusterOverview,
-  DataQualityReport,
   DlaOverview,
   FacilityDlaDetail,
   ProgrammeFacility,
@@ -61,10 +60,6 @@ export function getPublicFacility(slug: string): Promise<ProgrammeFacility> {
 /** Same-origin URL for map/detail facility photos (proxied to FastAPI). */
 export function getFacilityPhotoUrl(slug: string): string {
   return `/api/proxy/public/facilities/${encodeURIComponent(slug)}/photo`
-}
-
-export function getDataQuality(): Promise<DataQualityReport> {
-  return publicFetch<DataQualityReport>("/public/data-quality")
 }
 
 export function getPublicSentiment(): Promise<SentimentOverview> {

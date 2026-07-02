@@ -24,19 +24,19 @@
     --input: oklch(0.88 0.01 85);
     --ring: oklch(0.55 0.08 255);
     /* Chart colors: sRGB hex with OKLCH fallback for consistency across browsers/displays */
-    --chart-1: #80a2b4; /* deployment-eligible (blue) */
-    --chart-2: #3e8343; /* hos-ready (green) - fallback oklch(0.55 0.12 145) */
+    --chart-1: #0f0f0f; /* deployment-eligible */
+    --chart-2: #f54343; /* hos-ready */
     --chart-3: #b67700; /* structured-remediation (amber) - fallback oklch(0.62 0.14 75) */
     --chart-4: #c64e31; /* not-ready (orange-red) - fallback oklch(0.58 0.16 35) */
     --chart-5: #b32228; /* critical-gaps (red) - fallback oklch(0.5 0.18 25) */
     --radius: 0.5rem;
-    --sidebar: #80a2b4;
-    --sidebar-foreground: oklch(0.25 0.04 255);
-    --sidebar-primary: #0f2144;
-    --sidebar-primary-foreground: oklch(0.98 0.01 85);
-    --sidebar-accent: oklch(0.92 0.02 230);
-    --sidebar-accent-foreground: oklch(0.25 0.04 255);
-    --sidebar-border: oklch(0.55 0.04 230);
+    --sidebar: #0f0f0f;
+    --sidebar-foreground: oklch(0.92 0.01 85);
+    --sidebar-primary: oklch(0.98 0.01 85);
+    --sidebar-primary-foreground: #0f0f0f;
+    --sidebar-accent: oklch(0.22 0.01 85);
+    --sidebar-accent-foreground: oklch(0.95 0.01 85);
+    --sidebar-border: oklch(0.35 0.01 85);
     --sidebar-ring: oklch(0.55 0.08 255);
   }
 

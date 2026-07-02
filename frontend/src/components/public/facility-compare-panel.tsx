@@ -17,13 +17,13 @@ import { cn } from "@/lib/utils"
 
 function scoreBarColor(score: number, maxScore = 100): string {
   if (maxScore <= 3) {
-    if (score >= 2.5) return "bg-emerald-500"
-    if (score >= 1.5) return "bg-sky-500"
+    if (score >= 2.5) return "bg-[#f54343]"
+    if (score >= 1.5) return "bg-[#0f0f0f]"
     if (score >= 0.5) return "bg-amber-500"
     return "bg-rose-500"
   }
-  if (score >= 75) return "bg-emerald-500"
-  if (score >= 55) return "bg-sky-500"
+  if (score >= 75) return "bg-[#f54343]"
+  if (score >= 55) return "bg-[#0f0f0f]"
   if (score >= 35) return "bg-amber-500"
   return "bg-rose-500"
 }

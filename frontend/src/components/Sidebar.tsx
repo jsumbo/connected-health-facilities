@@ -12,7 +12,6 @@ import {
   Grid3x3,
   BarChart3,
   MapPin,
-  CheckCircle,
   GraduationCap,
   MessageSquareHeart,
 } from "lucide-react";
@@ -36,7 +35,6 @@ const NAV = [
 
   // ANALYSIS
   { href: "/dashboard/what-drives-readiness", label: "What Drives Readiness", icon: BarChart3, section: "ANALYSIS" },
-  { href: "/dashboard/data-quality", label: "Data Quality", icon: CheckCircle, section: "ANALYSIS" },
 ];
 
 export default function Sidebar() {
@@ -59,7 +57,7 @@ export default function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-shell flex flex-col z-10">
       {/* Logo */}
-      <div className="px-6 py-6 border-b border-navy/10">
+      <div className="px-6 py-6 border-b border-white/10">
         <BrandLogo href="/dashboard" priority />
       </div>
 
@@ -71,7 +69,7 @@ export default function Sidebar() {
 
           return (
             <div key={section}>
-              <p className="px-4 mb-2 text-xs font-semibold uppercase tracking-wide text-navy/50">{section}</p>
+              <p className="px-4 mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">{section}</p>
               <div className="space-y-1">
                 {sectionItems.map(({ href, label, icon: Icon, exact }) => {
                   const active = exact ? pathname === href : pathname.startsWith(href);
@@ -82,8 +80,8 @@ export default function Sidebar() {
                       className={clsx(
                         "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors",
                         active
-                          ? "bg-navy text-white shadow-sm"
-                          : "text-navy/75 hover:text-navy hover:bg-navy/10"
+                          ? "bg-white/15 text-white shadow-sm"
+                          : "text-slate-400 hover:text-white hover:bg-white/10"
                       )}
                     >
                       <Icon className="w-4 h-4" />
@@ -98,13 +96,13 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 pb-6 border-t border-navy/10 pt-4">
-        <p className="text-navy/60 text-xs px-4 mb-3">
+      <div className="px-4 pb-6 border-t border-white/10 pt-4">
+        <p className="text-slate-500 text-xs px-4 mb-3">
           Ministry of Health · Sand Technologies
         </p>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-2.5 w-full rounded-lg text-sm text-navy/75 hover:text-navy hover:bg-navy/10 transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 w-full rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
         >
           <LogOut className="w-4 h-4" />
           Sign out

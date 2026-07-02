@@ -18,14 +18,14 @@ function getColorClass(score: number | null | undefined): string {
   if (score === 0) return "bg-red-100"
   if (score === 1) return "bg-orange-200"
   if (score === 2) return "bg-yellow-100"
-  if (score >= 3) return "bg-emerald-100"
+  if (score >= 3) return "bg-red-100"
   return "bg-slate-100"
 }
 
 function tierBadgeClass(tier: string | null | undefined): string {
-  if (tier === "Tier 1 — HOS-Ready") return "bg-emerald-600"
+  if (tier === "Tier 1 — HOS-Ready") return "bg-[#f54343]"
   if (tier?.includes("Deployment-Eligible") || tier?.includes("Structured Remediation")) {
-    return "bg-blue-600"
+    return "bg-[#0f0f0f]"
   }
   if (tier?.includes("Not Deployment-Ready")) return "bg-red-600"
   return "bg-slate-600"
@@ -122,7 +122,7 @@ export function HeatmapGrid({ facilities }: HeatmapGridProps) {
           <span>2 — adequate</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-4 w-4 border border-border bg-emerald-100" />
+          <div className="h-4 w-4 border border-border bg-red-100" />
           <span>3 — strong</span>
         </div>
       </div>

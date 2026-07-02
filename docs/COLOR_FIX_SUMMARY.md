@@ -24,8 +24,8 @@ Converted chart colors from OKLCH to sRGB hex values for universal consistency.
 
 **After:**
 ```css
---chart-1: #355781; /* deployment-eligible (blue) */
---chart-2: #3e8343; /* hos-ready (green) */
+--chart-1: #0f0f0f; /* deployment-eligible */
+--chart-2: #f54343; /* hos-ready */
 --chart-3: #b67700; /* structured-remediation (amber) */
 --chart-4: #c64e31; /* not-ready (orange-red) */
 --chart-5: #b32228; /* critical-gaps (red) */

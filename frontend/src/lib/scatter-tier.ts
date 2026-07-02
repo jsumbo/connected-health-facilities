@@ -12,8 +12,8 @@ export interface ScatterPoint {
 }
 
 export const SCATTER_TIER_COLORS: Record<ScatterTierCategory, string> = {
-  tier1: "#3e8343",
-  tier2: "#80a2b4",
+  tier1: "#f54343",
+  tier2: "#0f0f0f",
   tier3: "#c64e31",
 }
 

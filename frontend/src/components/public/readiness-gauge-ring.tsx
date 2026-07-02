@@ -53,19 +53,19 @@ export function ReadinessGaugeRing({
           strokeLinecap="round"
           className="text-primary"
         />
-        <circle cx={tier1Pt.x} cy={tier1Pt.y} r={3} className="fill-emerald-600" />
-        <circle cx={wavePt.x} cy={wavePt.y} r={3} className="fill-sky-600" />
+        <circle cx={tier1Pt.x} cy={tier1Pt.y} r={3} className="fill-[#f54343]" />
+        <circle cx={wavePt.x} cy={wavePt.y} r={3} className="fill-[#0f0f0f]" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center rotate-0">
         <span className="text-3xl font-semibold tabular-nums">{Math.round(score)}%</span>
       </div>
       <div className="mt-2 flex gap-3 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1">
-          <span className="inline-block size-2 rounded-full bg-emerald-600" aria-hidden />
+          <span className="inline-block size-2 rounded-full bg-[#f54343]" aria-hidden />
           T1 {tier1Threshold}%
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block size-2 rounded-full bg-sky-600" aria-hidden />
+          <span className="inline-block size-2 rounded-full bg-[#0f0f0f]" aria-hidden />
           Wave {waveThreshold}%
         </span>
       </div>

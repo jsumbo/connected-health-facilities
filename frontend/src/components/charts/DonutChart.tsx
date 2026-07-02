@@ -5,7 +5,7 @@ import { DistributionItem } from "@/lib/types";
 
 const COLORS = [
   "#0d9488", "#3b82f6", "#f59e0b", "#ef4444",
-  "#8b5cf6", "#10b981", "#f97316", "#6366f1",
+  "#8b5cf6", "#f54343", "#f97316", "#6366f1",
 ];
 
 interface Props {

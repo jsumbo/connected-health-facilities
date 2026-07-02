@@ -25,7 +25,7 @@ export function BrandLogo({
       height={48}
       priority={priority}
       className={cn(
-        "h-9 w-auto max-w-[180px] object-contain object-left",
+        "h-9 w-auto max-w-[180px] object-contain object-left brightness-0 invert",
         imageClassName
       )}
     />

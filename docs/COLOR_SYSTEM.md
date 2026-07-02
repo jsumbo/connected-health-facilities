@@ -32,8 +32,8 @@ Used in tier donut charts, bar charts, and legend displays.
 
 | Tier | CSS Variable | sRGB Hex | OKLCH (original) |
 |------|--------------|----------|------------------|
-| Tier 1 — HOS-Ready | `--chart-2` | `#3e8343` | `oklch(0.55 0.12 145)` |
-| Tier 2 — Deployment-Eligible | `--chart-1` | `#355781` | `oklch(0.45 0.08 255)` |
+| Tier 1 — HOS-Ready | `--chart-2` | `#f54343` | `oklch(0.55 0.12 145)` |
+| Tier 2 — Deployment-Eligible | `--chart-1` | `#0f0f0f` | `oklch(0.45 0.08 255)` |
 | Tier 2 — Structured Remediation | `--chart-3` | `#b67700` | `oklch(0.62 0.14 75)` |
 | Tier 3/4 — Not Ready | `--chart-4` | `#c64e31` | `oklch(0.58 0.16 35)` |
 | Critical Gaps | `--chart-5` | `#b32228` | `oklch(0.5 0.18 25)` |
@@ -56,8 +56,8 @@ Used in tier badges on the facilities table and individual facility pages.
 ### globals.css
 Chart colors are defined as CSS custom properties:
 ```css
---chart-1: #355781; /* deployment-eligible (blue) */
---chart-2: #3e8343; /* hos-ready (green) */
+--chart-1: #0f0f0f; /* deployment-eligible */
+--chart-2: #f54343; /* hos-ready */
 --chart-3: #b67700; /* structured-remediation (amber) */
 --chart-4: #c64e31; /* not-ready (orange-red) */
 --chart-5: #b32228; /* critical-gaps (red) */

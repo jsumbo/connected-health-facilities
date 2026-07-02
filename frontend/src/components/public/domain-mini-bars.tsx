@@ -4,8 +4,8 @@ const DOMAIN_ORDER = ["B", "C", "D", "E", "F", "G", "H", "I", "J"]
 
 function domainBarColor(score: number, max: number): string {
   const pct = max > 0 ? score / max : 0
-  if (pct >= 0.83) return "bg-emerald-500"
-  if (pct >= 0.6) return "bg-sky-500"
+  if (pct >= 0.83) return "bg-[#f54343]"
+  if (pct >= 0.6) return "bg-[#0f0f0f]"
   if (pct >= 0.4) return "bg-amber-500"
   return "bg-rose-500"
 }

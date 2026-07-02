@@ -80,8 +80,8 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
       <CardContent>
         <ResponsiveContainer width="100%" height={360}>
           <ScatterChart margin={{ top: 16, right: 28, bottom: 32, left: 12 }}>
-            <ReferenceArea y1={75} y2={90} fill="#3e8343" fillOpacity={0.06} />
-            <ReferenceArea y1={30} y2={75} fill="#80a2b4" fillOpacity={0.06} />
+            <ReferenceArea y1={75} y2={90} fill="#f54343" fillOpacity={0.06} />
+            <ReferenceArea y1={30} y2={75} fill="#0f0f0f" fillOpacity={0.06} />
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis
               type="number"
@@ -126,17 +126,17 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
             <ZAxis range={[72, 72]} />
             <ReferenceLine
               y={75}
-              stroke="#3e8343"
+              stroke="#f54343"
               strokeDasharray="4 4"
               strokeOpacity={0.75}
-              label={{ value: "T1 · 75%", position: "insideTopRight", fontSize: 10, fill: "#3e8343" }}
+              label={{ value: "T1 · 75%", position: "insideTopRight", fontSize: 10, fill: "#f54343" }}
             />
             <ReferenceLine
               y={55}
-              stroke="#80a2b4"
+              stroke="#0f0f0f"
               strokeDasharray="4 4"
               strokeOpacity={0.75}
-              label={{ value: "T2 · 55%", position: "insideTopRight", fontSize: 10, fill: "#80a2b4" }}
+              label={{ value: "T2 · 55%", position: "insideTopRight", fontSize: 10, fill: "#0f0f0f" }}
             />
             <Tooltip
               cursor={{ strokeDasharray: "3 3" }}

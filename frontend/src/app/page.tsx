@@ -91,10 +91,7 @@ export default async function HomePage() {
             <Card className="border-amber-200/80 bg-amber-50/80 shadow-none">
               <CardContent className="pt-4 text-sm text-amber-950">
                 <strong>{overview.not_assessed_count}</strong>{" "}
-                {overview.not_assessed_count === 1 ? "facility" : "facilities"} not assessed yet.{" "}
-                <Link href="/data-quality" className="font-medium underline underline-offset-2">
-                  Data quality
-                </Link>
+                {overview.not_assessed_count === 1 ? "facility" : "facilities"} not assessed yet.
               </CardContent>
             </Card>
           )}

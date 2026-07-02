@@ -42,7 +42,7 @@ export default function CountyChart({ data }: Props) {
             contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}
           />
           <Legend wrapperStyle={{ fontSize: 11 }} />
-          <Bar dataKey="Ready" fill="#16A34A" radius={[2, 2, 0, 0]} stackId="a" />
+          <Bar dataKey="Ready" fill="#f54343" radius={[2, 2, 0, 0]} stackId="a" />
           <Bar dataKey="Foundational" fill="#F59E0B" radius={[0, 0, 0, 0]} stackId="a" />
           <Bar dataKey="Not Ready" fill="#DC2626" radius={[0, 0, 0, 0]} stackId="a" />
           <Bar dataKey="Blocked" fill="#7f1d1d" radius={[2, 2, 0, 0]} stackId="a" />

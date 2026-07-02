@@ -33,8 +33,8 @@ export const TIER_CHART_COLORS: Record<string, string> = {
 
 /**
  * Color palette mapping:
- * --chart-1: #80a2b4 (Deployment-Eligible - blue)
- * --chart-2: #3e8343 (HOS-Ready - green)
+ * --chart-1: #0f0f0f (Deployment-Eligible)
+ * --chart-2: #f54343 (HOS-Ready)
  * --chart-3: #b67700 (Structured Remediation - amber)
  * --chart-4: #c64e31 (Not Deployment-Ready - orange-red)
  * --chart-5: #b32228 (Critical Gaps - red)

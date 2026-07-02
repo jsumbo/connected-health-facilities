@@ -30,8 +30,8 @@ Updated facility map markers and legend to use the new sRGB hex color system ins
 **Color mapping (now consistent everywhere):**
 | Tier | Old Color | New Color | Status |
 |------|-----------|-----------|--------|
-| Tier 1 — HOS-Ready | #059669 | #3e8343 | ✅ Updated |
-| Tier 2 — Deployment-Eligible | #0284c7 | #355781 | ✅ Updated |
+| Tier 1 — HOS-Ready | #059669 | #f54343 | ✅ Updated |
+| Tier 2 — Deployment-Eligible | #0284c7 | #0f0f0f | ✅ Updated |
 | Tier 2 — Structured Remediation | #d97706 | #b67700 | ✅ Updated |
 | Tier 3/4 — Not Ready | #e11d48 | #c64e31 | ✅ Updated |
 | Not Assessed | #64748b | #8b8b8b | ✅ Updated |

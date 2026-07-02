@@ -21,15 +21,15 @@ const config: Config = {
           dark: "#091729",
         },
         shell: {
-          DEFAULT: "#80a2b4",
-          dark: "#4a6577",
+          DEFAULT: "#0f0f0f",
+          dark: "#1a1a1a",
         },
         teal: {
           DEFAULT: "#00ccff",
           light: "#33d9ff",
           dark: "#0099cc",
         },
-        ready: "#16A34A",
+        ready: "#f54343",
         foundational: "#F59E0B",
         notready: "#DC2626",
         blocked: "#7f1d1d",

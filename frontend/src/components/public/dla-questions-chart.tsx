@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartContainer,
@@ -66,8 +66,12 @@ export function DlaQuestionsChart({ questions = [], note }: DlaQuestionsChartPro
           <ChartTooltip
             content={
               <ChartTooltipContent
+                className="max-w-sm"
                 formatter={(value) => `${value}% correct`}
-                labelFormatter={() => ""}
+                labelFormatter={(_, payload) => {
+                  const question = payload?.[0]?.payload?.question
+                  return typeof question === "string" ? question : ""
+                }}
               />
             }
           />

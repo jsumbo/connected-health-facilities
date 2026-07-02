@@ -6,7 +6,7 @@ const HOSPITAL_PATHS =
 
 export function tierMarkerColor(tier: string): string {
   if (tier.startsWith("Tier 1")) return "#3e8343"
-  if (tier.startsWith("Tier 2")) return "#355781"
+  if (tier.startsWith("Tier 2")) return "#80a2b4"
   if (tier.startsWith("Tier 3") || tier.startsWith("Tier 4")) return "#c64e31"
   if (tier === "Not Assessed") return "#8b8b8b"
   return "#8b8b8b"

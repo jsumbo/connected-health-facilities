@@ -165,6 +165,10 @@ export function buildBlockerHeatmapNote(): string {
 }
 
 export function buildClusterCardNote(cluster: ClusterSummary): string {
+  if (cluster.cluster === "Nimba") {
+    return "Nimba is the only cluster to produce a Tier 1 facility: Bahn Health Center, which scored 77."
+  }
+
   const tier3 = cluster.tier_counts["Tier 3 — Not Deployment-Ready"] ?? 0
   const tier1 = cluster.tier_counts["Tier 1 — HOS-Ready"] ?? 0
   const avg = cluster.avg_composite

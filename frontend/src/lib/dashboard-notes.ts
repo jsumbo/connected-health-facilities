@@ -6,7 +6,7 @@ import type {
   PublicOverview,
   QuestionStat,
 } from "@/lib/types-public"
-import { unlockCountForBlocker } from "@/lib/blockers"
+import { unlockCountForBlocker, blockerDisplayLabel } from "@/lib/blockers"
 import { filterQuickWins } from "@/lib/quick-wins"
 import { getTopBlocker, getWeakestDomain } from "@/lib/overview-insights"
 import type { DriverCorrelation } from "@/lib/readiness-drivers"
@@ -39,7 +39,9 @@ export function buildOverviewHeadlineNote(
   }
 
   if (topBlocker) {
-    parts.push(`${topBlocker.code} is the most common blocker (${topBlocker.count} facilities)`)
+    parts.push(
+      `${blockerDisplayLabel(topBlocker.code, topBlocker.description)} is the most common blocker (${topBlocker.count} facilities)`
+    )
   }
 
   if (weakest) {
@@ -104,13 +106,13 @@ export function buildBlockerChartNote(
   const second = sorted[1]
   const unlock = top ? unlockCountForBlocker(facilities, top.code) : 0
 
-  let note = `Facilities are Tier 3 because of named blockers, not composite score alone. ${top.code} affects ${top.count} facilities`
+  let note = `Facilities are Tier 3 because of named blockers, not composite score alone. ${blockerDisplayLabel(top.code, top.description)} affects ${top.count} facilities`
   if (second) {
-    note += `; ${second.code} affects ${second.count}`
+    note += `; ${blockerDisplayLabel(second.code, second.description)} affects ${second.count}`
   }
   note += `.`
   if (unlock > 0 && top) {
-    note += ` Resolving ${top.code} alone would move ${unlock} ${unlock === 1 ? "facility" : "facilities"} that have only that blocker.`
+    note += ` Resolving ${blockerDisplayLabel(top.code, top.description)} alone would move ${unlock} ${unlock === 1 ? "facility" : "facilities"} that have only that blocker.`
   }
   return note
 }
@@ -311,7 +313,7 @@ export function buildFacilitiesTableNote(
   if (hasFilters) {
     return `${count} facilities match the current filters. Sort columns, search by name or cluster, or export CSV for offline review.`
   }
-  return `${count} programme facilities. Sort columns, search by name or cluster, or export CSV. Blocker codes show deployment constraints at a glance.`
+  return `${count} programme facilities. Sort columns, search by name or cluster, or export CSV. Named blockers show deployment constraints at a glance.`
 }
 
 export function buildComparePanelNote(): string {

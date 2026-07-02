@@ -1,4 +1,5 @@
 import type { BlockerSummary, PublicOverview, QuestionStat } from "@/lib/types-public"
+import { blockerDisplayLabel } from "@/lib/blockers"
 
 const DOMAIN_LABELS: Record<string, string> = {
   B: "Governance",
@@ -58,7 +59,7 @@ export function buildOverviewInsight(
 
   if (topBlocker) {
     parts.push(
-      `${topBlocker.code} is the top blocker (${topBlocker.count} facilities) — ${topBlocker.description.toLowerCase()}`
+      `${blockerDisplayLabel(topBlocker.code, topBlocker.description)} is the top blocker (${topBlocker.count} facilities)`
     )
   }
 

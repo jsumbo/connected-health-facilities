@@ -75,7 +75,7 @@ FACILITY_REGISTRY: List[FacilityRecord] = [
     {"slug": "chocolate_city_hc", "name": "Chocolate City HC", "county": "montserrado", "district": "somalia_drive_district", "facility_type": "health_centre", **_meta("montserrado")},
     {"slug": "barnersville_hc", "name": "Barnersville HC", "county": "montserrado", "district": "somalia_drive_district", "facility_type": "health_centre", **_meta("montserrado")},
     {"slug": "foya_health_center", "name": "Foya Health Center", "county": "lofa", "district": "foya_district", "facility_type": "health_centre", **_meta("lofa")},
-    {"slug": "vahun_health_center", "name": "Vahun Health Center", "county": "nimba", "district": "vahun_district", "facility_type": "health_centre", **_meta("nimba")},
+    {"slug": "vahun_health_center", "name": "Vahun Health Center", "county": "lofa", "district": "vahun_district", "facility_type": "health_centre", **_meta("lofa")},
     {"slug": "gbarzon_health_center", "name": "Gbarzon Health Center", "county": "grand_gedeh", "district": "gbao_district", "facility_type": "health_centre", **_meta("grand_gedeh")},
     {"slug": "jj_dossen_hospital", "name": "JJ Dossen Hospital", "county": "maryland", "district": "maryland", "facility_type": "hospital", **_meta("maryland")},
     {"slug": "konia_health_center", "name": "Konia Health Center", "county": "lofa", "district": "zorzor_district", "facility_type": "health_centre", **_meta("lofa")},

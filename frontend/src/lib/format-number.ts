@@ -48,3 +48,53 @@ export function roundAxisMax(value: number, decimals = 2): number {
 export function roundAxisMaxCeil(value: number): number {
   return Math.ceil(roundToDecimals(value, 4))
 }
+
+const COUNT_WORDS_UNDER_TWENTY = [
+  "Zero",
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+  "Thirteen",
+  "Fourteen",
+  "Fifteen",
+  "Sixteen",
+  "Seventeen",
+  "Eighteen",
+  "Nineteen",
+] as const
+
+const COUNT_TENS = [
+  "",
+  "",
+  "Twenty",
+  "Thirty",
+  "Forty",
+  "Fifty",
+  "Sixty",
+  "Seventy",
+  "Eighty",
+  "Ninety",
+] as const
+
+/** Spell out small counts for narrative UI copy (e.g. "Four facilities"). */
+export function spellOutCount(value: number): string {
+  const count = Math.max(0, Math.round(value))
+  if (count < COUNT_WORDS_UNDER_TWENTY.length) return COUNT_WORDS_UNDER_TWENTY[count] ?? String(count)
+  if (count < 100) {
+    const tens = Math.floor(count / 10)
+    const ones = count % 10
+    if (ones === 0) return COUNT_TENS[tens] ?? String(count)
+    const onesWord = COUNT_WORDS_UNDER_TWENTY[ones]?.toLowerCase() ?? String(ones)
+    return `${COUNT_TENS[tens]}-${onesWord}`
+  }
+  return String(count)
+}

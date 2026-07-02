@@ -11,6 +11,7 @@ import { filterQuickWins } from "@/lib/quick-wins"
 import { getTopBlocker, getWeakestDomain } from "@/lib/overview-insights"
 import type { DriverCorrelation } from "@/lib/readiness-drivers"
 import { formatCorrelationScore } from "@/lib/readiness-drivers"
+import { spellOutCount } from "@/lib/format-number"
 
 export function buildOverviewHeadlineNote(
   overview: PublicOverview,
@@ -169,14 +170,14 @@ export function buildClusterCardNote(cluster: ClusterSummary): string {
   const avg = cluster.avg_composite
 
   if (tier3 > 0 && tier1 === 0) {
-    return `${tier3} Tier 3 ${tier3 === 1 ? "facility" : "facilities"} in this cluster; domain bars show where infrastructure gaps concentrate.`
+    return `${spellOutCount(tier3)} Tier 3 ${tier3 === 1 ? "facility" : "facilities"} in this cluster; domain bars show where infrastructure gaps concentrate.`
   }
 
   if (avg != null && avg >= 65) {
     return `Average composite ${avg.toFixed(1)}%. Compare domain bars across clusters to spot relative strengths and gaps.`
   }
 
-  return `${cluster.facility_count} facilities. Domain bars use the same 0–3 scale as the national dashboard.`
+  return `${spellOutCount(cluster.facility_count)} facilities. Domain bars use the same 0–3 scale as the national dashboard.`
 }
 
 export function buildClustersPageNote(clusters: ClusterSummary[]): string {

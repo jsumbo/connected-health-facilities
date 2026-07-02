@@ -24,7 +24,6 @@ import {
   Zap,
 } from "lucide-react"
 import { TIER_FILTER_OPTIONS, facilityMatchesTierFilter } from "@/lib/readiness-tiers"
-import { buildDlaInsight } from "@/lib/overview-insights"
 import { clusterSortIndex, CLUSTER_DEFINITION } from "@/lib/clusters"
 import {
   buildBlockerChartNote,
@@ -34,7 +33,6 @@ import {
   buildTierChartNote,
 } from "@/lib/dashboard-notes"
 import { computeScopedOverviewMetrics } from "@/lib/overview-stats"
-import { ChartNote } from "@/components/public/chart-note"
 import { PageInsightBanner } from "@/components/public/page-insight-banner"
 import { formatAxisTick, formatPercentLabel } from "@/lib/format-number"
 
@@ -133,7 +131,6 @@ export function InteractiveOverview({
     return result
   }, [overview, selectedCounty, selectedTier, metrics.tier_counts])
 
-  const dlaInsight = buildDlaInsight(dlaQuestions)
   const weakestDla = [...dlaQuestions].sort((a, b) => a.correctRate - b.correctRate)[0]
 
   const headlineNote = buildOverviewHeadlineNote(
@@ -341,14 +338,6 @@ export function InteractiveOverview({
           linkLabel="View digital literacy assessment"
         />
       </div>
-
-      {dlaInsight ? (
-        <Card className="mb-8 border-amber-200/60 bg-amber-50/40 shadow-none">
-          <CardContent className="py-3 text-sm text-amber-950">
-            <ChartNote className="mt-0 border-0 pt-0 text-amber-950">{dlaInsight}</ChartNote>
-          </CardContent>
-        </Card>
-      ) : null}
 
       <BlockerUnlockSummary
         blockers={metrics.blocker_register}

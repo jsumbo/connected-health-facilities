@@ -1,9 +1,13 @@
 import { Hospital } from "lucide-react"
+import { TIER_DISPLAY_LABELS } from "@/lib/readiness-tiers"
 import { cn } from "@/lib/utils"
 
 const LEGEND_ITEMS = [
   { label: "Tier 1 · HOS-Ready", color: "#3e8343" }, /* chart-2 green */
-  { label: "Tier 2", color: "#355781" }, /* chart-1 blue */
+  {
+    label: TIER_DISPLAY_LABELS["Tier 2 — Deployment-Eligible"],
+    color: "#355781",
+  }, /* chart-1 blue — single Tier 2 bucket on map */
   { label: "Tier 3 · Not Deployment-Ready", color: "#c64e31" }, /* chart-4 orange-red */
   { label: "Not assessed", color: "#8b8b8b" }, /* neutral gray */
 ] as const

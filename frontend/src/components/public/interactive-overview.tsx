@@ -152,6 +152,14 @@ export function InteractiveOverview({
   const selectClassName =
     "h-9 min-w-[12rem] rounded-lg border border-input bg-card px-3 text-sm text-foreground shadow-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
 
+  const facilitiesHref = (tier?: string) => {
+    const params = new URLSearchParams()
+    if (selectedCounty) params.set("county", selectedCounty)
+    if (tier) params.set("tier", tier)
+    const query = params.toString()
+    return query ? `/facilities?${query}` : "/facilities"
+  }
+
   return (
     <>
       {!metrics.isScoped ? <PageInsightBanner insight={headlineNote} /> : null}
@@ -241,24 +249,32 @@ export function InteractiveOverview({
           label="HOS-ready now"
           value={metrics.tier1Count}
           description="Tier 1"
+          href={facilitiesHref("Tier 1 — HOS-Ready")}
+          linkLabel="View Tier 1 facilities"
         />
         <KpiMetric
           icon={Zap}
           label="Quick wins"
           value={metrics.quickWinsExpanded}
           description={`1 blocker · ≥65%${metrics.quickWinsClassic !== metrics.quickWinsExpanded ? ` (${metrics.quickWinsClassic} total)` : ""}`}
+          href="/quick-wins"
+          linkLabel="View quick wins"
         />
         <KpiMetric
           icon={Target}
           label="Tier 2"
           value={metrics.deploymentEligible + metrics.structuredRemediation}
           description="Deployment-eligible · no blockers"
+          href={facilitiesHref("tier-2")}
+          linkLabel="View Tier 2 facilities"
         />
         <KpiMetric
           icon={Ban}
           label="Tier 3 blocked"
           value={metrics.blocked_count}
           description="Tier 3 · blockers"
+          href="/blockers"
+          linkLabel="View deployment blockers"
         />
         <KpiMetric
           icon={Gauge}
@@ -269,6 +285,8 @@ export function InteractiveOverview({
               ? `${formatAxisTick(metrics.weakestDomain.value, 2)}/3 avg`
               : undefined
           }
+          href="#drf-domains"
+          linkLabel="Jump to domain scores"
         />
       </div>
 
@@ -279,11 +297,15 @@ export function InteractiveOverview({
           label="Assessed"
           value={metrics.assessedDisplay}
           description={metrics.assessedDescription}
+          href={facilitiesHref()}
+          linkLabel="View all facilities"
         />
         <KpiMetric
           icon={Gauge}
           label="Avg readiness"
           value={metrics.avg_score != null ? formatPercentLabel(metrics.avg_score, 0) : "—"}
+          href={facilitiesHref()}
+          linkLabel="View facilities by readiness"
         />
         <KpiMetric
           icon={MessageSquareHeart}
@@ -298,6 +320,8 @@ export function InteractiveOverview({
               ? `${metrics.sentiment_responses} responses`
               : undefined
           }
+          href="/sentiment"
+          linkLabel="View staff sentiment"
         />
         <KpiMetric
           icon={GraduationCap}
@@ -313,6 +337,8 @@ export function InteractiveOverview({
           ]
             .filter((line): line is string => line != null)
             .join(" · ")}
+          href="/dla"
+          linkLabel="View digital literacy assessment"
         />
       </div>
 
@@ -361,7 +387,7 @@ export function InteractiveOverview({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 mb-8">
+      <div id="drf-domains" className="grid grid-cols-1 gap-4 lg:grid-cols-2 mb-8 scroll-mt-24">
         <DomainBarCard
           domainAverages={metrics.domain_averages}
           title={

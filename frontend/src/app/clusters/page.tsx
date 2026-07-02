@@ -19,18 +19,16 @@ export const metadata: Metadata = pageMetadata({
 export default async function ClustersPage() {
   let error: string | null = null
   let clusters: Awaited<ReturnType<typeof getPublicClusters>>["clusters"] = []
-  let clusterCount = PROGRAMME_CLUSTERS.length
 
   try {
     const clusterData = await getPublicClusters()
     clusters = clusterData.clusters
-    clusterCount = clusterData.clusters.length
   } catch (e: unknown) {
     error = e instanceof Error ? e.message : "Failed to load clusters data"
   }
 
   return (
-    <PublicShell title="Clusters" assessed={clusterCount} target={PROGRAMME_CLUSTERS.length}>
+    <PublicShell title="Clusters" assessed={clusters.length} target={PROGRAMME_CLUSTERS.length}>
       {error ? <ErrorBanner message={error} /> : null}
       {!error ? (
         <>

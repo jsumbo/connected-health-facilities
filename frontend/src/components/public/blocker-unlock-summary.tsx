@@ -3,6 +3,7 @@ import type { BlockerSummary, ProgrammeFacility } from "@/lib/types-public"
 import { getBlockerCode } from "@/lib/quick-wins"
 import { blockerDisplayLabel } from "@/lib/blockers"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 interface BlockerUnlockSummaryProps {
   blockers: BlockerSummary[]
@@ -42,27 +43,32 @@ export function BlockerUnlockSummary({ blockers, facilities }: BlockerUnlockSumm
             facilities listed below.
           </p>
         ) : null}
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 items-stretch gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {sorted.slice(0, 6).map((blocker) => {
             const unlock = unlockCountForBlocker(facilities, blocker.code)
+            const label = blockerDisplayLabel(blocker.code, blocker.description)
             return (
-              <div
+              <Link
                 key={blocker.code}
-                className="flex items-center justify-between rounded-md border border-border bg-muted/20 px-3 py-2"
+                href={`/blockers#${encodeURIComponent(blocker.code)}`}
+                aria-label={`View ${label} blocker details`}
+                className={cn(
+                  "flex h-full items-center justify-between rounded-md border border-border bg-muted/20 px-3 py-2",
+                  "transition-colors hover:border-primary/30 hover:bg-muted/40",
+                  "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                )}
               >
                 <div className="min-w-0 pr-2">
-                  <p className="text-xs font-semibold text-foreground">
-                    {blockerDisplayLabel(blocker.code, blocker.description)}
-                  </p>
+                  <p className="text-xs font-semibold text-foreground">{label}</p>
                   <p className="truncate text-[10px] text-muted-foreground">
                     {blocker.count} facilities
                   </p>
                 </div>
-                <div className="text-right shrink-0">
+                <div className="shrink-0 text-right">
                   <p className="text-lg font-bold tabular-nums text-emerald-600">{unlock}</p>
                   <p className="text-[10px] text-muted-foreground">if cleared alone</p>
                 </div>
-              </div>
+              </Link>
             )
           })}
         </div>

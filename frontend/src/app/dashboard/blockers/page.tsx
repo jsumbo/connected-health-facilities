@@ -61,7 +61,7 @@ export default async function BlockersPage({
         {register.map((blocker) => {
           const unlockCount = unlockCountForBlocker(facilities, blocker.code)
           return (
-            <Card key={blocker.code} className="shadow-none">
+            <Card key={blocker.code} id={blocker.code} className="scroll-mt-24 shadow-none">
               <CardContent className="flex items-center justify-between py-4">
                 <div>
                   <p className="font-semibold">{blockerDisplayLabel(blocker.code, blocker.description)}</p>

@@ -32,7 +32,7 @@ export function KpiMetric({
   const card = (
     <Card
       className={cn(
-        "shadow-none",
+        "flex h-full flex-col shadow-none",
         href && "transition-colors group-hover/card:bg-muted/30 group-hover/card:ring-primary/25",
         className
       )}
@@ -47,19 +47,25 @@ export function KpiMetric({
           {label}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-1">
+      <CardContent className="flex flex-1 flex-col gap-1">
         <p className="font-sans text-2xl font-semibold tabular-nums tracking-tight text-foreground">
           {value}
         </p>
-        {descriptionLines.length > 0 ? (
-          <div className="flex flex-col gap-0.5">
-            {descriptionLines.map((line) => (
-              <p key={line} className="text-xs text-muted-foreground">
-                {line}
-              </p>
-            ))}
-          </div>
-        ) : null}
+        <div className="mt-auto min-h-10 pt-1">
+          {descriptionLines.length > 0 ? (
+            <div className="flex flex-col gap-0.5">
+              {descriptionLines.map((line) => (
+                <p key={line} className="text-xs leading-snug text-muted-foreground line-clamp-2">
+                  {line}
+                </p>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs leading-snug text-transparent select-none" aria-hidden>
+              &nbsp;
+            </p>
+          )}
+        </div>
       </CardContent>
     </Card>
   )
@@ -70,7 +76,7 @@ export function KpiMetric({
     <Link
       href={href}
       aria-label={linkLabel ?? `View ${label}`}
-      className="group/card block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      className="group/card block h-full rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       {card}
     </Link>

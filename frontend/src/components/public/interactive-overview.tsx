@@ -240,12 +240,12 @@ export function InteractiveOverview({
       </div>
 
       {/* Decision-first KPIs (existing metrics retained below) */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5 mb-4">
+      <div className="mb-4 grid grid-cols-2 items-stretch gap-3 md:grid-cols-3 lg:grid-cols-5">
         <KpiMetric
           icon={ShieldCheck}
-          label="HOS-ready now"
+          label="Tier 1"
           value={metrics.tier1Count}
-          description="Tier 1"
+          description="HOS-Ready"
           href={facilitiesHref("Tier 1 — HOS-Ready")}
           linkLabel="View Tier 1 facilities"
         />
@@ -288,12 +288,12 @@ export function InteractiveOverview({
       </div>
 
       {/* Secondary KPIs — preserved from original overview */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6 mb-8">
+      <div className="mb-8 grid grid-cols-2 items-stretch gap-3 sm:grid-cols-4">
         <KpiMetric
           icon={ClipboardCheck}
           label="Assessed"
           value={metrics.assessedDisplay}
-          description={metrics.assessedDescription}
+          description={metrics.assessedDescription ?? "Facilities complete"}
           href={facilitiesHref()}
           linkLabel="View all facilities"
         />
@@ -301,6 +301,7 @@ export function InteractiveOverview({
           icon={Gauge}
           label="Avg readiness"
           value={metrics.avg_score != null ? formatPercentLabel(metrics.avg_score, 0) : "—"}
+          description="National composite"
           href={facilitiesHref()}
           linkLabel="View facilities by readiness"
         />
@@ -315,7 +316,7 @@ export function InteractiveOverview({
           description={
             metrics.sentiment_responses != null
               ? `${metrics.sentiment_responses} responses`
-              : undefined
+              : "Survey average"
           }
           href="/sentiment"
           linkLabel="View staff sentiment"
@@ -327,13 +328,11 @@ export function InteractiveOverview({
             metrics.dla_avg != null ? `${formatAxisTick(metrics.dla_avg, 1)}/100` : "—"
           }
           description={[
-            metrics.dla_responses != null ? `${metrics.dla_responses} responses` : null,
+            metrics.dla_responses != null ? `${metrics.dla_responses} responses` : "Assessment average",
             !metrics.isScoped && weakestDla
-              ? `Weakest: Q${weakestDla.questionNumber} ${Math.round(weakestDla.correctRate)}%`
+              ? `Weakest · Q${weakestDla.questionNumber} ${Math.round(weakestDla.correctRate)}%`
               : null,
-          ]
-            .filter((line): line is string => line != null)
-            .join(" · ")}
+          ].filter((line): line is string => line != null)}
           href="/dla"
           linkLabel="View digital literacy assessment"
         />

@@ -32,10 +32,10 @@
     --radius: 0.5rem;
     --sidebar: #80a2b4;
     --sidebar-foreground: oklch(0.25 0.04 255);
-    --sidebar-primary: oklch(0.72 0.12 75);
-    --sidebar-primary-foreground: oklch(0.22 0.04 255);
-    --sidebar-accent: oklch(0.72 0.04 230);
-    --sidebar-accent-foreground: oklch(0.22 0.04 255);
+    --sidebar-primary: #0f2144;
+    --sidebar-primary-foreground: oklch(0.98 0.01 85);
+    --sidebar-accent: oklch(0.92 0.02 230);
+    --sidebar-accent-foreground: oklch(0.25 0.04 255);
     --sidebar-border: oklch(0.55 0.04 230);
     --sidebar-ring: oklch(0.55 0.08 255);
   }

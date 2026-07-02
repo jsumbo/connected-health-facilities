@@ -20,6 +20,9 @@ const config: Config = {
           light: "#1a3360",
           dark: "#091729",
         },
+        shell: {
+          DEFAULT: "#80a2b4",
+        },
         teal: {
           DEFAULT: "#00ccff",
           light: "#33d9ff",

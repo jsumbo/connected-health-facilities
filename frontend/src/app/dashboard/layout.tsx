@@ -15,7 +15,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen bg-slate-50">
-      <Suspense fallback={<aside className="fixed left-0 top-0 h-full w-64 bg-navy" />}>
+      <Suspense fallback={<aside className="fixed left-0 top-0 h-full w-64 bg-shell" />}>
         <Sidebar />
       </Suspense>
       <main className="flex-1 ml-64 p-8 overflow-auto">

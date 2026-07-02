@@ -35,13 +35,13 @@ export function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-navy flex items-center justify-center px-4">
+    <div className="min-h-screen bg-shell flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="mb-4 flex justify-center">
             <BrandLogo imageClassName="mx-auto h-12 max-w-[220px]" priority />
           </div>
-          <p className="text-slate-400 text-sm mt-1">Internal dashboard access</p>
+          <p className="text-slate-700 text-sm mt-1">Internal dashboard access</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8">

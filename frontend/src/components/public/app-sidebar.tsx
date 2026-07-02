@@ -40,8 +40,8 @@ export function AppSidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="fixed left-0 top-0 z-20 flex h-full w-64 flex-col bg-navy">
-      <div className="border-b border-white/10 px-6 py-6">
+    <aside className="fixed left-0 top-0 z-20 flex h-full w-64 flex-col bg-shell">
+      <div className="border-b border-black/10 px-6 py-6">
         <BrandLogo href="/" priority />
       </div>
 
@@ -52,7 +52,7 @@ export function AppSidebar() {
 
           return (
             <div key={section}>
-              <p className="mb-2 px-4 text-xs font-semibold uppercase text-slate-500">{section}</p>
+              <p className="mb-2 px-4 text-xs font-semibold uppercase text-slate-600">{section}</p>
               <div className="space-y-1">
                 {sectionItems.map((item) => {
                   const { href, label, icon: Icon } = item
@@ -66,7 +66,7 @@ export function AppSidebar() {
                         "flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors",
                         active
                           ? "bg-teal text-white"
-                          : "text-slate-400 hover:bg-white/10 hover:text-white"
+                          : "text-slate-700 hover:bg-black/10 hover:text-slate-900"
                       )}
                     >
                       <Icon className="h-4 w-4 shrink-0" />
@@ -80,8 +80,8 @@ export function AppSidebar() {
         })}
       </nav>
 
-      <div className="border-t border-white/10 px-4 pb-6 pt-4">
-        <p className="px-4 text-xs text-slate-500">
+      <div className="border-t border-black/10 px-4 pb-6 pt-4">
+        <p className="px-4 text-xs text-slate-600">
           Ministry of Health · NHIC
           <br />
           Sand Technologies

@@ -31,7 +31,7 @@ interface QuickWinsScatterProps {
   note?: string
 }
 
-const CATEGORIES: ScatterTierCategory[] = ["tier1", "tier2", "remediation", "tier3"]
+const CATEGORIES: ScatterTierCategory[] = ["tier1", "tier2", "tier3"]
 
 function jitterFromSlug(slug: string): number {
   let hash = 0
@@ -81,8 +81,7 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
         <ResponsiveContainer width="100%" height={360}>
           <ScatterChart margin={{ top: 16, right: 28, bottom: 32, left: 12 }}>
             <ReferenceArea y1={75} y2={90} fill="#3e8343" fillOpacity={0.06} />
-            <ReferenceArea y1={55} y2={75} fill="#355781" fillOpacity={0.06} />
-            <ReferenceArea y1={30} y2={55} fill="#b67700" fillOpacity={0.05} />
+            <ReferenceArea y1={30} y2={75} fill="#355781" fillOpacity={0.06} />
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis
               type="number"

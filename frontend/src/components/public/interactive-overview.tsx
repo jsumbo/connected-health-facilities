@@ -250,9 +250,9 @@ export function InteractiveOverview({
         />
         <KpiMetric
           icon={Target}
-          label="Targeted investment"
-          value={metrics.deploymentEligible}
-          description="Deployment-Eligible with Targeted Investment"
+          label="Tier 2"
+          value={metrics.deploymentEligible + metrics.structuredRemediation}
+          description="Deployment-eligible · no blockers"
         />
         <KpiMetric
           icon={Ban}

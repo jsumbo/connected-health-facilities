@@ -6,7 +6,6 @@ const HOSPITAL_PATHS =
 
 export function tierMarkerColor(tier: string): string {
   if (tier.startsWith("Tier 1")) return "#3e8343"
-  if (tier.startsWith("Tier 2") && tier.includes("Structured Remediation")) return "#b67700"
   if (tier.startsWith("Tier 2")) return "#355781"
   if (tier.startsWith("Tier 3") || tier.startsWith("Tier 4")) return "#c64e31"
   if (tier === "Not Assessed") return "#8b8b8b"
@@ -16,7 +15,6 @@ export function tierMarkerColor(tier: string): string {
 /** Short tier label — secondary encoding for colorblind users. */
 export function tierMarkerLabel(tier: string): string {
   if (tier.startsWith("Tier 1")) return "T1"
-  if (tier.startsWith("Tier 2") && tier.includes("Structured Remediation")) return "T2R"
   if (tier.startsWith("Tier 2")) return "T2"
   if (tier.startsWith("Tier 3") || tier.startsWith("Tier 4")) return "T3"
   return "—"

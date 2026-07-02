@@ -1,10 +1,6 @@
 import type { ProgrammeFacility } from "@/lib/types-public"
 
-export type ScatterTierCategory =
-  | "tier1"
-  | "tier2"
-  | "remediation"
-  | "tier3"
+export type ScatterTierCategory = "tier1" | "tier2" | "tier3"
 
 export interface ScatterPoint {
   slug: string
@@ -18,26 +14,29 @@ export interface ScatterPoint {
 export const SCATTER_TIER_COLORS: Record<ScatterTierCategory, string> = {
   tier1: "#3e8343",
   tier2: "#355781",
-  remediation: "#b67700",
   tier3: "#c64e31",
 }
 
 export const SCATTER_TIER_LABELS: Record<ScatterTierCategory, string> = {
   tier1: "Tier 1",
-  tier2: "T2 eligible",
-  remediation: "Remediation",
+  tier2: "Tier 2",
   tier3: "T3 blocked",
 }
 
 export function classifyScatterPoint(facility: ProgrammeFacility): ScatterTierCategory | null {
-  const score = facility.overall_score
-  if (score == null) return null
+  if (facility.assessment_status !== "complete" || facility.overall_score == null) return null
+
+  const tier = facility.tier ?? ""
   const blockers = facility.blockers?.length ?? 0
 
+  if (tier.startsWith("Tier 3") || tier.startsWith("Tier 4") || blockers >= 1) return "tier3"
+  if (tier.startsWith("Tier 1")) return "tier1"
+  if (tier.startsWith("Tier 2")) return "tier2"
+
+  const score = facility.overall_score
   if (blockers >= 1) return "tier3"
   if (score >= 75) return "tier1"
-  if (score >= 55) return "tier2"
-  return "remediation"
+  return "tier2"
 }
 
 export function buildScatterPoints(facilities: ProgrammeFacility[]): ScatterPoint[] {

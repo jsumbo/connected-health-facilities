@@ -10,7 +10,6 @@ import {
 function tierCategoryKey(category: ScatterTierCategory): string {
   if (category === "tier1") return "T1"
   if (category === "tier2") return "T2"
-  if (category === "remediation") return "T2R"
   return "T3"
 }
 

@@ -61,6 +61,8 @@ export function pageMetadata({
   }
 }
 
+export const SAND_FAVICON_SRC = "/SAND Logo Icon-05.png"
+
 export const rootMetadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
@@ -96,9 +98,9 @@ export const rootMetadata: Metadata = {
     images: ["/opengraph-image"],
   },
   icons: {
-    icon: "/icons/favicon.png",
-    shortcut: "/icons/favicon.png",
-    apple: "/icons/icon.png",
+    icon: SAND_FAVICON_SRC,
+    shortcut: SAND_FAVICON_SRC,
+    apple: SAND_FAVICON_SRC,
   },
   themeColor: "#0a0a0a",
 }

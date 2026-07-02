@@ -1,8 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
 import { usePathname } from "next/navigation"
+import { BrandLogo } from "@/components/public/brand-logo"
 import {
   Activity,
   AlertTriangle,
@@ -42,19 +42,7 @@ export function AppSidebar() {
   return (
     <aside className="fixed left-0 top-0 z-20 flex h-full w-64 flex-col bg-navy">
       <div className="border-b border-white/10 px-6 py-6">
-        <Link href="/" className="flex items-center gap-3">
-          <Image
-            src="/icons/icon.png"
-            alt="DatFlow"
-            width={36}
-            height={36}
-            className="shrink-0 rounded-xl"
-          />
-          <div>
-            <p className="text-sm font-semibold leading-tight text-white">DatFlow</p>
-            <p className="text-xs text-slate-400">Readiness dashboard</p>
-          </div>
-        </Link>
+        <BrandLogo href="/" priority />
       </div>
 
       <nav className="flex-1 space-y-6 overflow-y-auto px-4 py-6">

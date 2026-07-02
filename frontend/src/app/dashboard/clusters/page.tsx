@@ -1,8 +1,8 @@
-import { getPublicClusters, getPublicFacilities } from "@/lib/public-api"
+import { getPublicClusters } from "@/lib/public-api"
 import { parseDashboardScope } from "@/lib/dashboard-scope"
 import { ClustersClient } from "@/components/public/clusters-client"
 import { PageHeader } from "@/components/public/page-header"
-import { CLUSTER_DEFINITION } from "@/lib/clusters"
+import { CLUSTER_DEFINITION, PROGRAMME_CLUSTERS } from "@/lib/clusters"
 
 export const dynamic = "force-dynamic"
 
@@ -16,24 +16,17 @@ export default async function ClustersPage({
   searchParams: Promise<{ facility_type?: string }>
 }) {
   const sp = await searchParams
-  const { facilityTypeQuery, facilityTypeLabel } = parseDashboardScope(sp)
+  const { facilityTypeLabel } = parseDashboardScope(sp)
 
   try {
-    const [clusterData, facilitiesData] = await Promise.all([
-      getPublicClusters(),
-      getPublicFacilities(facilityTypeQuery),
-    ])
-
-    const assessedCount = facilitiesData.items.filter(
-      (f) => f.assessment_status === "complete"
-    ).length
+    const clusterData = await getPublicClusters()
 
     return (
       <>
         <PageHeader
           title="Clusters"
-          assessed={assessedCount}
-          target={facilitiesData.total}
+          assessed={clusterData.clusters.length}
+          target={PROGRAMME_CLUSTERS.length}
         />
         <p className="mb-4 text-sm leading-relaxed text-muted-foreground">{CLUSTER_DEFINITION}</p>
         {facilityTypeLabel ? (

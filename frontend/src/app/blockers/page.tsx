@@ -2,9 +2,9 @@ import type { Metadata } from "next"
 import { pageMetadata } from "@/lib/site-metadata"
 import { BlockerBarCard } from "@/components/public/blocker-bar-chart"
 import { BlockerClusterHeatmap } from "@/components/public/blocker-cluster-heatmap"
+import { SingleBlockerUnlocksList } from "@/components/public/single-blocker-unlocks-list"
 import { ErrorBanner } from "@/components/public/error-banner"
 import { PublicShell } from "@/components/public/PublicShell"
-import { unlockCountForBlocker, blockerDisplayLabel } from "@/lib/blockers"
 import { getPublicOverview, getPublicFacilities } from "@/lib/public-api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartNote } from "@/components/public/chart-note"
@@ -62,29 +62,7 @@ export default async function BlockersPage() {
             </CardContent>
           </Card>
 
-          <div className="space-y-2">
-            <h2 className="text-base font-semibold">Single-blocker unlocks</h2>
-            <p className="text-sm text-muted-foreground">
-              Tier 3 facilities with exactly one blocker — clearing that item moves them out of the blocked set.
-            </p>
-            {register.map((blocker) => {
-              const unlockCount = unlockCountForBlocker(facilities, blocker.code)
-              return (
-                <Card key={blocker.code} id={blocker.code} className="scroll-mt-24 shadow-none">
-                  <CardContent className="flex items-center justify-between py-4">
-                    <div>
-                      <p className="font-semibold">{blockerDisplayLabel(blocker.code, blocker.description)}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {blocker.count} {blocker.count === 1 ? "facility" : "facilities"} ·{" "}
-                        {unlockCount} single-blocker unlock{unlockCount === 1 ? "" : "s"}
-                      </p>
-                    </div>
-                    <p className="text-2xl font-bold tabular-nums text-emerald-600">{unlockCount}</p>
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </div>
+          <SingleBlockerUnlocksList register={register} facilities={facilities} />
         </div>
       ) : null}
     </PublicShell>

@@ -5,8 +5,8 @@ import { PageInsightBanner } from "@/components/public/page-insight-banner"
 import { buildClustersPageNote } from "@/lib/dashboard-notes"
 import { ErrorBanner } from "@/components/public/error-banner"
 import { PublicShell } from "@/components/public/PublicShell"
-import { getPublicClusters, getPublicFacilities } from "@/lib/public-api"
-import { CLUSTER_DEFINITION } from "@/lib/clusters"
+import { getPublicClusters } from "@/lib/public-api"
+import { CLUSTER_DEFINITION, PROGRAMME_CLUSTERS } from "@/lib/clusters"
 
 export const dynamic = "force-dynamic"
 
@@ -19,23 +19,18 @@ export const metadata: Metadata = pageMetadata({
 export default async function ClustersPage() {
   let error: string | null = null
   let clusters: Awaited<ReturnType<typeof getPublicClusters>>["clusters"] = []
-  let assessedCount = 0
-  let targetCount = 37
+  let clusterCount = PROGRAMME_CLUSTERS.length
 
   try {
-    const [clusterData, facilitiesData] = await Promise.all([
-      getPublicClusters(),
-      getPublicFacilities(),
-    ])
+    const clusterData = await getPublicClusters()
     clusters = clusterData.clusters
-    targetCount = facilitiesData.total
-    assessedCount = facilitiesData.items.filter((f) => f.assessment_status === "complete").length
+    clusterCount = clusterData.clusters.length
   } catch (e: unknown) {
     error = e instanceof Error ? e.message : "Failed to load clusters data"
   }
 
   return (
-    <PublicShell title="Clusters" assessed={assessedCount} target={targetCount}>
+    <PublicShell title="Clusters" assessed={clusterCount} target={PROGRAMME_CLUSTERS.length}>
       {error ? <ErrorBanner message={error} /> : null}
       {!error ? (
         <>

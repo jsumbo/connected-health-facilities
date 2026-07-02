@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import { BrandLogo } from "@/components/public/brand-logo";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Building2,
@@ -60,19 +60,7 @@ export default function Sidebar() {
     <aside className="fixed left-0 top-0 h-full w-64 bg-navy flex flex-col z-10">
       {/* Logo */}
       <div className="px-6 py-6 border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <Image
-            src="/icons/icon.png"
-            alt="DatFlow"
-            width={36}
-            height={36}
-            className="rounded-xl flex-shrink-0"
-          />
-          <div>
-            <p className="text-white font-semibold text-sm leading-tight">DatFlow</p>
-            <p className="text-slate-400 text-xs">Dashboard</p>
-          </div>
-        </div>
+        <BrandLogo href="/dashboard" priority />
       </div>
 
       {/* Nav */}

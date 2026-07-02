@@ -53,16 +53,40 @@ export function formatBlockerLine(
   return { code, label: blockerShortLabel(code, remediation) }
 }
 
+export function facilityHasBlocker(
+  facility: Pick<ProgrammeFacility, "blockers" | "blocker_codes">,
+  code: string
+): boolean {
+  if (facility.blocker_codes?.includes(code)) return true
+  return facility.blockers.some((blocker) => getBlockerCode(blocker) === code)
+}
+
+export function facilitiesWithBlocker(
+  facilities: ProgrammeFacility[],
+  code: string
+): ProgrammeFacility[] {
+  return facilities
+    .filter((facility) => facilityHasBlocker(facility, code))
+    .sort((a, b) => a.name.localeCompare(b.name))
+}
+
+export function singleBlockerUnlockFacilities(
+  facilities: ProgrammeFacility[],
+  code: string
+): ProgrammeFacility[] {
+  return facilities.filter(
+    (facility) =>
+      facility.tier === "Tier 3 — Not Deployment-Ready" &&
+      facility.blockers.length === 1 &&
+      getBlockerCode(facility.blockers[0]) === code
+  )
+}
+
 export function unlockCountForBlocker(
   facilities: ProgrammeFacility[],
   code: string
 ): number {
-  return facilities.filter(
-    (f) =>
-      f.tier === "Tier 3 — Not Deployment-Ready" &&
-      f.blockers.length === 1 &&
-      getBlockerCode(f.blockers[0]) === code
-  ).length
+  return singleBlockerUnlockFacilities(facilities, code).length
 }
 
 export function buildBlockerInsight(

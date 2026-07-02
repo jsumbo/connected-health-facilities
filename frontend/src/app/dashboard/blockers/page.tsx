@@ -3,8 +3,8 @@ import { parseDashboardScope } from "@/lib/dashboard-scope"
 import { buildBlockerRegister } from "@/lib/overview-stats"
 import { BlockerBarCard } from "@/components/public/blocker-bar-chart"
 import { BlockerClusterHeatmap } from "@/components/public/blocker-cluster-heatmap"
+import { SingleBlockerUnlocksList } from "@/components/public/single-blocker-unlocks-list"
 import { PageHeader } from "@/components/public/page-header"
-import { unlockCountForBlocker, blockerDisplayLabel } from "@/lib/blockers"
 import { CLUSTER_DEFINITION } from "@/lib/clusters"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -56,26 +56,7 @@ export default async function BlockersPage({
         </CardContent>
       </Card>
 
-      <div className="space-y-2">
-        <h2 className="text-base font-semibold">Single-blocker unlocks</h2>
-        {register.map((blocker) => {
-          const unlockCount = unlockCountForBlocker(facilities, blocker.code)
-          return (
-            <Card key={blocker.code} id={blocker.code} className="scroll-mt-24 shadow-none">
-              <CardContent className="flex items-center justify-between py-4">
-                <div>
-                  <p className="font-semibold">{blockerDisplayLabel(blocker.code, blocker.description)}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {blocker.count} {blocker.count === 1 ? "facility" : "facilities"} ·{" "}
-                    {unlockCount} single-blocker unlock{unlockCount === 1 ? "" : "s"}
-                  </p>
-                </div>
-                <p className="text-2xl font-bold tabular-nums text-emerald-600">{unlockCount}</p>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
+      <SingleBlockerUnlocksList register={register} facilities={facilities} />
     </div>
   )
 }

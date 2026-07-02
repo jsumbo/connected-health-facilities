@@ -10,7 +10,7 @@ export const PROGRAMME_CLUSTERS = [
 
 /** Shared copy for cluster explainer text across dashboard views. */
 export const CLUSTER_DEFINITION =
-  "Cluster — a grouping of neighbouring counties used for field assessment and rollout sequencing"
+  "Cluster: a grouping of neighbouring counties used for field assessment and rollout sequencing."
 
 export type ProgrammeCluster = (typeof PROGRAMME_CLUSTERS)[number]
 

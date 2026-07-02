@@ -155,7 +155,7 @@ export function buildQuickWinsQueueNote(
   if (!wins.length) return "The ranked queue lists fixable sites once they meet the view criteria."
 
   return mode === "expanded"
-    ? "Sorted by composite score. Each row shows the one blocker to clear and the remediation path from the TRIBE register."
+    ? "Sorted by composite score. Each row shows the one blocker to clear and the remediation path from the register."
     : "All Tier 3 facilities with exactly one blocker, regardless of composite score."
 }
 
@@ -313,7 +313,7 @@ export function buildFacilitiesTableNote(
   if (hasFilters) {
     return `${count} facilities match the current filters. Sort columns, search by name or cluster, or export CSV for offline review.`
   }
-  return `${count} programme facilities. Sort columns, search by name or cluster, or export CSV. Named blockers show deployment constraints at a glance.`
+  return `${count} programme health facilities. Sort columns, search by name or cluster, or export CSV. Named blockers show deployment constraints at a glance.`
 }
 
 export function buildComparePanelNote(): string {

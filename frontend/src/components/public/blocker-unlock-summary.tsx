@@ -1,25 +1,12 @@
 import Link from "next/link"
 import type { BlockerSummary, ProgrammeFacility } from "@/lib/types-public"
-import { getBlockerCode } from "@/lib/quick-wins"
-import { blockerDisplayLabel } from "@/lib/blockers"
+import { blockerDisplayLabel, unlockCountForBlocker } from "@/lib/blockers"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 interface BlockerUnlockSummaryProps {
   blockers: BlockerSummary[]
   facilities: ProgrammeFacility[]
-}
-
-function unlockCountForBlocker(
-  facilities: ProgrammeFacility[],
-  code: string
-): number {
-  return facilities.filter(
-    (f) =>
-      f.tier === "Tier 3 — Not Deployment-Ready" &&
-      f.blockers.length === 1 &&
-      getBlockerCode(f.blockers[0]) === code
-  ).length
 }
 
 export function BlockerUnlockSummary({ blockers, facilities }: BlockerUnlockSummaryProps) {

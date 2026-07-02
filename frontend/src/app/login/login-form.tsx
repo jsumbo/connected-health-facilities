@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import Image from "next/image"
+import { BrandLogo } from "@/components/public/brand-logo"
 import { loginRequest } from "@/lib/api"
 
 export function LoginForm() {
@@ -38,17 +38,9 @@ export function LoginForm() {
     <div className="min-h-screen bg-navy flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <Image
-              src="/icons/icon.png"
-              alt="DatFlow"
-              width={64}
-              height={64}
-              className="rounded-2xl"
-              priority
-            />
+          <div className="mb-4 flex justify-center">
+            <BrandLogo imageClassName="mx-auto h-12 max-w-[220px]" priority />
           </div>
-          <h1 className="text-2xl font-bold text-white">DatFlow Admin</h1>
           <p className="text-slate-400 text-sm mt-1">Internal dashboard access</p>
         </div>
 

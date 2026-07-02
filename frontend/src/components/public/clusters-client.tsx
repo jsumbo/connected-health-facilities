@@ -50,11 +50,16 @@ export function ClustersClient({ clusters }: ClustersClientProps) {
                       {cluster.region ? (
                         <p className="text-xs text-muted-foreground">{cluster.region}</p>
                       ) : null}
-                      <div className="mt-2 flex gap-3 text-xs">
+                      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
                         <span className="text-slate-600">{cluster.facility_count} facilities</span>
-                        <span className="font-medium text-emerald-600">T1 {tier1}</span>
-                        <span className="font-medium text-blue-600">T2 {tier2}</span>
-                        <span className="font-medium text-red-600">T3 {tier3}</span>
+                        <span className="font-medium tabular-nums">
+                          <span className="text-emerald-600">T1: {tier1}</span>
+                          <span className="text-slate-400"> | </span>
+                          <span className="text-blue-600">T2: {tier2}</span>
+                          <span className="text-slate-400"> | </span>
+                          <span className="text-red-600">T3: {tier3}</span>
+                          <span className="text-slate-400"> |</span>
+                        </span>
                       </div>
                     </div>
                     <p className="text-3xl font-bold tabular-nums text-slate-900">

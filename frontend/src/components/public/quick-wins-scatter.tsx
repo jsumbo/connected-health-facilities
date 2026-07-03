@@ -28,6 +28,7 @@ import {
 } from "@/lib/format-number"
 import {
   COMPOSITE_SCATTER_CHART_MARGIN,
+  CompositeScatterChartFrame,
   CompositeScatterYAxis,
 } from "@/components/public/composite-scatter-y-axis"
 import { ChartNote } from "@/components/public/chart-note"
@@ -78,7 +79,7 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
   const maxBlockers = Math.max(...points.map((p) => p.blockers), 3)
 
   return (
-    <Card className="shadow-none">
+    <Card className="overflow-visible shadow-none">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Composite vs blockers</CardTitle>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{QUICK_WINS_CHART_INTRO}</p>
@@ -112,8 +113,9 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
         <p className="mb-3 text-xs text-muted-foreground">
           Weighted DRF composite (0–100%) vs deployment blockers · hover a point for facility details
         </p>
-        <ResponsiveContainer width="100%" height={360}>
-          <ScatterChart margin={COMPOSITE_SCATTER_CHART_MARGIN}>
+        <CompositeScatterChartFrame height={360}>
+          <ResponsiveContainer width="100%" height={360}>
+            <ScatterChart margin={COMPOSITE_SCATTER_CHART_MARGIN}>
             <ReferenceArea y1={75} y2={90} fill="#f54343" fillOpacity={0.06} />
             <ReferenceArea y1={30} y2={75} fill="#0f0f0f" fillOpacity={0.06} />
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -190,8 +192,9 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
                 style={{ cursor: "pointer" }}
               />
             ))}
-          </ScatterChart>
-        </ResponsiveContainer>
+            </ScatterChart>
+          </ResponsiveContainer>
+        </CompositeScatterChartFrame>
 
         {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>

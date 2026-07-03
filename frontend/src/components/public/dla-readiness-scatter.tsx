@@ -27,6 +27,7 @@ import {
 } from "@/lib/format-number"
 import {
   COMPOSITE_SCATTER_CHART_MARGIN,
+  CompositeScatterChartFrame,
   CompositeScatterYAxis,
 } from "@/components/public/composite-scatter-y-axis"
 import { SCATTER_TIER_LABELS } from "@/lib/scatter-tier"
@@ -87,7 +88,7 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
   const tierLegendItems = TIER_LEGEND.filter((t) => tierGroups.some(([k]) => k === t.key))
 
   return (
-    <Card className="shadow-none">
+    <Card className="overflow-visible shadow-none">
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
@@ -121,8 +122,9 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
         </div>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={380}>
-          <ComposedChart margin={COMPOSITE_SCATTER_CHART_MARGIN}>
+        <CompositeScatterChartFrame height={380}>
+          <ResponsiveContainer width="100%" height={380}>
+            <ComposedChart margin={COMPOSITE_SCATTER_CHART_MARGIN}>
             <ReferenceArea y1={75} y2={95} fill="#f54343" fillOpacity={0.06} />
             <ReferenceArea y1={25} y2={75} fill="#0f0f0f" fillOpacity={0.06} />
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -213,8 +215,9 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
                 strokeWidth={1}
               />
             ))}
-          </ComposedChart>
-        </ResponsiveContainer>
+            </ComposedChart>
+          </ResponsiveContainer>
+        </CompositeScatterChartFrame>
 
         {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>

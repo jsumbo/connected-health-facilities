@@ -247,6 +247,7 @@ export function InteractiveOverview({
           label="Tier 1"
           value={metrics.tier1Count}
           description="HOS-Ready"
+          stackDescription
           href={facilitiesHref("Tier 1 — HOS-Ready")}
           linkLabel="View Tier 1 facilities"
         />
@@ -255,6 +256,7 @@ export function InteractiveOverview({
           label="Tier 2"
           value={metrics.deploymentEligible + metrics.structuredRemediation}
           description="Deployment-eligible · no blockers"
+          stackDescription
           href={facilitiesHref("tier-2")}
           linkLabel="View Tier 2 facilities"
         />
@@ -263,6 +265,7 @@ export function InteractiveOverview({
           label="Tier 3"
           value={metrics.blocked_count}
           description="Blocked · Blockers"
+          stackDescription
           href="/blockers"
           linkLabel="View deployment blockers"
         />
@@ -278,6 +281,7 @@ export function InteractiveOverview({
                 ]
               : `One blocker · ${QUICK_WIN_COMPOSITE_LABEL}`
           }
+          stackDescription
           href="/quick-wins"
           linkLabel="View quick wins"
         />

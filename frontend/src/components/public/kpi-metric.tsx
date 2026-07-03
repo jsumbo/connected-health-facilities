@@ -11,6 +11,8 @@ interface KpiMetricProps {
   className?: string
   href?: string
   linkLabel?: string
+  /** Keep subtitle directly under the value instead of pinning to card bottom. */
+  stackDescription?: boolean
 }
 
 export function KpiMetric({
@@ -21,6 +23,7 @@ export function KpiMetric({
   className,
   href,
   linkLabel,
+  stackDescription = false,
 }: KpiMetricProps) {
   const descriptionLines =
     description == null
@@ -51,7 +54,7 @@ export function KpiMetric({
         <p className="font-sans text-2xl font-semibold tabular-nums tracking-tight text-foreground">
           {value}
         </p>
-        <div className="mt-auto min-h-10 pt-1">
+        <div className={cn("pt-1", stackDescription ? "min-h-0" : "mt-auto min-h-10")}>
           {descriptionLines.length > 0 ? (
             <div className="flex flex-col gap-0.5">
               {descriptionLines.map((line) => (

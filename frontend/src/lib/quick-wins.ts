@@ -6,6 +6,8 @@ export const QUICK_WIN_MIN_COMPOSITE = 65
 export const QUICK_WIN_COMPOSITE_LABEL = "65%+ composite"
 export const QUICK_WIN_DEFINITION =
   "Tier 3 facility with exactly one deployment blocker and 65%+ composite readiness"
+export const QUICK_WINS_CHART_INTRO =
+  "Quick Wins: Facilities held back from deployment by exactly one blocker — the fastest, lowest-cost path to Tier 2 eligibility."
 
 export function getBlockerCode(blocker: ProgrammeFacility["blockers"][number]): string | null {
   if (typeof blocker === "string") return blocker

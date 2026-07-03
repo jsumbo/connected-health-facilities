@@ -240,8 +240,8 @@ export function InteractiveOverview({
         )}
       </div>
 
-      {/* Decision-first KPIs (existing metrics retained below) */}
-      <div className="mb-4 grid grid-cols-2 items-stretch gap-3 md:grid-cols-3 lg:grid-cols-5">
+      {/* Tier decision KPIs — keep tier cards adjacent (Tier 1 · 2 · 3 · Quick wins) */}
+      <div className="mb-3 grid grid-cols-2 items-stretch gap-3 lg:grid-cols-4">
         <KpiMetric
           icon={ShieldCheck}
           label="Tier 1"
@@ -281,6 +281,10 @@ export function InteractiveOverview({
           href="/quick-wins"
           linkLabel="View quick wins"
         />
+      </div>
+
+      {/* Secondary KPIs — preserved from original overview */}
+      <div className="mb-8 grid grid-cols-2 items-stretch gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <KpiMetric
           icon={Gauge}
           label="Weakest domain"
@@ -293,10 +297,6 @@ export function InteractiveOverview({
           href="#drf-domains"
           linkLabel="Jump to domain scores"
         />
-      </div>
-
-      {/* Secondary KPIs — preserved from original overview */}
-      <div className="mb-8 grid grid-cols-2 items-stretch gap-3 sm:grid-cols-4">
         <KpiMetric
           icon={ClipboardCheck}
           label="Assessed"

@@ -21,6 +21,7 @@ import {
   SCATTER_TIER_LABELS,
   type ScatterTierCategory,
 } from "@/lib/scatter-tier"
+import { QUICK_WINS_CHART_INTRO } from "@/lib/quick-wins"
 import { formatAxisIntegerTick, formatAxisPercentTick, formatPercentLabel, roundToDecimals } from "@/lib/format-number"
 import { ChartNote } from "@/components/public/chart-note"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -81,11 +82,12 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
     <Card className="shadow-none">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Composite vs blockers</CardTitle>
-        <p className="text-xs text-muted-foreground">
-          Weighted DRF composite (0–100%) vs deployment blockers · hover for details · toggle tiers in the legend
-        </p>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{QUICK_WINS_CHART_INTRO}</p>
       </CardHeader>
       <CardContent>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Weighted DRF composite (0–100%) vs deployment blockers · hover for details · toggle tiers in the legend
+        </p>
         <ResponsiveContainer width="100%" height={360}>
           <ScatterChart margin={{ top: 16, right: 28, bottom: 32, left: 20 }}>
             <ReferenceArea y1={75} y2={90} fill="#f54343" fillOpacity={0.06} />

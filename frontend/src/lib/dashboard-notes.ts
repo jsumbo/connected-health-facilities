@@ -7,7 +7,7 @@ import type {
   QuestionStat,
 } from "@/lib/types-public"
 import { unlockCountForBlocker, blockerDisplayLabel } from "@/lib/blockers"
-import { filterQuickWins, QUICK_WIN_COMPOSITE_LABEL, QUICK_WIN_DEFINITION } from "@/lib/quick-wins"
+import { filterQuickWins, QUICK_WIN_COMPOSITE_LABEL } from "@/lib/quick-wins"
 import { getTopBlocker, getWeakestDomain } from "@/lib/overview-insights"
 import type { DriverCorrelation } from "@/lib/readiness-drivers"
 import { formatCorrelationScore } from "@/lib/readiness-drivers"
@@ -134,19 +134,26 @@ export function buildClusterListNote(byCluster: PublicOverview["by_cluster"]): s
   return `${highest.cluster} leads on average digital readiness (${highest.avg_score != null ? `${Math.round(highest.avg_score)}%` : "—"}); ${lowest.cluster} is lowest (${lowest.avg_score != null ? `${Math.round(lowest.avg_score)}%` : "—"}). Each row links to facilities in that cluster.`
 }
 
+function formatFacilityNameList(names: readonly string[]): string {
+  if (names.length === 0) return ""
+  if (names.length === 1) return names[0]
+  if (names.length === 2) return `${names[0]} and ${names[1]}`
+  return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`
+}
+
 export function buildQuickWinsScatterNote(facilities: ProgrammeFacility[]): string {
   const wins = filterQuickWins(facilities, "expanded")
   if (!wins.length) {
-    return `Quick win: ${QUICK_WIN_DEFINITION}. None meet the threshold in this dataset.`
+    return "No facilities scored 65%+ with a single blocker in this dataset."
   }
 
-  const examples = [...wins]
+  const names = [...wins]
     .sort((a, b) => (b.overall_score ?? 0) - (a.overall_score ?? 0))
-    .slice(0, 3)
     .map((f) => f.name)
 
-  const exampleSuffix = examples.length ? ` Top scorers: ${examples.join(", ")}.` : ""
-  return `Quick win: ${QUICK_WIN_DEFINITION}. ${wins.length} ${wins.length === 1 ? "site qualifies" : "sites qualify"} — upper-right on the chart.${exampleSuffix}`
+  const count = wins.length
+  const facilityWord = count === 1 ? "facility" : "facilities"
+  return `${count} ${facilityWord} scored >= 65% with a single blocker : ${formatFacilityNameList(names)}.`
 }
 
 export function buildQuickWinsQueueNote(

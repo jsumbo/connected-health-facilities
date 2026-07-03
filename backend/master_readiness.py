@@ -15,6 +15,7 @@ from openpyxl import load_workbook
 from drf import (
     build_drf_domain_scores,
     enrich_blockers,
+    normalize_composite_percent,
     normalize_facility_name,
     parse_blocker_codes,
     tier_display_label,
@@ -316,7 +317,7 @@ def load_master_readiness(path: Path | None = None) -> MasterReadinessBundle:
                 "cluster": registry_by_slug()[slug]["cluster"],
                 "facility_type": _cell_str(cells, scorecard_cols["facility_type"]),
                 "rank": _safe_int(_cell_at(cells, scorecard_cols["rank"])),
-                "composite": _safe_float(_cell_at(cells, scorecard_cols["composite"])) or 0.0,
+                "composite": normalize_composite_percent(_safe_float(_cell_at(cells, scorecard_cols["composite"]))) or 0.0,
                 "tier": tier,
                 "tier_label": tier_display_label(tier, wave),
                 "wave": wave,

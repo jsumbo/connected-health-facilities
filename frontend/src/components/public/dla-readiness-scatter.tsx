@@ -12,7 +12,6 @@ import {
   Scatter,
   Tooltip,
   XAxis,
-  YAxis,
   ZAxis,
 } from "recharts"
 import type { ProgrammeFacility } from "@/lib/types-public"
@@ -22,11 +21,14 @@ import {
   pearsonCorrelation,
 } from "@/lib/readiness-drivers"
 import {
-  COMPOSITE_PERCENT_AXIS_TICKS,
   formatAxisPercentTick,
   formatCorrelation,
   formatPercentLabel,
 } from "@/lib/format-number"
+import {
+  COMPOSITE_SCATTER_CHART_MARGIN,
+  CompositeScatterYAxis,
+} from "@/components/public/composite-scatter-y-axis"
 import { SCATTER_TIER_LABELS } from "@/lib/scatter-tier"
 import { ChartNote } from "@/components/public/chart-note"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -120,7 +122,7 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={380}>
-          <ComposedChart margin={{ top: 16, right: 28, bottom: 32, left: 16 }}>
+          <ComposedChart margin={COMPOSITE_SCATTER_CHART_MARGIN}>
             <ReferenceArea y1={75} y2={95} fill="#f54343" fillOpacity={0.06} />
             <ReferenceArea y1={25} y2={75} fill="#0f0f0f" fillOpacity={0.06} />
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -142,28 +144,7 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
                 fill: "var(--muted-foreground)",
               }}
             />
-            <YAxis
-              type="number"
-              dataKey="composite"
-              name="Composite"
-              domain={[0, 100]}
-              scale="linear"
-              allowDataOverflow
-              tickLine={false}
-              axisLine={false}
-              fontSize={11}
-              ticks={[...COMPOSITE_PERCENT_AXIS_TICKS]}
-              tickFormatter={(v) => formatAxisPercentTick(v, 0)}
-              label={{
-                value: "Composite readiness (%)",
-                angle: -90,
-                position: "insideLeft",
-                offset: 4,
-                fontSize: 11,
-                fill: "var(--muted-foreground)",
-              }}
-              width={52}
-            />
+            <CompositeScatterYAxis dataKey="composite" />
             <ZAxis range={[64, 64]} />
             <ReferenceLine
               y={75}

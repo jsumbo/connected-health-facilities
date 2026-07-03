@@ -1,4 +1,5 @@
 import type { ProgrammeFacility } from "@/lib/types-public"
+import { normalizeCompositePercent } from "@/lib/format-number"
 
 export const QUICK_WIN_TIER = "Tier 3 — Not Deployment-Ready" as const
 export const QUICK_WIN_MIN_COMPOSITE = 65
@@ -26,7 +27,7 @@ export function isQuickWinClassic(facility: ProgrammeFacility): boolean {
 /** Tier 3, one blocker, composite ≥ threshold — rollout expansion lens. */
 export function isQuickWinExpanded(facility: ProgrammeFacility): boolean {
   if (!isQuickWinClassic(facility)) return false
-  const score = facility.overall_score
+  const score = normalizeCompositePercent(facility.overall_score)
   return score != null && score >= QUICK_WIN_MIN_COMPOSITE
 }
 

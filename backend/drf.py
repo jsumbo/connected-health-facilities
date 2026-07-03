@@ -101,3 +101,20 @@ def enrich_blockers(codes: List[str], remediation_text: str | None = None) -> Li
             "remediation": BLOCKER_REMEDIATION.get(code, remediation_text or "See gap matrix"),
         })
     return items
+
+
+def normalize_composite_percent(score: float | None) -> float | None:
+    """Map composite readiness to 0–100 (handles Excel fractions and 0–10 scales)."""
+    if score is None:
+        return None
+    try:
+        value = float(score)
+    except (TypeError, ValueError):
+        return None
+    if not (value == value):  # NaN
+        return None
+    if 0 < value <= 1:
+        return round(value * 100, 1)
+    if 1 < value <= 10:
+        return round(value * 10, 1)
+    return round(value, 1)

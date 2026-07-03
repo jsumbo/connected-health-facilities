@@ -160,14 +160,10 @@ export function buildDlaScatterPoints(facilities: ProgrammeFacility[]): DlaScatt
       f.overall_score != null &&
       f.dla_avg_score != null
   )
-  const batchMax = eligible.reduce(
-    (max, f) => Math.max(max, f.overall_score as number),
-    0
-  )
 
   return eligible.map((f) => {
     const tierCategory = classifyScatterPoint(f) ?? "tier3"
-    const composite = normalizeCompositePercent(f.overall_score, batchMax)
+    const composite = normalizeCompositePercent(f.overall_score)
     return {
       slug: f.slug,
       name: f.name,
@@ -176,7 +172,7 @@ export function buildDlaScatterPoints(facilities: ProgrammeFacility[]): DlaScatt
       tierCategory,
       tierKey: tierCategoryKey(tierCategory),
       dla: f.dla_avg_score as number,
-      composite: composite ?? (f.overall_score as number),
+      composite: composite ?? 0,
       color: SCATTER_TIER_COLORS[tierCategory],
     }
   })

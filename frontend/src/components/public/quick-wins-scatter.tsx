@@ -11,7 +11,6 @@ import {
   ScatterChart,
   Tooltip,
   XAxis,
-  YAxis,
   ZAxis,
 } from "recharts"
 import type { ProgrammeFacility } from "@/lib/types-public"
@@ -23,12 +22,14 @@ import {
 } from "@/lib/scatter-tier"
 import { QUICK_WINS_CHART_INTRO } from "@/lib/quick-wins"
 import {
-  COMPOSITE_PERCENT_AXIS_TICKS,
   formatAxisIntegerTick,
-  formatAxisPercentTick,
   formatPercentLabel,
   roundToDecimals,
 } from "@/lib/format-number"
+import {
+  COMPOSITE_SCATTER_CHART_MARGIN,
+  CompositeScatterYAxis,
+} from "@/components/public/composite-scatter-y-axis"
 import { ChartNote } from "@/components/public/chart-note"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
@@ -112,7 +113,7 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
           Weighted DRF composite (0–100%) vs deployment blockers · hover a point for facility details
         </p>
         <ResponsiveContainer width="100%" height={360}>
-          <ScatterChart margin={{ top: 16, right: 28, bottom: 32, left: 20 }}>
+          <ScatterChart margin={COMPOSITE_SCATTER_CHART_MARGIN}>
             <ReferenceArea y1={75} y2={90} fill="#f54343" fillOpacity={0.06} />
             <ReferenceArea y1={30} y2={75} fill="#0f0f0f" fillOpacity={0.06} />
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -137,28 +138,7 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
               }}
               fontSize={11}
             />
-            <YAxis
-              type="number"
-              dataKey="score"
-              name="Composite"
-              domain={[0, 100]}
-              scale="linear"
-              allowDataOverflow
-              tickLine={false}
-              axisLine={false}
-              ticks={[...COMPOSITE_PERCENT_AXIS_TICKS]}
-              tickFormatter={(v) => formatAxisPercentTick(v, 0)}
-              label={{
-                value: "Composite readiness (%)",
-                angle: -90,
-                position: "insideLeft",
-                offset: 4,
-                fontSize: 11,
-                fill: "var(--muted-foreground)",
-              }}
-              fontSize={11}
-              width={52}
-            />
+            <CompositeScatterYAxis />
             <ZAxis range={[72, 72]} />
             <ReferenceLine
               y={75}

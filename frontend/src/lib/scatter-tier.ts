@@ -41,19 +41,12 @@ export function classifyScatterPoint(facility: ProgrammeFacility): ScatterTierCa
 }
 
 export function buildScatterPoints(facilities: ProgrammeFacility[]): ScatterPoint[] {
-  const eligible = facilities.filter(
-    (f) => f.assessment_status === "complete" && f.overall_score != null
-  )
-  const batchMax = eligible.reduce(
-    (max, f) => Math.max(max, f.overall_score as number),
-    0
-  )
-
-  return eligible
+  return facilities
+    .filter((f) => f.assessment_status === "complete" && f.overall_score != null)
     .map((f) => {
       const category = classifyScatterPoint(f)
       if (!category) return null
-      const score = normalizeCompositePercent(f.overall_score, batchMax)
+      const score = normalizeCompositePercent(f.overall_score)
       if (score == null) return null
       return {
         slug: f.slug,

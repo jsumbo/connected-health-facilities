@@ -46,19 +46,16 @@ export const COMPOSITE_PERCENT_AXIS_TICKS = [30, 40, 50, 60, 70, 80, 90, 100] as
 
 /**
  * Ensure composite readiness is on the 0–100 scale used across the dashboard.
- * Handles fractional (0.667), 0–10 (6.67), and 0–100 (66.7) source values.
+ * Per-value detection handles mixed batches (e.g. 6.7 and 85 in the same load).
  */
 export function normalizeCompositePercent(
-  score: number | null | undefined,
-  batchMax?: number
+  score: number | null | undefined
 ): number | null {
   if (score == null || !Number.isFinite(score)) return null
-  const maxInBatch = batchMax ?? score
-
-  if (maxInBatch > 0 && maxInBatch <= 1) {
+  if (score > 0 && score <= 1) {
     return roundToDecimals(score * 100, 1)
   }
-  if (maxInBatch > 1 && maxInBatch <= 15) {
+  if (score > 1 && score <= 10) {
     return roundToDecimals(score * 10, 1)
   }
   return roundToDecimals(score, 1)

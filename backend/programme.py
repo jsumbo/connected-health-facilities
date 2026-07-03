@@ -14,7 +14,7 @@ from facility_master import (
     cluster_sort_key,
     county_display,
 )
-from drf import DRF_DOMAINS, DRF_DOMAIN_KEYS, BLOCKER_LABELS, BLOCKER_REMEDIATION
+from drf import DRF_DOMAINS, DRF_DOMAIN_KEYS, BLOCKER_LABELS, BLOCKER_REMEDIATION, normalize_composite_percent
 from master_cache import master_cache
 from scoring import DOMAIN_LABELS
 from sentiment_cache import sentiment_cache
@@ -38,7 +38,7 @@ def _index_scored_by_slug() -> Dict[str, Dict[str, Any]]:
 def _apply_master_readiness(row: Dict[str, Any], master: Dict[str, Any]) -> None:
     """Override readiness fields with TRIBE master workbook scores."""
     row["assessment_status"] = "complete"
-    row["overall_score"] = round(float(master["composite"]), 1)
+    row["overall_score"] = normalize_composite_percent(float(master["composite"]))
     row["tier_raw"] = master["tier"]
     row["tier"] = master["tier_label"]
     row["wave"] = master.get("wave")

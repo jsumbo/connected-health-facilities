@@ -41,6 +41,19 @@ export function formatPercentLabel(value: number | null | undefined, decimals = 
   return `${formatPercentValue(value, decimals)}%`
 }
 
+/** Ensure composite readiness is on the 0–100 scale used across the dashboard. */
+export function normalizeCompositePercent(
+  score: number | null | undefined,
+  batchMax?: number
+): number | null {
+  if (score == null || !Number.isFinite(score)) return null
+  const maxInBatch = batchMax ?? score
+  if (maxInBatch > 0 && maxInBatch <= 15) {
+    return roundToDecimals(score * 10, 1)
+  }
+  return score
+}
+
 export function roundAxisMax(value: number, decimals = 2): number {
   return roundToDecimals(value, decimals)
 }

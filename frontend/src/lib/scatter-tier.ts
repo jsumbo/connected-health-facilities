@@ -1,4 +1,5 @@
 import type { ProgrammeFacility } from "@/lib/types-public"
+import { normalizeCompositePercent, roundToDecimals } from "@/lib/format-number"
 
 export type ScatterTierCategory = "tier1" | "tier2" | "tier3"
 
@@ -40,15 +41,24 @@ export function classifyScatterPoint(facility: ProgrammeFacility): ScatterTierCa
 }
 
 export function buildScatterPoints(facilities: ProgrammeFacility[]): ScatterPoint[] {
-  return facilities
-    .filter((f) => f.assessment_status === "complete" && f.overall_score != null)
+  const eligible = facilities.filter(
+    (f) => f.assessment_status === "complete" && f.overall_score != null
+  )
+  const batchMax = eligible.reduce(
+    (max, f) => Math.max(max, f.overall_score as number),
+    0
+  )
+
+  return eligible
     .map((f) => {
       const category = classifyScatterPoint(f)
       if (!category) return null
+      const score = normalizeCompositePercent(f.overall_score, batchMax)
+      if (score == null) return null
       return {
         slug: f.slug,
         name: f.name,
-        score: f.overall_score as number,
+        score: roundToDecimals(score, 1),
         blockers: f.blockers?.length ?? 0,
         category,
         county: f.county,

@@ -68,18 +68,26 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
   if (points.length === 0) return null
 
   const maxBlockers = Math.max(...points.map((p) => p.blockers), 3)
+  const scoreMin = Math.min(...points.map((p) => p.score))
+  const scoreMax = Math.max(...points.map((p) => p.score))
+  const yDomainMin = Math.max(0, Math.floor(Math.min(scoreMin, 30) / 10) * 10)
+  const yDomainMax = Math.min(100, Math.ceil(Math.max(scoreMax, 90) / 10) * 10)
+  const yTicks = Array.from(
+    { length: Math.floor((yDomainMax - yDomainMin) / 10) + 1 },
+    (_, i) => yDomainMin + i * 10
+  )
 
   return (
     <Card className="shadow-none">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Composite vs blockers</CardTitle>
         <p className="text-xs text-muted-foreground">
-          Hover for details · toggle tiers in the legend
+          Weighted DRF composite (0–100%) vs deployment blockers · hover for details · toggle tiers in the legend
         </p>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={360}>
-          <ScatterChart margin={{ top: 16, right: 28, bottom: 32, left: 12 }}>
+          <ScatterChart margin={{ top: 16, right: 28, bottom: 32, left: 20 }}>
             <ReferenceArea y1={75} y2={90} fill="#f54343" fillOpacity={0.06} />
             <ReferenceArea y1={30} y2={75} fill="#0f0f0f" fillOpacity={0.06} />
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -108,13 +116,14 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
               type="number"
               dataKey="score"
               name="Composite"
-              domain={[30, 90]}
+              domain={[yDomainMin, yDomainMax]}
+              allowDataOverflow
               tickLine={false}
               axisLine={false}
-              tickCount={7}
+              ticks={yTicks}
               tickFormatter={(v) => formatAxisPercentTick(v, 0)}
               label={{
-                value: "Composite %",
+                value: "Composite readiness (%)",
                 angle: -90,
                 position: "insideLeft",
                 offset: 4,
@@ -122,6 +131,7 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
                 fill: "var(--muted-foreground)",
               }}
               fontSize={11}
+              width={44}
             />
             <ZAxis range={[72, 72]} />
             <ReferenceLine

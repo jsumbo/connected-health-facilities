@@ -25,6 +25,7 @@ import {
 } from "lucide-react"
 import { TIER_FILTER_OPTIONS, facilityMatchesTierFilter } from "@/lib/readiness-tiers"
 import { clusterSortIndex, CLUSTER_DEFINITION } from "@/lib/clusters"
+import { QUICK_WIN_COMPOSITE_LABEL } from "@/lib/quick-wins"
 import {
   buildBlockerChartNote,
   buildCountyChartNote,
@@ -250,14 +251,6 @@ export function InteractiveOverview({
           linkLabel="View Tier 1 facilities"
         />
         <KpiMetric
-          icon={Zap}
-          label="Quick wins"
-          value={metrics.quickWinsExpanded}
-          description={`1 blocker · ≥65%${metrics.quickWinsClassic !== metrics.quickWinsExpanded ? ` (${metrics.quickWinsClassic} total)` : ""}`}
-          href="/quick-wins"
-          linkLabel="View quick wins"
-        />
-        <KpiMetric
           icon={Target}
           label="Tier 2"
           value={metrics.deploymentEligible + metrics.structuredRemediation}
@@ -272,6 +265,21 @@ export function InteractiveOverview({
           description="Tier 3 · blockers"
           href="/blockers"
           linkLabel="View deployment blockers"
+        />
+        <KpiMetric
+          icon={Zap}
+          label="Quick wins"
+          value={metrics.quickWinsExpanded}
+          description={
+            metrics.quickWinsClassic !== metrics.quickWinsExpanded
+              ? [
+                  `One blocker · ${QUICK_WIN_COMPOSITE_LABEL}`,
+                  `${metrics.quickWinsClassic} Tier 3 with one blocker total`,
+                ]
+              : `One blocker · ${QUICK_WIN_COMPOSITE_LABEL}`
+          }
+          href="/quick-wins"
+          linkLabel="View quick wins"
         />
         <KpiMetric
           icon={Gauge}

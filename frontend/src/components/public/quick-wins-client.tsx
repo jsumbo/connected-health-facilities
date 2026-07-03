@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import type { ProgrammeFacility } from "@/lib/types-public"
-import { filterQuickWins, countQuickWins } from "@/lib/quick-wins"
+import { filterQuickWins, countQuickWins, QUICK_WIN_COMPOSITE_LABEL } from "@/lib/quick-wins"
 import { ChartNote } from "@/components/public/chart-note"
 import {
   buildQuickWinsQueueNote,
@@ -20,7 +20,7 @@ interface QuickWinsClientProps {
 }
 
 const VIEW_OPTIONS: { value: QuickWinMode; label: string }[] = [
-  { value: "expanded", label: "Rollout priority · ≥65%" },
+  { value: "expanded", label: `Rollout priority · ${QUICK_WIN_COMPOSITE_LABEL}` },
   { value: "classic", label: "All 1-blocker" },
 ]
 

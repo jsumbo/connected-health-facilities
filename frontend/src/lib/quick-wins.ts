@@ -2,6 +2,10 @@ import type { ProgrammeFacility } from "@/lib/types-public"
 
 export const QUICK_WIN_TIER = "Tier 3 — Not Deployment-Ready" as const
 export const QUICK_WIN_MIN_COMPOSITE = 65
+/** Plain-language threshold (avoid ≥ glyph — renders as "265%" in some fonts). */
+export const QUICK_WIN_COMPOSITE_LABEL = "65%+ composite"
+export const QUICK_WIN_DEFINITION =
+  "Tier 3 facility with exactly one deployment blocker and 65%+ composite readiness"
 
 export function getBlockerCode(blocker: ProgrammeFacility["blockers"][number]): string | null {
   if (typeof blocker === "string") return blocker

@@ -40,6 +40,29 @@ function tierShort(tier: string | null | undefined): string {
   return tier.replace("Tier ", "T").slice(0, 3)
 }
 
+function HeatmapLegend() {
+  return (
+    <div className="mb-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
+      <div className="flex items-center gap-2">
+        <div className="h-4 w-4 border border-border bg-red-100" />
+        <span>0 — blocker/none</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="h-4 w-4 border border-border bg-orange-200" />
+        <span>1 — weak</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="h-4 w-4 border border-border bg-yellow-100" />
+        <span>2 — adequate</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="h-4 w-4 border border-border bg-red-100" />
+        <span>3 — strong</span>
+      </div>
+    </div>
+  )
+}
+
 export function HeatmapGrid({ facilities }: HeatmapGridProps) {
   const sorted = useMemo(
     () => [...facilities].sort((a, b) => (b.overall_score ?? 0) - (a.overall_score ?? 0)),
@@ -48,6 +71,7 @@ export function HeatmapGrid({ facilities }: HeatmapGridProps) {
 
   return (
     <div className="overflow-x-auto">
+      <HeatmapLegend />
       <table className="w-full border-collapse text-sm">
         <thead>
           <tr>
@@ -107,25 +131,6 @@ export function HeatmapGrid({ facilities }: HeatmapGridProps) {
           ))}
         </tbody>
       </table>
-
-      <div className="mt-6 flex flex-wrap gap-6 text-xs text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 border border-border bg-red-100" />
-          <span>0 — blocker/none</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 border border-border bg-orange-200" />
-          <span>1 — weak</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 border border-border bg-yellow-100" />
-          <span>2 — adequate</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 border border-border bg-red-100" />
-          <span>3 — strong</span>
-        </div>
-      </div>
     </div>
   )
 }

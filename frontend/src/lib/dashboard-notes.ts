@@ -7,7 +7,7 @@ import type {
   QuestionStat,
 } from "@/lib/types-public"
 import { unlockCountForBlocker, blockerDisplayLabel } from "@/lib/blockers"
-import { filterQuickWins } from "@/lib/quick-wins"
+import { filterQuickWins, QUICK_WIN_COMPOSITE_LABEL, QUICK_WIN_DEFINITION } from "@/lib/quick-wins"
 import { getTopBlocker, getWeakestDomain } from "@/lib/overview-insights"
 import type { DriverCorrelation } from "@/lib/readiness-drivers"
 import { formatCorrelationScore } from "@/lib/readiness-drivers"
@@ -31,7 +31,7 @@ export function buildOverviewHeadlineNote(
 
   if (quickWinsCount > 0) {
     parts.push(
-      `${quickWinsCount} ${quickWinsCount === 1 ? "facility has" : "facilities have"} one blocker at ≥65% readiness`
+      `${quickWinsCount} ${quickWinsCount === 1 ? "facility has" : "facilities have"} one blocker at ${QUICK_WIN_COMPOSITE_LABEL}`
     )
   }
 
@@ -137,15 +137,16 @@ export function buildClusterListNote(byCluster: PublicOverview["by_cluster"]): s
 export function buildQuickWinsScatterNote(facilities: ProgrammeFacility[]): string {
   const wins = filterQuickWins(facilities, "expanded")
   if (!wins.length) {
-    return "No assessed facility meets ≥65% readiness with exactly one blocker in this dataset."
+    return `Quick win: ${QUICK_WIN_DEFINITION}. None meet the threshold in this dataset.`
   }
 
   const examples = [...wins]
     .sort((a, b) => (b.overall_score ?? 0) - (a.overall_score ?? 0))
-    .slice(0, 4)
+    .slice(0, 3)
     .map((f) => f.name)
 
-  return `${wins.length} ${wins.length === 1 ? "facility scores" : "facilities score"} ≥65% with a single blocker — the shortest path to add Wave 1 sites. Upper-right on the chart: ${examples.join(", ")}.`
+  const exampleSuffix = examples.length ? ` Top scorers: ${examples.join(", ")}.` : ""
+  return `Quick win: ${QUICK_WIN_DEFINITION}. ${wins.length} ${wins.length === 1 ? "site qualifies" : "sites qualify"} — upper-right on the chart.${exampleSuffix}`
 }
 
 export function buildQuickWinsQueueNote(

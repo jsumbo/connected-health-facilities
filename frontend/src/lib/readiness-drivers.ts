@@ -1,6 +1,6 @@
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { DRF_DOMAIN_CODES, DRF_DOMAIN_KEYS, type DrfDomainKey } from "@/lib/drf-domains"
-import { formatCorrelation, roundToDecimals } from "@/lib/format-number"
+import { formatCorrelation, normalizeCompositePercent, roundToDecimals } from "@/lib/format-number"
 import {
   classifyScatterPoint,
   SCATTER_TIER_COLORS,
@@ -154,27 +154,32 @@ export function computeDriverCorrelations(
 }
 
 export function buildDlaScatterPoints(facilities: ProgrammeFacility[]): DlaScatterPoint[] {
-  return facilities
-    .filter(
-      (f) =>
-        f.assessment_status === "complete" &&
-        f.overall_score != null &&
-        f.dla_avg_score != null
-    )
-    .map((f) => {
-      const tierCategory = classifyScatterPoint(f) ?? "tier3"
-      return {
-        slug: f.slug,
-        name: f.name,
-        county: f.county,
-        tier: f.tier ?? "",
-        tierCategory,
-        tierKey: tierCategoryKey(tierCategory),
-        dla: f.dla_avg_score as number,
-        composite: f.overall_score as number,
-        color: SCATTER_TIER_COLORS[tierCategory],
-      }
-    })
+  const eligible = facilities.filter(
+    (f) =>
+      f.assessment_status === "complete" &&
+      f.overall_score != null &&
+      f.dla_avg_score != null
+  )
+  const batchMax = eligible.reduce(
+    (max, f) => Math.max(max, f.overall_score as number),
+    0
+  )
+
+  return eligible.map((f) => {
+    const tierCategory = classifyScatterPoint(f) ?? "tier3"
+    const composite = normalizeCompositePercent(f.overall_score, batchMax)
+    return {
+      slug: f.slug,
+      name: f.name,
+      county: f.county,
+      tier: f.tier ?? "",
+      tierCategory,
+      tierKey: tierCategoryKey(tierCategory),
+      dla: f.dla_avg_score as number,
+      composite: composite ?? (f.overall_score as number),
+      color: SCATTER_TIER_COLORS[tierCategory],
+    }
+  })
 }
 
 export function linearRegression(

@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { HeatmapGrid } from "@/components/public/heatmap-grid"
+import { HeatmapGrid, HeatmapLegend } from "@/components/public/heatmap-grid"
 import type { ProgrammeFacility } from "@/lib/types-public"
 import { TIER_FILTER_OPTIONS, facilityMatchesTierFilter } from "@/lib/readiness-tiers"
 
@@ -27,6 +27,8 @@ export function HeatmapGridClient({ initialFacilities, counties }: HeatmapGridCl
 
   return (
     <div className="space-y-4">
+      <HeatmapLegend />
+
       <div className="flex flex-wrap items-end gap-4">
         <div>
           <label className="text-xs font-medium text-muted-foreground block mb-1">County</label>

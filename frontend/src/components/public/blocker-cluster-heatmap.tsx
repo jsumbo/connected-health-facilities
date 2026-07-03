@@ -74,6 +74,28 @@ export function BlockerClusterHeatmap({
 
   return (
     <div className="overflow-x-auto">
+      <div className="mb-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-4 border border-border bg-slate-50" />
+          <span>None</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-4 border border-border bg-amber-100" />
+          <span>Low</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-4 border border-border bg-orange-200" />
+          <span>Moderate</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-4 border border-border bg-red-400" />
+          <span>High</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-4 border border-border bg-red-600" />
+          <span>Very high</span>
+        </div>
+      </div>
       <table className="w-full border-collapse text-sm">
         <thead>
           <tr>

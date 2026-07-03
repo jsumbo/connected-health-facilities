@@ -24,7 +24,7 @@ export function MapCountyReadinessLegend({ counties }: MapCountyReadinessLegendP
 
   return (
     <div
-      className="absolute bottom-2 right-2 z-[1001] max-h-48 w-44 overflow-auto rounded-md border border-border bg-card/95 p-2 shadow-md backdrop-blur-sm"
+      className="absolute top-2 right-2 z-[1001] max-h-48 w-44 overflow-auto rounded-md border border-border bg-card/95 p-2 shadow-md backdrop-blur-sm"
       aria-label="County average readiness"
     >
       <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">

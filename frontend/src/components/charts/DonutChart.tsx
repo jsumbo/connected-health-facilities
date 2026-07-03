@@ -45,6 +45,7 @@ export default function DonutChart({ title, data, formatLabel }: Props) {
       <h3 className="font-semibold text-navy mb-2 text-sm">{title}</h3>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
+          <Legend verticalAlign="top" align="left" wrapperStyle={{ fontSize: 11, paddingBottom: 8 }} />
           <Pie
             data={chartData}
             cx="50%"
@@ -62,7 +63,6 @@ export default function DonutChart({ title, data, formatLabel }: Props) {
             contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}
             formatter={(value) => [value ?? 0, "facilities"]}
           />
-          <Legend wrapperStyle={{ fontSize: 11 }} />
         </PieChart>
       </ResponsiveContainer>
     </div>

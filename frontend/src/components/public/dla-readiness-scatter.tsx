@@ -77,6 +77,8 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
 
   if (points.length === 0) return null
 
+  const tierLegendItems = TIER_LEGEND.filter((t) => tierGroups.some(([k]) => k === t.key))
+
   return (
     <Card className="shadow-none">
       <CardHeader className="pb-2">
@@ -94,6 +96,21 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
               <span className="ml-2 text-muted-foreground">· {points.length} facilities</span>
             </div>
           ) : null}
+        </div>
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-b border-border pb-4 text-xs text-muted-foreground">
+          {tierLegendItems.map((tier) => (
+            <span key={tier.key} className="flex items-center gap-1.5">
+              <span
+                className="inline-block size-2.5 rounded-full ring-1 ring-white"
+                style={{ backgroundColor: tier.color }}
+              />
+              {tier.label}
+            </span>
+          ))}
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-0.5 w-5 border-t-2 border-dashed border-slate-500" />
+            Trend line
+          </span>
         </div>
       </CardHeader>
       <CardContent>
@@ -199,6 +216,7 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
               <Scatter
                 key={label}
                 name={label}
+                legendType="none"
                 data={group}
                 fill={group[0]?.color ?? "#94a3b8"}
                 fillOpacity={0.9}
@@ -209,21 +227,6 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
           </ComposedChart>
         </ResponsiveContainer>
 
-        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
-          {TIER_LEGEND.filter((t) => tierGroups.some(([k]) => k === t.key)).map((tier) => (
-            <span key={tier.key} className="flex items-center gap-1.5">
-              <span
-                className="inline-block size-2.5 rounded-full ring-1 ring-white"
-                style={{ backgroundColor: tier.color }}
-              />
-              {tier.label}
-            </span>
-          ))}
-          <span className="flex items-center gap-1.5">
-            <span className="inline-block h-0.5 w-5 border-t-2 border-dashed border-slate-500" />
-            Trend line
-          </span>
-        </div>
         {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>
     </Card>

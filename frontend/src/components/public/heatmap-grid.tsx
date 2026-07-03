@@ -40,7 +40,7 @@ function tierShort(tier: string | null | undefined): string {
   return tier.replace("Tier ", "T").slice(0, 3)
 }
 
-function HeatmapLegend() {
+export function HeatmapLegend() {
   return (
     <div className="mb-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
       <div className="flex items-center gap-2">
@@ -71,7 +71,6 @@ export function HeatmapGrid({ facilities }: HeatmapGridProps) {
 
   return (
     <div className="overflow-x-auto">
-      <HeatmapLegend />
       <table className="w-full border-collapse text-sm">
         <thead>
           <tr>

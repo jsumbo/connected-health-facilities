@@ -132,6 +132,20 @@ export function TierDonutCard({
             Filtered by: <span className="font-semibold text-foreground">{tierFilterLabel(selectedTier)}</span>
           </p>
         )}
+        <div className="mb-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
+          {Object.entries(tierCounts)
+            .filter(([, count]) => count > 0)
+            .map(([tier, count]) => (
+              <span key={tier} className="inline-flex items-center gap-1.5">
+                <span
+                  className="inline-block size-2.5 rounded-full ring-1 ring-white"
+                  style={{ backgroundColor: TIER_CHART_COLORS[tier] ?? "var(--chart-5)" }}
+                />
+                {formatTierLabel(tier)}
+                <span className="tabular-nums">({count})</span>
+              </span>
+            ))}
+        </div>
         <TierDonutChart
           tierCounts={tierCounts}
           onTierClick={onTierClick}

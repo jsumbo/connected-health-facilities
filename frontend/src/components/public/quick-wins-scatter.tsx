@@ -83,9 +83,7 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Composite vs blockers</CardTitle>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{QUICK_WINS_CHART_INTRO}</p>
-      </CardHeader>
-      <CardContent>
-        <div className="mb-4 flex flex-wrap gap-x-5 gap-y-2 border-b border-border pb-4 text-xs">
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-b border-border pb-4 text-xs">
           {CATEGORIES.map((category) => {
             const isHidden = hiddenCategories.has(category)
             const count = points.filter((p) => p.category === category).length
@@ -110,6 +108,8 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
             )
           })}
         </div>
+      </CardHeader>
+      <CardContent>
         <p className="mb-3 text-xs text-muted-foreground">
           Weighted DRF composite (0–100%) vs deployment blockers · hover a point for facility details
         </p>
@@ -202,6 +202,7 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
               <Scatter
                 key={category}
                 name={SCATTER_TIER_LABELS[category]}
+                legendType="none"
                 data={visiblePoints.filter((p) => p.category === category)}
                 fill={SCATTER_TIER_COLORS[category]}
                 fillOpacity={0.9}

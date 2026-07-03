@@ -260,9 +260,9 @@ export function InteractiveOverview({
         />
         <KpiMetric
           icon={Ban}
-          label="Tier 3 blocked"
+          label="Tier 3"
           value={metrics.blocked_count}
-          description="Tier 3 · blockers"
+          description="Blocked · Blockers"
           href="/blockers"
           linkLabel="View deployment blockers"
         />

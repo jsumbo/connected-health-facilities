@@ -21,7 +21,12 @@ import {
   linearRegression,
   pearsonCorrelation,
 } from "@/lib/readiness-drivers"
-import { formatAxisPercentTick, formatCorrelation, formatPercentLabel } from "@/lib/format-number"
+import {
+  COMPOSITE_PERCENT_AXIS_TICKS,
+  formatAxisPercentTick,
+  formatCorrelation,
+  formatPercentLabel,
+} from "@/lib/format-number"
 import { SCATTER_TIER_LABELS } from "@/lib/scatter-tier"
 import { ChartNote } from "@/components/public/chart-note"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -141,11 +146,13 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
               type="number"
               dataKey="composite"
               name="Composite"
-              domain={[25, 95]}
+              domain={[0, 100]}
+              scale="linear"
+              allowDataOverflow
               tickLine={false}
               axisLine={false}
               fontSize={11}
-              tickCount={8}
+              ticks={[...COMPOSITE_PERCENT_AXIS_TICKS]}
               tickFormatter={(v) => formatAxisPercentTick(v, 0)}
               label={{
                 value: "Composite readiness (%)",
@@ -155,6 +162,7 @@ export function DlaReadinessScatter({ facilities, note }: DlaReadinessScatterPro
                 fontSize: 11,
                 fill: "var(--muted-foreground)",
               }}
+              width={52}
             />
             <ZAxis range={[64, 64]} />
             <ReferenceLine

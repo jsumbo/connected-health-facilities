@@ -41,17 +41,27 @@ export function formatPercentLabel(value: number | null | undefined, decimals = 
   return `${formatPercentValue(value, decimals)}%`
 }
 
-/** Ensure composite readiness is on the 0–100 scale used across the dashboard. */
+/** Y-axis ticks for composite readiness scatter charts (0–100% scale). */
+export const COMPOSITE_PERCENT_AXIS_TICKS = [30, 40, 50, 60, 70, 80, 90, 100] as const
+
+/**
+ * Ensure composite readiness is on the 0–100 scale used across the dashboard.
+ * Handles fractional (0.667), 0–10 (6.67), and 0–100 (66.7) source values.
+ */
 export function normalizeCompositePercent(
   score: number | null | undefined,
   batchMax?: number
 ): number | null {
   if (score == null || !Number.isFinite(score)) return null
   const maxInBatch = batchMax ?? score
-  if (maxInBatch > 0 && maxInBatch <= 15) {
+
+  if (maxInBatch > 0 && maxInBatch <= 1) {
+    return roundToDecimals(score * 100, 1)
+  }
+  if (maxInBatch > 1 && maxInBatch <= 15) {
     return roundToDecimals(score * 10, 1)
   }
-  return score
+  return roundToDecimals(score, 1)
 }
 
 export function roundAxisMax(value: number, decimals = 2): number {

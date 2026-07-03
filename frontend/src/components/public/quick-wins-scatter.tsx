@@ -22,7 +22,13 @@ import {
   type ScatterTierCategory,
 } from "@/lib/scatter-tier"
 import { QUICK_WINS_CHART_INTRO } from "@/lib/quick-wins"
-import { formatAxisIntegerTick, formatAxisPercentTick, formatPercentLabel, roundToDecimals } from "@/lib/format-number"
+import {
+  COMPOSITE_PERCENT_AXIS_TICKS,
+  formatAxisIntegerTick,
+  formatAxisPercentTick,
+  formatPercentLabel,
+  roundToDecimals,
+} from "@/lib/format-number"
 import { ChartNote } from "@/components/public/chart-note"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
@@ -69,14 +75,6 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
   if (points.length === 0) return null
 
   const maxBlockers = Math.max(...points.map((p) => p.blockers), 3)
-  const scoreMin = Math.min(...points.map((p) => p.score))
-  const scoreMax = Math.max(...points.map((p) => p.score))
-  const yDomainMin = Math.max(0, Math.floor(Math.min(scoreMin, 30) / 10) * 10)
-  const yDomainMax = Math.min(100, Math.ceil(Math.max(scoreMax, 90) / 10) * 10)
-  const yTicks = Array.from(
-    { length: Math.floor((yDomainMax - yDomainMin) / 10) + 1 },
-    (_, i) => yDomainMin + i * 10
-  )
 
   return (
     <Card className="shadow-none">
@@ -143,11 +141,12 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
               type="number"
               dataKey="score"
               name="Composite"
-              domain={[yDomainMin, yDomainMax]}
+              domain={[0, 100]}
+              scale="linear"
               allowDataOverflow
               tickLine={false}
               axisLine={false}
-              ticks={yTicks}
+              ticks={[...COMPOSITE_PERCENT_AXIS_TICKS]}
               tickFormatter={(v) => formatAxisPercentTick(v, 0)}
               label={{
                 value: "Composite readiness (%)",
@@ -158,7 +157,7 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
                 fill: "var(--muted-foreground)",
               }}
               fontSize={11}
-              width={44}
+              width={52}
             />
             <ZAxis range={[72, 72]} />
             <ReferenceLine

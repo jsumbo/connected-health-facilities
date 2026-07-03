@@ -85,8 +85,33 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{QUICK_WINS_CHART_INTRO}</p>
       </CardHeader>
       <CardContent>
+        <div className="mb-4 flex flex-wrap gap-x-5 gap-y-2 border-b border-border pb-4 text-xs">
+          {CATEGORIES.map((category) => {
+            const isHidden = hiddenCategories.has(category)
+            const count = points.filter((p) => p.category === category).length
+            return (
+              <button
+                key={category}
+                type="button"
+                onClick={() => handleToggleCategory(category)}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-1.5 py-0.5 transition-colors",
+                  isHidden ? "opacity-40 line-through" : "hover:bg-muted/60"
+                )}
+                aria-pressed={!isHidden}
+              >
+                <span
+                  className="inline-block size-2.5 rounded-full ring-1 ring-white"
+                  style={{ backgroundColor: SCATTER_TIER_COLORS[category] }}
+                />
+                {SCATTER_TIER_LABELS[category]}
+                <span className="tabular-nums text-muted-foreground">({count})</span>
+              </button>
+            )
+          })}
+        </div>
         <p className="mb-3 text-xs text-muted-foreground">
-          Weighted DRF composite (0–100%) vs deployment blockers · hover for details · toggle tiers in the legend
+          Weighted DRF composite (0–100%) vs deployment blockers · hover a point for facility details
         </p>
         <ResponsiveContainer width="100%" height={360}>
           <ScatterChart margin={{ top: 16, right: 28, bottom: 32, left: 20 }}>
@@ -188,31 +213,6 @@ export function QuickWinsScatter({ facilities, note }: QuickWinsScatterProps) {
           </ScatterChart>
         </ResponsiveContainer>
 
-        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs">
-          {CATEGORIES.map((category) => {
-            const isHidden = hiddenCategories.has(category)
-            const count = points.filter((p) => p.category === category).length
-            return (
-              <button
-                key={category}
-                type="button"
-                onClick={() => handleToggleCategory(category)}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-md px-1.5 py-0.5 transition-colors",
-                  isHidden ? "opacity-40 line-through" : "hover:bg-muted/60"
-                )}
-                aria-pressed={!isHidden}
-              >
-                <span
-                  className="inline-block size-2.5 rounded-full ring-1 ring-white"
-                  style={{ backgroundColor: SCATTER_TIER_COLORS[category] }}
-                />
-                {SCATTER_TIER_LABELS[category]}
-                <span className="tabular-nums text-muted-foreground">({count})</span>
-              </button>
-            )
-          })}
-        </div>
         {note ? <ChartNote>{note}</ChartNote> : null}
       </CardContent>
     </Card>

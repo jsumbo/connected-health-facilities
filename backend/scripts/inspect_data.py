@@ -1,20 +1,5 @@
 #!/usr/bin/env python3
-"""
-Inspect Connected Facilities assessment data for format, coverage, and dashboard design.
-
-Usage (from backend/):
-  python scripts/inspect_data.py
-  python scripts/inspect_data.py --format markdown --out ../docs/data-inspection-report.md
-  python scripts/inspect_data.py --format json --out /tmp/inspection.json
-  python scripts/inspect_data.py --source supabase
-
-Outputs:
-  - Kobo payload structure (flat vs group paths)
-  - Field inventory with fill rates
-  - Scoring engine coverage vs live form
-  - Gap analysis vs TRIBE rubric (5 domains, 3 instruments, tiers)
-  - Suggested dashboard pages and data prerequisites
-"""
+"""Inspect assessment data and generate coverage reports."""
 
 from __future__ import annotations
 
@@ -27,7 +12,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
-# Allow running as: python scripts/inspect_data.py from backend/
 _BACKEND = Path(__file__).resolve().parents[1]
 _SCRIPTS = Path(__file__).resolve().parent
 for p in (_BACKEND, _SCRIPTS):

@@ -256,15 +256,6 @@ def public_dla_overview():
     if dla_cache.last_error and not dla_cache.is_populated:
         raise HTTPException(status_code=503, detail=dla_cache.last_error)
     return build_dla_overview()
-
-
-# ---------------------------------------------------------------------------
-# DLA question-level statistics
-# Must be defined BEFORE /dla/{slug} so FastAPI matches the static path first.
-# ---------------------------------------------------------------------------
-
-# Ordered list of (column_header, correct_answer) pairs for all 10 DLA questions.
-# Correct answers were derived from respondents who achieved a perfect score (100/100).
 _DLA_QUESTION_ANSWERS: List[tuple[str, str]] = [
     ("1. Which of the following devices is a tablet?", "A"),
     ("2. Which of the following is an example of an email address? ", "healthworker@moh.gov.lr"),

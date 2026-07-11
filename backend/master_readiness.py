@@ -24,6 +24,7 @@ from facility_master import all_programme_facilities, cluster_sort_key, registry
 
 logger = logging.getLogger(__name__)
 
+SHEET_FACILITIES = "1. Data - Facilities"
 SHEET_SCORECARDS = "7. Facility Scorecards"
 SHEET_COUNTY = "8. County Summary"
 SHEET_CLUSTER = "9. Cluster Summary"
@@ -74,6 +75,8 @@ class MasterScorecard(TypedDict):
     dla_pct: float | None
     dla_n: int | None
     sentiment_n: int | None
+    latitude: float | None
+    longitude: float | None
     scoring_source: str
 
 
@@ -249,6 +252,18 @@ def load_master_readiness(path: Path | None = None) -> MasterReadinessBundle:
     name_to_slug = _build_name_to_slug()
     wb = load_workbook(workbook_path, read_only=True, data_only=True)
 
+    coords_by_name: Dict[str, tuple[float, float]] = {}
+    if SHEET_FACILITIES in wb.sheetnames:
+        for row in wb[SHEET_FACILITIES].iter_rows(min_row=2, values_only=True):
+            cells = _row_cells(row)
+            if len(cells) < 5 or not cells[0]:
+                continue
+            lat = _safe_float(cells[3])
+            lon = _safe_float(cells[4])
+            if lat is None or lon is None:
+                continue
+            coords_by_name[normalize_facility_name(str(cells[0])).lower()] = (lat, lon)
+
     remediation_by_name: Dict[str, str] = {}
     blocker_register: List[Dict[str, Any]] = []
 
@@ -309,6 +324,7 @@ def load_master_readiness(path: Path | None = None) -> MasterReadinessBundle:
             dla_pct_col = scorecard_cols["dla_pct"]
             dla_n_col = scorecard_cols["dla_n"]
             sentiment_n_col = scorecard_cols["sentiment_n"]
+            coords = coords_by_name.get(normalize_facility_name(facility_name).lower())
 
             scorecards[slug] = {
                 "slug": slug,
@@ -330,6 +346,8 @@ def load_master_readiness(path: Path | None = None) -> MasterReadinessBundle:
                 "dla_pct": _safe_float(_cell_at(cells, dla_pct_col)),
                 "dla_n": _safe_int(_cell_at(cells, dla_n_col)),
                 "sentiment_n": _safe_int(_cell_at(cells, sentiment_n_col)),
+                "latitude": coords[0] if coords else None,
+                "longitude": coords[1] if coords else None,
                 "scoring_source": "tribe_master_workbook",
             }
 

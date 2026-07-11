@@ -6,6 +6,11 @@ The TRIBE analysis workbook ships in the repo as the **source of truth** for dep
 backend/data/master/Master Facility Readiness Scores.xlsx
 ```
 
+> **Current version: V3.0** (adopted 2026-07-10). All 37 facilities are Tier 3 with a universal
+> BLK-05 "No IT support" blocker; BLK-04 (DHIS2) is cleared for all facilities and no wave
+> assignments exist yet. V3.0 also notes that D-ICT device counts measure ownership, not
+> availability for HOS.
+
 ## Why the workbook is in git
 
 - **Render free tier** has no persistent disk — a bundled `.xlsx` loads on every deploy without manual uploads.

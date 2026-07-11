@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_redoc_html
 from config import settings
 from master_cache import master_cache
 from routes import auth, dashboard, public
@@ -30,13 +31,26 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="DatFlow Dashboard API",
-    description="Facility readiness scoring API for the Liberia Connected Facilities Baseline Assessment",
+    title="Readiness Dashboard API",
+    description="Facility readiness API for Connected Facilities Baseline Assessment",
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc",
+    # Default ReDoc page pins redoc@next, which now resolves to a 3.x release
+    # candidate that no longer ships bundles/redoc.standalone.js (CDN 404 ->
+    # blank page). We serve /redoc ourselves with a pinned redoc@2 bundle.
+    redoc_url=None,
     lifespan=lifespan,
 )
+
+
+@app.get("/redoc", include_in_schema=False)
+def redoc_html():
+    return get_redoc_html(
+        openapi_url=app.openapi_url,
+        title=f"{app.title} - ReDoc",
+        redoc_js_url="https://cdn.jsdelivr.net/npm/redoc@2/bundles/redoc.standalone.js",
+    )
+
 
 _cors_origins = [
     origin.strip()

@@ -55,6 +55,10 @@ def _apply_master_readiness(row: Dict[str, Any], master: Dict[str, Any]) -> None
         row["master_dla_n"] = master["dla_n"]
     if master.get("sentiment_n") is not None:
         row["master_sentiment_n"] = master["sentiment_n"]
+    if row.get("latitude") is None and master.get("latitude") is not None:
+        row["latitude"] = master["latitude"]
+        row["longitude"] = master.get("longitude")
+        row["has_gps"] = True
 
 
 def build_facility_rows() -> List[Dict[str, Any]]:

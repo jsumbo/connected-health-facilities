@@ -2,9 +2,6 @@
 """
 Inspect Staff Sentiment Survey Kobo asset — coverage vs facility registry.
 
-Usage (from backend/):
-  python scripts/inspect_sentiment.py
-  python scripts/inspect_sentiment.py --format markdown --out ../docs/sentiment-inspection.md
 """
 
 from __future__ import annotations

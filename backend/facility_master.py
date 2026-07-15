@@ -1,7 +1,4 @@
-"""
-Canonical programme facility registry (Connected Facilities baseline).
-Keyed by Kobo choice slug; merges with scored submissions in programme.py.
-"""
+
 
 from typing import Any, Dict, List, Optional, TypedDict
 
@@ -18,7 +15,6 @@ class FacilityRecord(TypedDict):
 
 PROGRAMME_FACILITY_TARGET = 37
 
-# Canonical deployment clusters (TRIBE programme geography)
 PROGRAMME_CLUSTERS: List[str] = [
     "Montserrado",
     "Margibi",
@@ -28,7 +24,7 @@ PROGRAMME_CLUSTERS: List[str] = [
     "Southeast Region",
 ]
 
-# Region groupings for cluster-level views (TRIBE framework)
+
 _COUNTY_META: Dict[str, Dict[str, str]] = {
     "montserrado": {"region": "Western", "cluster": "Montserrado"},
     "margibi": {"region": "Western", "cluster": "Margibi"},
@@ -53,7 +49,7 @@ def _meta(county_slug: str) -> Dict[str, str]:
     )
 
 
-# All 37 programme facilities (general + sentiment surveys both cover this set).
+# All 37 facilities (general + sentiment surveys both cover this set).
 FACILITY_REGISTRY: List[FacilityRecord] = [
     {"slug": "gw_harley_hospital", "name": "GW Harley Hospital", "county": "nimba", "district": "sanniquelleh_mahn_district", "facility_type": "hospital", **_meta("nimba")},
     {"slug": "damballa_health_center", "name": "Damballa Health Center", "county": "grand_cape_mount", "district": "porkpa_district", "facility_type": "health_centre", **_meta("grand_cape_mount")},

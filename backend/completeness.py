@@ -1,5 +1,5 @@
 """
-Data quality / completeness checks per facility (TRIBE A2-inspired).
+Data quality/completeness checks per facility.
 """
 
 from typing import Any, Dict, List, Optional

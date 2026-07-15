@@ -1,7 +1,4 @@
-"""
-TRIBE Digital Readiness Framework (DRF) — domain weights, tier labels, blocker codes.
-Source: Analysis Framework + Facility Readiness Scoring Rubric (Part B).
-"""
+
 
 from typing import Any, Dict, List, TypedDict
 

@@ -1,7 +1,3 @@
-"""
-Load TRIBE master facility readiness scores from the workbook in repo.
-Sheets used: 7 Facility Scorecards, 8 County Summary, 9 Cluster Summary, 10 Blocker Register.
-"""
 
 from __future__ import annotations
 

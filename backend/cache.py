@@ -49,8 +49,7 @@ class _SubmissionCache:
 
         async with self._lock:
             try:
-                # Full pull + re-score keeps Supabase aligned after form/scoring changes.
-                # Dataset is small (~40 facilities); diff sync can be reintroduced later.
+
                 raw_submissions: list = []
                 try:
                     raw_submissions = await fetch_new_submissions(0)

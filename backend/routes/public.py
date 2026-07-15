@@ -1,5 +1,5 @@
 """
-Public readiness dashboard API (no authentication).
+Public dashboard API.
 """
 
 from typing import List, Optional

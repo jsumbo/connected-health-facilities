@@ -1,11 +1,10 @@
 """
-Reference spec for data inspection — aligned with TRIBE Connected Facilities framework.
-Used by scripts/inspect_data.py for gap analysis and dashboard design notes.
+Reference spec for data inspection. Used by scripts/inspect_data.py for gap analysis and dashboard design notes.
 """
 
 from typing import Dict, List, TypedDict
 
-# ── Instruments (source of truth) ─────────────────────────────
+# ── Instruments (source of truth) ──
 
 INSTRUMENTS = {
     "general": {
@@ -28,7 +27,7 @@ INSTRUMENTS = {
     },
 }
 
-# ── Kobo form domains (10) vs rubric domains (5) ──────────────
+# ── Kobo form domains ──────────────
 
 KOBO_DOMAINS: Dict[str, Dict[str, str]] = {
     "A": {"code": "A", "label": "Facility Metadata", "scored": False},
@@ -51,7 +50,7 @@ RUBRIC_DOMAINS: List[Dict[str, object]] = [
     {"code": "D-SEN", "label": "Adoption, Sentiment & Governance", "weight_pct": 15, "kobo_domains": ["B_Governance", "F_DigitalTech"], "instruments": ["sentiment", "general"]},
 ]
 
-# ── Readiness tiers: TRIBE rubric vs current dashboard ───────
+# ── Readiness tiers ───────
 
 class TierSpec(TypedDict):
     rubric_name: str
@@ -66,7 +65,7 @@ READINESS_TIERS: List[TierSpec] = [
     {"rubric_name": "Tier 4 — Not Deployment-Ready", "score_range": "Any blocker", "current_dashboard_tier": "Blocked"},
 ]
 
-# ── Blockers: TRIBE BLK codes vs scoring.py ───────────────────
+# ── Blockers: BLK codes vs scoring.py ────────
 
 BLOCKER_SPEC = [
     {"code": "BLK-01", "condition": "POW1 = None (no primary power)", "field": "What_is_the_primary_power_sour", "value": "none"},
@@ -77,7 +76,7 @@ BLOCKER_SPEC = [
     {"code": "BLK-06", "condition": "Facility not operational", "field": "Is_this_facility_currently_operational"},
 ]
 
-# ── Identity & geo fields for dashboard ───────────────────────
+# ── Identity & geo fields ──────────────
 
 IDENTITY_FIELDS = [
     "Facility_name",
@@ -90,7 +89,7 @@ IDENTITY_FIELDS = [
 
 GEO_FIELD_PATTERNS = ["_geolocation", "latitude", "longitude", "gps", "meta/instanceID"]
 
-# ── Dashboard views suggested from deliverables ───────────────
+# ── Dashboard views ─────────
 
 DASHBOARD_VIEWS = [
     {

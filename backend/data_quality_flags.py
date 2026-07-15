@@ -1,5 +1,5 @@
 """
-Per-facility data quality gates (TRIBE framework A2).
+Per-facility data quality gates.
 """
 
 from typing import Any, Dict, List, Optional

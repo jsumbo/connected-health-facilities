@@ -2,13 +2,6 @@
 """
 Sync DLA responses from Google Sheets to Supabase.
 
-Usage:
-  python3 sync_dla_from_sheets.py
-
-Environment:
-  GOOGLE_SHEETS_ID: Google Sheet ID (from URL)
-  SUPABASE_URL: Supabase project URL
-  SUPABASE_SERVICE_KEY: Supabase service role key
 """
 
 import os
@@ -51,7 +44,7 @@ def parse_csv_string(csv_string: str) -> list:
 def sync_to_supabase(summaries: dict) -> None:
     """Insert DLA facility summaries into Supabase."""
     if not settings.supabase_url or not settings.supabase_service_key:
-        print("⚠️  Supabase not configured. Skipping sync.")
+        print("  Supabase not configured. Skipping sync.")
         return
 
     client = create_client(settings.supabase_url, settings.supabase_service_key)
@@ -72,7 +65,7 @@ def sync_to_supabase(summaries: dict) -> None:
         })
 
     if not rows:
-        print("❌ No DLA data to sync.")
+        print("  No DLA data to sync.")
         return
 
     try:
@@ -82,9 +75,9 @@ def sync_to_supabase(summaries: dict) -> None:
             .upsert(rows, on_conflict="facility_slug")
             .execute()
         )
-        print(f"✅ Synced {len(rows)} facilities to Supabase")
+        print(f" Synced {len(rows)} facilities to Supabase")
     except Exception as e:
-        print(f"❌ Supabase sync failed: {e}")
+        print(f" Supabase sync failed: {e}")
         raise
 
 
@@ -98,11 +91,11 @@ def main():
         # Fetch Google Sheet
         csv_string = fetch_google_sheet_csv(GOOGLE_SHEETS_ID, SHEET_NAME)
         rows = parse_csv_string(csv_string)
-        print(f"✅ Fetched {len(rows)} rows from Google Sheet")
+        print(f"Fetched {len(rows)} rows from Google Sheet")
 
         # Aggregate by facility
         summaries = aggregate_by_facility(rows)
-        print(f"✅ Aggregated into {len(summaries)} facilities")
+        print(f" Aggregated into {len(summaries)} facilities")
 
         # Show summary
         for slug, summary in sorted(summaries.items()):
@@ -115,7 +108,7 @@ def main():
         sync_to_supabase(summaries)
 
         print("=" * 60)
-        print("✅ Sync complete!")
+        print("Sync complete!")
         print("=" * 60)
 
     except Exception as e:

@@ -1,17 +1,3 @@
-"""
-Scoring engine for the DatFlow Connected Facilities Baseline Assessment.
-Field names and choice values sourced directly from the KoboToolbox XLSForm
-(adJcGdAVrDb6gP5Aew7J2x.xlsx) — not the PDF.
-
-Scoring rules:
-  - 3-option questions: worst=1, middle=2, best=3
-  - 4-option questions: 1, 2, 3, 4
-  - HIGH priority questions (*HIGH in form hint): score x 2
-  - N/A responses mapped to None: excluded from denominator
-  - Domain score = (weighted earned / weighted max) x 100
-  - Overall score = mean of core domain scores
-  - Deployment blockers override tier to "Blocked" regardless of score
-"""
 
 from typing import Dict, Any, List, Optional
 
@@ -24,7 +10,6 @@ from kobo_normalize import (
     total_functional_devices,
 )
 
-# ── Domain H is supplementary and excluded from overall score ──
 CORE_DOMAINS = [
     "B_Governance", "C_Workforce", "D_Infrastructure",
     "E_HealthInformation", "F_DigitalTech", "G_Clinical",
@@ -43,15 +28,8 @@ DOMAIN_LABELS: Dict[str, str] = {
     "J_OperationalSupport": "Operational Support",
 }
 
-# ─────────────────────────────────────────────────────────────
-# SCORE MAP
-# Exact Kobo field name → { exact choice name → (points, is_high) }
-# None as value means the choice is excluded from scoring (N/A)
-# ─────────────────────────────────────────────────────────────
 
 SCORE_MAP: Dict[str, Dict[str, Any]] = {
-
-    # ── DOMAIN B — Governance ─────────────────────────────────
 
     "What_percentage_of_s_liant_with_HR_policy": {   # MEDIUM
         "_80__compliant":    (1, False),
@@ -99,8 +77,6 @@ SCORE_MAP: Dict[str, Dict[str, Any]] = {
         "_85__closed":   (3, False),
     },
 
-    # ── DOMAIN C — Health Workforce ───────────────────────────
-
     "What_percentage_of_s_in_the_last_12_month": {    # *HIGH
         "_60__trained":   (1, True),
         "60_89__trained": (2, True),
@@ -121,7 +97,6 @@ SCORE_MAP: Dict[str, Dict[str, Any]] = {
         "yes":     (3, False),
     },
 
-    # ── DOMAIN D — Physical Infrastructure ────────────────────
 
     "What_is_the_primary_power_sour": {               # *HIGH (none = blocker)
         "none":             (0, True),
@@ -193,7 +168,6 @@ SCORE_MAP: Dict[str, Dict[str, Any]] = {
         "fully_compliant":             (3, False),
     },
 
-    # ── DOMAIN E — Health Information ─────────────────────────
 
     "What_is_the_main_method_used_f": {               # *HIGH
         "paper_only":              (1, True),
@@ -276,8 +250,6 @@ SCORE_MAP: Dict[str, Dict[str, Any]] = {
         "yes___consistently":  (3, False),
     },
 
-    # ── DOMAIN F — Digital Technologies for Health ────────────
-
     "Staff_enthusiasm_for_digitisation": {            # *HIGH
         "low":      (1, True),
         "moderate": (2, True),
@@ -289,7 +261,6 @@ SCORE_MAP: Dict[str, Dict[str, Any]] = {
         "valued":     (3, True),
     },
 
-    # ── DOMAIN G — Clinical Service Delivery ──────────────────
 
     "What_is_the_clinical_ased_on_recent_audit": {    # MEDIUM
         "60_70__adherence":   (1, False),
@@ -338,7 +309,6 @@ SCORE_MAP: Dict[str, Dict[str, Any]] = {
         "_85____follow_up":   (3, False),
     },
 
-    # ── DOMAIN H — Inventory & Supply Chain (supplementary) ───
 
     "Average_stock_out_ra_tics_IV_fluids_etc": {      # MEDIUM
         "_15__stock_outs":  (1, False),
@@ -356,7 +326,6 @@ SCORE_MAP: Dict[str, Dict[str, Any]] = {
         "digital_integrated_with_alerts": (3, False),
     },
 
-    # ── DOMAIN I — Financing ──────────────────────────────────
 
     "How_frequently_are_f_how_are_they_created": {    # MEDIUM
         "manual___quarterly":             (1, False),
@@ -385,7 +354,6 @@ SCORE_MAP: Dict[str, Dict[str, Any]] = {
         "_15_days":   (3, False),
     },
 
-    # ── DOMAIN J — Operational Support ───────────────────────
 
     "What_is_the_average_ssue_resolution_time": {     # *HIGH (IT)
         "weeks___never_resolved": (1, True),
@@ -509,8 +477,6 @@ DOMAIN_QUESTIONS: Dict[str, List[str]] = {
 }
 
 
-# ── Scoring helpers ──────────────────────────────────────────
-
 def _score_question(field: str, value: Optional[str]) -> Optional[tuple]:
     if field not in SCORE_MAP or not value:
         return None
@@ -537,8 +503,7 @@ def _score_domain(submission: Dict[str, Any], fields: List[str]) -> Optional[flo
         max_possible += max_pts * weight
     if max_possible == 0:
         return None
-    # Return domain score on 0–3 scale (per TRIBE DRF rubric)
-    # Composite score will scale this to 0–100: (domain_score × weight) / sum(weights) × 100
+    
     return round((earned / max_possible) * 3, 2)
 
 
@@ -600,7 +565,7 @@ def score_submission(submission: Dict[str, Any]) -> Dict[str, Any]:
         domain_scores[d]["score"] for d in CORE_DOMAINS
         if domain_scores.get(d, {}).get("score") is not None
     ]
-    # Domain scores are on 0–3 scale; convert composite to 0–100 (per TRIBE DRF rubric)
+  
     if core_scores:
         domain_avg = sum(core_scores) / len(core_scores)
         overall_score = round((domain_avg / 3) * 100, 1)

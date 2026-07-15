@@ -1,5 +1,5 @@
 """
-In-memory cache for TRIBE master readiness scores (workbook → optional Supabase sync).
+In-memory cache for master readiness scores.
 """
 
 from __future__ import annotations
